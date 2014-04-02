@@ -1,0 +1,29 @@
+{
+  "name": "leadconduit-trustedform",
+  "version": "0.0.0",
+  "description": "LeadConduit integration with TrustedForm",
+  "main": "index.js",
+  "scripts": {
+    "test": "cake test",
+    "prepublish": "cake build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/activeprospect/node-leadconduit-trustedform.git"
+  },
+  "author": "Ben Hicks <ben@activeprospect.com>",
+  "licenses": [{
+    "type": "ActiveProspect, Inc. All Rights Reserved",
+    "url": "http://www.activeprospect.com/integration_license"
+  }],
+  "engines": {
+    "node": ">=0.8.1"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": ">= 1.7.0",
+    "mocha": ">= 1.17.0",
+    "chai": ">= 1.9.0"
+  }
+}
