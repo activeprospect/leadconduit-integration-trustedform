@@ -59,7 +59,7 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scans: [ scan ]
+      fullRequest = baseRequest scan: scan
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan=#{scan}", request.url
@@ -69,7 +69,7 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scans: [ first, last ]
+      fullRequest = baseRequest scan: [ first, last ]
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan=#{first}&scan=#{last}", request.url
@@ -78,7 +78,7 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scanAbsences: [ scan ]
+      fullRequest = baseRequest scanAbsence: scan
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{scan}", request.url
@@ -88,7 +88,7 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scanAbsences: [ first, last ]
+      fullRequest = baseRequest scanAbsence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{first}&scan!=#{last}", request.url
@@ -108,7 +108,7 @@ describe 'Claim Request', ->
     fingerprint = 'touch'
 
     before ->
-      fullRequest = baseRequest fingerprints: [ fingerprint ]
+      fullRequest = baseRequest fingerprint: fingerprint
 
     it 'includes the parameter in the url', ->
       assert.equal "#{baseUrl}?fingerprint=#{fingerprint}", request.url
@@ -118,7 +118,7 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest fingerprints: [ first, last ]
+      fullRequest = baseRequest fingerprint: [ first, last ]
 
     it 'includes the parameters in the url', ->
       assert.equal "#{baseUrl}?fingerprint=#{first}&fingerprint=#{last}", request.url

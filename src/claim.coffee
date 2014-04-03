@@ -10,14 +10,17 @@ paramString = (vars) ->
   if vars.vendor?
     params.push "vendor=#{encodeURIComponent vars.vendor}"
 
-  if vars.scans?
-    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scans
+  if vars.scan?
+    vars.scan = [ vars.scan ] unless vars.scan instanceof Array
+    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scan
 
-  if vars.scanAbsences?
-    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsences
+  if vars.scanAbsence?
+    vars.scanAbsence = [ vars.scanAbsence ] unless vars.scanAbsence instanceof Array
+    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsence
 
-  if vars.fingerprints?
-    params.push "fingerprint=#{fingerprint}" for fingerprint in vars.fingerprints
+  if vars.fingerprint?
+    vars.fingerprint = [ vars.fingerprint ] unless vars.fingerprint instanceof Array
+    params.push "fingerprint=#{fingerprint}" for fingerprint in vars.fingerprint
 
   if params.length
     string = "?#{params.join '&'}"
@@ -25,21 +28,18 @@ paramString = (vars) ->
   string
 
 encodeAuthentication = (apiKey) ->
-  'Basic ' + new Buffer('API' + ':' + apiKey).toString('base64')
+  'Basic ' + new Buffer("API:#{apiKey}").toString('base64')
 
 #
 # Request Function -------------------------------------------------------
 #
 
 request = (vars) ->
-  {
-    url:     "#{baseUrl}/#{vars.claimId}#{paramString(vars)}",
-    method:  'POST',
-    headers: {
-      Accepts:       'application/json',
-      Authorization: encodeAuthentication vars.apiKey
-    }
-  }
+  url:     "#{baseUrl}/#{vars.claimId}#{paramString(vars)}",
+  method:  'POST',
+  headers:
+    Accepts:       'application/json',
+    Authorization: encodeAuthentication vars.apiKey
 
 request.variables = ->
   [
