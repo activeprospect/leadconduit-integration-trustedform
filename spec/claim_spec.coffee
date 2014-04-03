@@ -6,6 +6,7 @@ describe 'Claim Request', ->
   fullRequest = null
   claimId     = '533c80270218239ec3000012'
   apiKey      = 'c9351ff49a8e38a23493c6b7328c7629'
+  baseUrl     = "https://cert.trustedform.com/#{claimId}"
 
   baseRequest = (extraKeys) ->
     hash =
@@ -25,7 +26,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest()
 
     it 'uses the claim id in the url', ->
-      assert.equal "https://cert.trustedform.com/#{claimId}", request.url
+      assert.equal baseUrl, request.url
 
     it 'uses the apiKey in the auth header', ->
       assert.equal 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5', request.headers.Authorization
@@ -43,7 +44,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest reference: reference
 
     it 'includes the parameter in the URL', ->
-      assert.equal "https://cert.trustedform.com/#{claimId}?reference=#{encodeURIComponent reference}", request.url
+      assert.equal "#{baseUrl}?reference=#{encodeURIComponent reference}", request.url
 
   context 'with a vendor parameter', ->
     vendor = 'pamperseller'
@@ -52,7 +53,46 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor
 
     it 'includes the parameter in te URL', ->
-      assert.equal "https://cert.trustedform.com/#{claimId}?vendor=#{vendor}", request.url
+      assert.equal "#{baseUrl}?vendor=#{vendor}", request.url
+
+  context 'with a scan parameter', ->
+    scan = 'string'
+
+    before ->
+      fullRequest = baseRequest scan: [ scan ]
+
+    it 'includes the parameter in the URL', ->
+      assert.equal "#{baseUrl}?scan=#{scan}", request.url
+
+  context 'with multiple scan parameters', ->
+    first = 'first'
+    last  = 'last'
+
+    before ->
+      fullRequest = baseRequest scan: [ first, last ]
+
+    it 'includes the parameter in the URL', ->
+      assert.equal "#{baseUrl}?scan=#{first}&scan=#{last}", request.url
+
+  context 'with a scanAbsence parameter', ->
+    scan = 'string'
+
+    before ->
+      fullRequest = baseRequest scanAbsence: [ scan ]
+
+    it 'includes the parameter in the URL', ->
+      assert.equal "#{baseUrl}?scan!=#{scan}", request.url
+
+  context 'with multiple scanAbsence parameters', ->
+    first = 'first'
+    last  = 'last'
+
+    before ->
+      fullRequest = baseRequest scanAbsence: [ first, last ]
+
+    it 'includes the parameters in the URL', ->
+      assert.equal "#{baseUrl}?scan!=#{first}&scan!=#{last}", request.url
+
 
   context 'with multiple parameters', ->
     reference = 'fooreference'
@@ -62,7 +102,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor, reference: reference
 
     it 'includes the parameters in the URL', ->
-      assert.equal "https://cert.trustedform.com/#{claimId}?reference=#{reference}&vendor=#{vendor}", request.url
+      assert.equal "#{baseUrl}?reference=#{reference}&vendor=#{vendor}", request.url
 
 describe 'Claim Response', ->
   it 'parses JSON body', ->

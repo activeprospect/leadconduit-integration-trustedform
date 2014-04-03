@@ -4,21 +4,30 @@ baseUrl = 'https://cert.trustedform.com'
 # Request Function -------------------------------------------------------
 #
 
-request = (vars) ->
-  paramString = ''
-  params      = []
+paramString = (vars) ->
+  string = ''
+  params = []
 
-  if vars.reference
+  if vars.reference?
     params.push "reference=#{encodeURIComponent vars.reference}"
 
-  if vars.vendor
-    params.push "vendor=#{vars.vendor}"
+  if vars.vendor?
+    params.push "vendor=#{encodeURIComponent vars.vendor}"
+
+  if vars.scan?
+    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scan
+
+  if vars.scanAbsence?
+    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsence
 
   if params.length
-    paramString = "?#{params.join '&'}"
+    string = "?#{params.join '&'}"
 
+  string
+
+request = (vars) ->
   {
-    url:     "#{baseUrl}/#{vars.claimId}#{paramString}",
+    url:     "#{baseUrl}/#{vars.claimId}#{paramString(vars)}",
     method:  'POST',
     headers: {
       # TODO: verify that we won't communicate via x-www-form-urlencoded
