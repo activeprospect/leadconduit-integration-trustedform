@@ -59,7 +59,7 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scan: [ scan ]
+      fullRequest = baseRequest scans: [ scan ]
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan=#{scan}", request.url
@@ -69,7 +69,7 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scan: [ first, last ]
+      fullRequest = baseRequest scans: [ first, last ]
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan=#{first}&scan=#{last}", request.url
@@ -78,7 +78,7 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scanAbsence: [ scan ]
+      fullRequest = baseRequest scanAbsences: [ scan ]
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{scan}", request.url
@@ -88,7 +88,7 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scanAbsence: [ first, last ]
+      fullRequest = baseRequest scanAbsences: [ first, last ]
 
     it 'includes the parameters in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{first}&scan!=#{last}", request.url
@@ -103,6 +103,25 @@ describe 'Claim Request', ->
 
     it 'includes the parameters in the URL', ->
       assert.equal "#{baseUrl}?reference=#{reference}&vendor=#{vendor}", request.url
+
+  context 'with fingerprint parameters', ->
+    fingerprint = 'touch'
+
+    before ->
+      fullRequest = baseRequest fingerprints: [ fingerprint ]
+
+    it 'includes the parameter in the url', ->
+      assert.equal "#{baseUrl}?fingerprint=#{fingerprint}", request.url
+
+  context 'with multiple fingerprint parameters', ->
+    first = 'first'
+    last  = 'last'
+
+    before ->
+      fullRequest = baseRequest fingerprints: [ first, last ]
+
+    it 'includes the parameters in the url', ->
+      assert.equal "#{baseUrl}?fingerprint=#{first}&fingerprint=#{last}", request.url
 
 describe 'Claim Response', ->
   it 'parses JSON body', ->

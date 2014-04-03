@@ -14,11 +14,14 @@ paramString = (vars) ->
   if vars.vendor?
     params.push "vendor=#{encodeURIComponent vars.vendor}"
 
-  if vars.scan?
-    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scan
+  if vars.scans?
+    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scans
 
-  if vars.scanAbsence?
-    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsence
+  if vars.scanAbsences?
+    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsences
+
+  if vars.fingerprints?
+    params.push "fingerprint=#{fingerprint}" for fingerprint in vars.fingerprints
 
   if params.length
     string = "?#{params.join '&'}"
