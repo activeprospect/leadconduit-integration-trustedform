@@ -2,24 +2,67 @@ assert = require('chai').assert
 integration = require('../src/claim')
 
 describe 'Claim Request', ->
-  request = null
-  claimId = '533c80270218239ec3000012'
-  apiKey  = 'c9351ff49a8e38a23493c6b7328c7629'
+  request     = null
+  fullRequest = null
+  claimId     = '533c80270218239ec3000012'
+  apiKey      = 'c9351ff49a8e38a23493c6b7328c7629'
+
+  baseRequest = (extraKeys) ->
+    hash =
+      claimId: claimId
+      apiKey:  apiKey
+
+    for key, value of extraKeys
+      hash[key] = value
+
+    hash
 
   beforeEach ->
-    request = integration.request(claimId: claimId, apiKey: apiKey)
+    request = integration.request fullRequest
 
-  it 'uses the claim id in the url', ->
-    assert.equal "https://cert.trustedform.com/#{claimId}", request.url
+  context 'without parameters', ->
+    before ->
+      fullRequest = baseRequest()
 
-  it 'uses the apiKey in the auth header', ->
-    assert.equal 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5', request.headers.Authorization
+    it 'uses the claim id in the url', ->
+      assert.equal "https://cert.trustedform.com/#{claimId}", request.url
 
-  it 'is a POST request type', ->
-    assert.equal 'POST', request.method
+    it 'uses the apiKey in the auth header', ->
+      assert.equal 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5', request.headers.Authorization
 
-  it 'accepts JSON', ->
-    assert.equal 'application/json', request.headers.Accepts
+    it 'is a POST request type', ->
+      assert.equal 'POST', request.method
+
+    it 'accepts JSON', ->
+      assert.equal 'application/json', request.headers.Accepts
+
+  context 'with a reference parameter', ->
+    reference = 'my lead identifier'
+
+    before ->
+      fullRequest = baseRequest reference: reference
+
+    it 'includes the parameter in the URL', ->
+      assert.equal "https://cert.trustedform.com/#{claimId}?reference=#{encodeURIComponent reference}", request.url
+
+  context 'with a vendor parameter', ->
+    vendor = 'pamperseller'
+
+    before ->
+      fullRequest = baseRequest vendor: vendor
+
+    it 'includes the parameter in te URL', ->
+      assert.equal "https://cert.trustedform.com/#{claimId}?vendor=#{vendor}", request.url
+
+  context 'with multiple parameters', ->
+    reference = 'fooreference'
+    vendor    = 'myvendor'
+
+    before ->
+      fullRequest = baseRequest vendor: vendor, reference: reference
+
+    it 'includes the parameters in the URL', ->
+      assert.equal "https://cert.trustedform.com/#{claimId}?reference=#{reference}&vendor=#{vendor}", request.url
 
 describe 'Claim Response', ->
   it 'parses JSON body', ->

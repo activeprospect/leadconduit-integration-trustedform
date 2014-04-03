@@ -5,8 +5,20 @@ baseUrl = 'https://cert.trustedform.com'
 #
 
 request = (vars) ->
+  paramString = ''
+  params      = []
+
+  if vars.reference
+    params.push "reference=#{encodeURIComponent vars.reference}"
+
+  if vars.vendor
+    params.push "vendor=#{vars.vendor}"
+
+  if params.length
+    paramString = "?#{params.join '&'}"
+
   {
-    url:     "#{baseUrl}/#{vars.claimId}",
+    url:     "#{baseUrl}/#{vars.claimId}#{paramString}",
     method:  'POST',
     headers: {
       # TODO: verify that we won't communicate via x-www-form-urlencoded
@@ -36,6 +48,10 @@ response = (vars, req, res) ->
     event
   else
     { outcome: 'error', reason: "TrustedForm error - #{event.message} (#{res.status})" }
+
+response.variables = ->
+  [
+  ]
 
 #
 # Exports ----------------------------------------------------------------
