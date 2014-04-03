@@ -55,7 +55,7 @@ encodeAuthentication = (apiKey) ->
 response = (vars, req, res) ->
   event = JSON.parse(res.body)
 
-  if res.status == 200
+  if res.status == 201
     event['outcome'] = 'success'
     event
   else

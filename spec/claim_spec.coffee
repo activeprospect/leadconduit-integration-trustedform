@@ -128,7 +128,7 @@ describe 'Claim Response', ->
     vars = {}
     req  = {}
     res  =
-      status: 200,
+      status: 201,
       headers:
         'Content-Type': 'application/json'
       body: """
@@ -236,7 +236,7 @@ describe 'Claim Response', ->
     response = integration.response vars, req, res
     assert.deepEqual expected, response
 
-  it 'returns an error on non-200 response status', ->
+  it 'returns an error on non-201 response status', ->
     vars = {}
     req  = {}
     res  =
