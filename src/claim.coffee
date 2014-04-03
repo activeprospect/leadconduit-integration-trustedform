@@ -1,9 +1,5 @@
 baseUrl = 'https://cert.trustedform.com'
 
-#
-# Request Function -------------------------------------------------------
-#
-
 paramString = (vars) ->
   string = ''
   params = []
@@ -28,12 +24,18 @@ paramString = (vars) ->
 
   string
 
+encodeAuthentication = (apiKey) ->
+  'Basic ' + new Buffer('API' + ':' + apiKey).toString('base64')
+
+#
+# Request Function -------------------------------------------------------
+#
+
 request = (vars) ->
   {
     url:     "#{baseUrl}/#{vars.claimId}#{paramString(vars)}",
     method:  'POST',
     headers: {
-      # TODO: verify that we won't communicate via x-www-form-urlencoded
       Accepts:       'application/json',
       Authorization: encodeAuthentication vars.apiKey
     }
@@ -44,9 +46,6 @@ request.variables = ->
     { name: 'apiKey', type: 'string', required: true, description: 'TrustedForm API Key' },
     { name: 'claimId', type: 'string', required: true, description: 'Claim ID' }
   ]
-
-encodeAuthentication = (apiKey) ->
-  'Basic ' + new Buffer('API' + ':' + apiKey).toString('base64')
 
 #
 # Response Function ------------------------------------------------------
