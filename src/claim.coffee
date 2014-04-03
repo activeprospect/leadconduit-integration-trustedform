@@ -28,9 +28,19 @@ encodeAuthentication = (apiKey) ->
 # Response Function ------------------------------------------------------
 #
 
+response = (vars, req, res) ->
+  event = JSON.parse(res.body)
+
+  if res.status == 200
+    event['outcome'] = 'success'
+    event
+  else
+    { outcome: 'error', reason: "TrustedForm error - #{event.message} (#{res.status})" }
+
 #
 # Exports ----------------------------------------------------------------
 #
 
 module.exports =
-  request: request
+  request:  request,
+  response: response
