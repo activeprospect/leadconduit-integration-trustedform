@@ -39,6 +39,9 @@ describe 'Claim Request', ->
     it 'accepts JSON', ->
       assert.equal 'application/json', request.headers.Accepts
 
+    it 'has a form-urlencoded content-type', ->
+      assert.equal 'application/x-www-form-urlencoded', request.headers['Content-Type']
+
   context 'with a reference parameter', ->
     reference = 'my lead identifier'
 
@@ -46,7 +49,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest reference: reference
 
     it 'includes the parameter in the URL', ->
-      assert.equal "#{baseUrl}?reference=#{encodeURIComponent reference}", request.url
+      assert.equal "reference=my%20lead%20identifier", request.body
 
   context 'with a vendor parameter', ->
     vendor = 'pamperseller'
@@ -55,7 +58,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor
 
     it 'includes the parameter in te URL', ->
-      assert.equal "#{baseUrl}?vendor=#{vendor}", request.url
+      assert.equal "vendor=#{vendor}", request.body
 
   context 'with a scan parameter', ->
     scan = 'string'
@@ -64,7 +67,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan: scan
 
     it 'includes the parameter in the URL', ->
-      assert.equal "#{baseUrl}?scan=#{scan}", request.url
+      assert.equal "scan=#{scan}", request.body
 
   context 'with multiple scan parameters', ->
     first = 'first'
@@ -74,7 +77,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan: [ first, last ]
 
     it 'includes the parameter in the URL', ->
-      assert.equal "#{baseUrl}?scan=#{first}&scan=#{last}", request.url
+      assert.equal "scan=#{first}&scan=#{last}", request.body
 
   context 'with a scan_absence parameter', ->
     scan = 'string'
@@ -83,7 +86,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan_absence: scan
 
     it 'includes the parameter in the URL', ->
-      assert.equal "#{baseUrl}?scan!=#{scan}", request.url
+      assert.equal "scan_absence=#{scan}", request.body
 
   context 'with multiple scan_absence parameters', ->
     first = 'first'
@@ -93,8 +96,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan_absence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
-      assert.equal "#{baseUrl}?scan!=#{first}&scan!=#{last}", request.url
-
+      assert.equal "scan_absence=#{first}&scan_absence=#{last}", request.body
 
   context 'with multiple parameters', ->
     reference = 'fooreference'
@@ -104,7 +106,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor, reference: reference
 
     it 'includes the parameters in the URL', ->
-      assert.equal "#{baseUrl}?reference=#{reference}&vendor=#{vendor}", request.url
+      assert.equal "reference=#{reference}&vendor=#{vendor}", request.body
 
   context 'with fingerprint parameters', ->
     fingerprint = 'touch'
@@ -113,7 +115,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest fingerprint: fingerprint
 
     it 'includes the parameter in the url', ->
-      assert.equal "#{baseUrl}?fingerprint=#{fingerprint}", request.url
+      assert.equal "fingerprint=#{fingerprint}", request.body
 
   context 'with multiple fingerprint parameters', ->
     first = 'first'
@@ -123,7 +125,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest fingerprint: [ first, last ]
 
     it 'includes the parameters in the url', ->
-      assert.equal "#{baseUrl}?fingerprint=#{first}&fingerprint=#{last}", request.url
+      assert.equal "fingerprint=#{first}&fingerprint=#{last}", request.body
 
 describe 'Claim Response', ->
   it 'parses JSON body', ->

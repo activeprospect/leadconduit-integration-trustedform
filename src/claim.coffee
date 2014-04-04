@@ -1,29 +1,27 @@
-queryString = (vars) ->
-  string = ''
-  params = []
+querystring = require 'querystring'
+
+content = (vars) ->
+  params = {}
 
   if vars.reference?
-    params.push "reference=#{encodeURIComponent vars.reference}"
+    params.reference = vars.reference
 
   if vars.vendor?
-    params.push "vendor=#{encodeURIComponent vars.vendor}"
+    params.vendor = vars.vendor
 
   if vars.scan?
-    vars.scan = [ vars.scan ] unless vars.scan instanceof Array
-    params.push "scan=#{encodeURIComponent scan}" for scan in vars.scan
+    vars.scan   = [ vars.scan ] unless vars.scan instanceof Array
+    params.scan = vars.scan
 
   if vars.scan_absence?
-    vars.scan_absence = [ vars.scan_absence ] unless vars.scan_absence instanceof Array
-    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scan_absence
+    vars.scan_absence   = [ vars.scan_absence ] unless vars.scan_absence instanceof Array
+    params.scan_absence = vars.scan_absence
 
   if vars.fingerprint?
-    vars.fingerprint = [ vars.fingerprint ] unless vars.fingerprint instanceof Array
-    params.push "fingerprint=#{fingerprint}" for fingerprint in vars.fingerprint
+    vars.fingerprint   = [ vars.fingerprint ] unless vars.fingerprint instanceof Array
+    params.fingerprint = vars.fingerprint
 
-  if params.length
-    string = "?#{params.join '&'}"
-
-  string
+  querystring.encode params
 
 encodeAuthentication = (apiKey) ->
   'Basic ' + new Buffer("API:#{apiKey}").toString('base64')
@@ -33,11 +31,13 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  url:     "#{vars.trustedform.cert_url}#{queryString(vars)}",
+  url:     vars.trustedform.cert_url,
   method:  'POST',
   headers:
-    Accepts:       'application/json',
-    Authorization: encodeAuthentication vars.api_key
+    Accepts:        'application/json',
+    Authorization:  encodeAuthentication vars.api_key
+    'Content-Type': 'application/x-www-form-urlencoded'
+  body: content vars
 
 request.variables = ->
   [
