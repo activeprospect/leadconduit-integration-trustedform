@@ -1,6 +1,4 @@
-baseUrl = 'https://cert.trustedform.com'
-
-paramString = (vars) ->
+queryString = (vars) ->
   string = ''
   params = []
 
@@ -35,7 +33,7 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  url:     "#{baseUrl}/#{vars.claim_id}#{paramString(vars)}",
+  url:     "#{vars.trustedform.cert_url}#{queryString(vars)}",
   method:  'POST',
   headers:
     Accepts:       'application/json',
@@ -43,8 +41,8 @@ request = (vars) ->
 
 request.variables = ->
   [
+    { name: 'trustedform.cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
     { name: 'api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
-    { name: 'claim_id', type: 'string', required: true, description: 'Claim ID' },
     { name: 'reference', type: 'string', required: false, description: 'Lead Identifier' },
     { name: 'vendor', type: 'string', required: false, description: 'Vendor Identifier' },
     { name: 'scan', type: 'string', required: false, description: 'Required text in snapshot' },

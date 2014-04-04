@@ -10,6 +10,8 @@ describe 'Claim Request', ->
 
   baseRequest = (extraKeys) ->
     hash =
+      trustedform:
+        cert_url: baseUrl
       claim_id: claimId
       api_key:  apiKey
 
