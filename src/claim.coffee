@@ -1,4 +1,5 @@
 querystring = require 'querystring'
+url         = require 'url'
 
 content = (vars) ->
   params = {}
@@ -54,14 +55,39 @@ request.variables = ->
 # Response Function ------------------------------------------------------
 #
 
+ageInSeconds = (date) ->
+  difference = Date.now() - new Date(date)
+  Math.floor difference / 1000
+
 response = (vars, req, res) ->
   event = JSON.parse(res.body)
 
   if res.status == 201
-    event['outcome'] = 'success'
-    event
+    hosted_url = event.cert.parent_location or event.cert.location
+
+    trustedform:
+      user_agent: event.cert.user_agent
+      browser: event.cert.browser
+      os: event.cert.operating_system
+      ip: event.cert.ip
+      geo:
+        city: event.cert.geo.city
+        country_code: event.cert.geo.country_code
+        lat: event.cert.geo.lat
+        lon: event.cert.geo.lon
+        postal_code: event.cert.geo.postal_code
+        state: event.cert.geo.state
+        time_zone: event.cert.geo.time_zone
+      snapshot_url: event.cert.snapshot_url
+      url: hosted_url
+      domain: url.parse(hosted_url).hostname
+      age_in_seconds: ageInSeconds event.cert.created_at
+      created_at: event.cert.created_at
+      reason: null
+      outcome: 'success'
   else
-    { outcome: 'error', reason: "TrustedForm error - #{event.message} (#{res.status})" }
+    outcome: 'error'
+    reason:  "TrustedForm error - #{event.message} (#{res.status})"
 
 response.variables = ->
   [

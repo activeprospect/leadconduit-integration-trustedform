@@ -22,6 +22,7 @@
     "node": ">=0.8.1"
   },
   "dependencies": {
+    "timekeeper": "0.0.4"
   },
   "devDependencies": {
     "coffee-script": ">= 1.7.0",

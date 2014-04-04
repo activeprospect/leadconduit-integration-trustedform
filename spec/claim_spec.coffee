@@ -1,5 +1,6 @@
 assert      = require('chai').assert
 integration = require('../src/claim')
+tk          = require('timekeeper')
 
 describe 'Claim Request', ->
   request     = null
@@ -191,54 +192,33 @@ describe 'Claim Response', ->
             """
 
     expected =
-      outcome: 'success'
-      cert:
-        browser: "Chrome 33.0.1750",
-        claims: [
-          created_at: "2014-04-02T21:24:55Z",
-          expires_at: "2019-04-01T21:24:55Z",
-          fingerprints:
-            matching: [],
-            non_matching: []
-          id: "533c80270218239ec3000012",
-          page_id: "533c76bd0218239ec3000007",
-          reference: null,
-          scans: null,
-          vendor: null,
-          warnings: []
-        ],
-        created_at: "2014-04-02T21:24:22Z",
-        expires_at: "2014-04-05T21:24:22Z",
-        framed: false,
-        geo:
-          city: "Austin",
-          country_code: "US",
-          lat: 30.2966,
-          lon: -97.7663,
-          postal_code: "78703",
-          state: "TX",
-          time_zone: "America/Chicago"
-        ip: "127.0.0.1",
-        location: "http://localhost:81/leadconduit_iframe.html",
-        operating_system: "Mac OS X 10.9.2",
-        parent_location: null,
-        snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html",
-        token: "0dcf20941b6b4f196331ff7ae1ca534befa269dd",
+      trustedform:
         user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
-      created_at: "2014-04-02T21:24:55Z",
-      expires_at: "2019-04-01T21:24:55Z",
-      fingerprints:
-        matching: [],
-        non_matching: []
-      id: "533c80270218239ec3000012",
-      page_id: "533c76bd0218239ec3000007",
-      reference: null,
-      scans: null,
-      vendor: null,
-      warnings: []
+        browser: "Chrome 33.0.1750"
+        os: "Mac OS X 10.9.2"
+        ip: "127.0.0.1"
+        geo:
+          city: "Austin"
+          country_code: "US"
+          lat: 30.2966
+          lon: -97.7663
+          postal_code: "78703"
+          state: "TX"
+          time_zone: "America/Chicago"
+        snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+        url: "http://localhost:81/leadconduit_iframe.html"
+        domain: "localhost"
+        age_in_seconds: 172290
+        created_at: "2014-04-02T21:24:22Z"
+        reason: null
+        outcome: 'success'
+
+    tk.freeze new Date 1396646152539
 
     response = integration.response vars, req, res
     assert.deepEqual expected, response
+
+    tk.reset()
 
   it 'returns an error on non-201 response status', ->
     vars = {}
