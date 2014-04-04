@@ -43,12 +43,12 @@ request = (vars) ->
 request.variables = ->
   [
     { name: 'trustedform.cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
-    { name: 'api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
-    { name: 'reference', type: 'string', required: false, description: 'Lead Identifier' },
-    { name: 'vendor', type: 'string', required: false, description: 'Vendor Identifier' },
-    { name: 'scan', type: 'string', required: false, description: 'Required text in snapshot' },
-    { name: 'scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
-    { name: 'fingerprint', type: 'string', required: false, description: 'Lead fingerprint information' }
+    { name: 'trustedform.api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
+    { name: 'trustedform.reference', type: 'string', required: false, description: 'Lead Identifier' },
+    { name: 'trustedform.vendor', type: 'string', required: false, description: 'Vendor Identifier' },
+    { name: 'trustedform.scan', type: 'string', required: false, description: 'Required text in snapshot' },
+    { name: 'trustedform.scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
+    { name: 'trustedform.fingerprint', type: 'string', required: false, description: 'Lead fingerprint information' }
   ]
 
 #
