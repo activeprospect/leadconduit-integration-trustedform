@@ -12,10 +12,12 @@
     "url": "git://github.com/activeprospect/node-leadconduit-trustedform.git"
   },
   "author": "Ben Hicks <ben@activeprospect.com>",
-  "licenses": [{
-    "type": "ActiveProspect, Inc. All Rights Reserved",
-    "url": "http://www.activeprospect.com/integration_license"
-  }],
+  "licenses": [
+    {
+      "type": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-nc-nd/4.0/legalcode"
+    }
+  ],
   "engines": {
     "node": ">=0.8.1"
   },
