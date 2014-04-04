@@ -14,9 +14,9 @@ paramString = (vars) ->
     vars.scan = [ vars.scan ] unless vars.scan instanceof Array
     params.push "scan=#{encodeURIComponent scan}" for scan in vars.scan
 
-  if vars.scanAbsence?
-    vars.scanAbsence = [ vars.scanAbsence ] unless vars.scanAbsence instanceof Array
-    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scanAbsence
+  if vars.scan_absence?
+    vars.scan_absence = [ vars.scan_absence ] unless vars.scan_absence instanceof Array
+    params.push "scan!=#{encodeURIComponent scan}" for scan in vars.scan_absence
 
   if vars.fingerprint?
     vars.fingerprint = [ vars.fingerprint ] unless vars.fingerprint instanceof Array
@@ -35,20 +35,20 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  url:     "#{baseUrl}/#{vars.claimId}#{paramString(vars)}",
+  url:     "#{baseUrl}/#{vars.claim_id}#{paramString(vars)}",
   method:  'POST',
   headers:
     Accepts:       'application/json',
-    Authorization: encodeAuthentication vars.apiKey
+    Authorization: encodeAuthentication vars.api_key
 
 request.variables = ->
   [
-    { name: 'apiKey', type: 'string', required: true, description: 'TrustedForm API Key' },
-    { name: 'claimId', type: 'string', required: true, description: 'Claim ID' },
+    { name: 'api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
+    { name: 'claim_id', type: 'string', required: true, description: 'Claim ID' },
     { name: 'reference', type: 'string', required: false, description: 'Lead Identifier' },
     { name: 'vendor', type: 'string', required: false, description: 'Vendor Identifier' },
     { name: 'scan', type: 'string', required: false, description: 'Required text in snapshot' },
-    { name: 'scanAbsence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
+    { name: 'scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
     { name: 'fingerprint', type: 'string', required: false, description: 'Lead fingerprint information' }
   ]
 

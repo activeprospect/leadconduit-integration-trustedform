@@ -10,8 +10,8 @@ describe 'Claim Request', ->
 
   baseRequest = (extraKeys) ->
     hash =
-      claimId: claimId
-      apiKey:  apiKey
+      claim_id: claimId
+      api_key:  apiKey
 
     for key, value of extraKeys
       hash[key] = value
@@ -28,7 +28,7 @@ describe 'Claim Request', ->
     it 'uses the claim id in the url', ->
       assert.equal baseUrl, request.url
 
-    it 'uses the apiKey in the auth header', ->
+    it 'uses the api_key in the auth header', ->
       assert.equal 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5', request.headers.Authorization
 
     it 'is a POST request type', ->
@@ -74,21 +74,21 @@ describe 'Claim Request', ->
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan=#{first}&scan=#{last}", request.url
 
-  context 'with a scanAbsence parameter', ->
+  context 'with a scan_absence parameter', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scanAbsence: scan
+      fullRequest = baseRequest scan_absence: scan
 
     it 'includes the parameter in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{scan}", request.url
 
-  context 'with multiple scanAbsence parameters', ->
+  context 'with multiple scan_absence parameters', ->
     first = 'first'
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scanAbsence: [ first, last ]
+      fullRequest = baseRequest scan_absence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
       assert.equal "#{baseUrl}?scan!=#{first}&scan!=#{last}", request.url
