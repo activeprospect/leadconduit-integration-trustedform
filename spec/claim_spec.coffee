@@ -1,4 +1,4 @@
-assert = require('chai').assert
+assert      = require('chai').assert
 integration = require('../src/claim')
 
 describe 'Claim Request', ->
