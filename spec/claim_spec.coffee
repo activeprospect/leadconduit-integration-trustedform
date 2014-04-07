@@ -29,19 +29,19 @@ describe 'Claim Request', ->
       fullRequest = baseRequest()
 
     it 'uses the claim id in the url', ->
-      assert.equal baseUrl, request.url
+      assert.equal request.url, baseUrl
 
     it 'uses the api_key in the auth header', ->
-      assert.equal 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5', request.headers.Authorization
+      assert.equal request.headers.Authorization, 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5'
 
     it 'is a POST request type', ->
-      assert.equal 'POST', request.method
+      assert.equal request.method, 'POST'
 
     it 'accepts JSON', ->
-      assert.equal 'application/json', request.headers.Accepts
+      assert.equal request.headers.Accepts, 'application/json'
 
     it 'has a form-urlencoded content-type', ->
-      assert.equal 'application/x-www-form-urlencoded', request.headers['Content-Type']
+      assert.equal request.headers['Content-Type'], 'application/x-www-form-urlencoded'
 
   context 'with a reference parameter', ->
     reference = 'my lead identifier'
@@ -50,7 +50,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest reference: reference
 
     it 'includes the parameter in the URL', ->
-      assert.equal "reference=my%20lead%20identifier", request.body
+      assert.equal request.body, "reference=my%20lead%20identifier"
 
   context 'with a vendor parameter', ->
     vendor = 'pamperseller'
@@ -59,7 +59,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor
 
     it 'includes the parameter in te URL', ->
-      assert.equal "vendor=#{vendor}", request.body
+      assert.equal request.body, "vendor=#{vendor}"
 
   context 'with a scan parameter', ->
     scan = 'string'
@@ -68,7 +68,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan: scan
 
     it 'includes the parameter in the URL', ->
-      assert.equal "scan=#{scan}", request.body
+      assert.equal request.body, "scan=#{scan}"
 
   context 'with multiple scan parameters', ->
     first = 'first'
@@ -78,7 +78,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan: [ first, last ]
 
     it 'includes the parameter in the URL', ->
-      assert.equal "scan=#{first}&scan=#{last}", request.body
+      assert.equal request.body, "scan=#{first}&scan=#{last}"
 
   context 'with a scan_absence parameter', ->
     scan = 'string'
@@ -87,7 +87,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan_absence: scan
 
     it 'includes the parameter in the URL', ->
-      assert.equal "scan_absence=#{scan}", request.body
+      assert.equal request.body, "scan_absence=#{scan}"
 
   context 'with multiple scan_absence parameters', ->
     first = 'first'
@@ -97,7 +97,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest scan_absence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
-      assert.equal "scan_absence=#{first}&scan_absence=#{last}", request.body
+      assert.equal request.body, "scan_absence=#{first}&scan_absence=#{last}"
 
   context 'with multiple parameters', ->
     reference = 'fooreference'
@@ -107,7 +107,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest vendor: vendor, reference: reference
 
     it 'includes the parameters in the URL', ->
-      assert.equal "reference=#{reference}&vendor=#{vendor}", request.body
+      assert.equal request.body, "reference=#{reference}&vendor=#{vendor}"
 
   context 'with fingerprint parameters', ->
     fingerprint = 'touch'
@@ -116,7 +116,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest fingerprint: fingerprint
 
     it 'includes the parameter in the url', ->
-      assert.equal "fingerprint=#{fingerprint}", request.body
+      assert.equal request.body, "fingerprint=#{fingerprint}"
 
   context 'with multiple fingerprint parameters', ->
     first = 'first'
@@ -126,7 +126,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest fingerprint: [ first, last ]
 
     it 'includes the parameters in the url', ->
-      assert.equal "fingerprint=#{first}&fingerprint=#{last}", request.body
+      assert.equal request.body, "fingerprint=#{first}&fingerprint=#{last}"
 
 describe 'Claim Response', ->
   vars = {}
@@ -237,7 +237,7 @@ describe 'Claim Response', ->
                            """
 
       it 'uses the location in the response', ->
-        assert.deepEqual expected, response
+        assert.deepEqual response, expected
 
     context 'with a parent location', ->
       host = 'yourhost'
@@ -253,7 +253,7 @@ describe 'Claim Response', ->
         expected.trustedform.url    = expectedLocation
         expected.trustedform.domain = host
 
-        assert.deepEqual expected, response
+        assert.deepEqual response, expected
 
   it 'returns an error on non-201 response status', ->
     res  =
@@ -269,4 +269,4 @@ describe 'Claim Response', ->
       outcome: 'error'
       reason:  'TrustedForm error - certificate not found (404)'
     response = integration.response(vars, req, res)
-    assert.deepEqual expected, response
+    assert.deepEqual response, expected
