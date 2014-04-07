@@ -1,6 +1,6 @@
 {
   "name": "leadconduit-trustedform",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {
@@ -22,11 +22,11 @@
     "node": ">=0.8.1"
   },
   "dependencies": {
-    "timekeeper": "0.0.4"
   },
   "devDependencies": {
     "coffee-script": ">= 1.7.0",
     "mocha": ">= 1.17.0",
-    "chai": ">= 1.9.0"
+    "chai": ">= 1.9.0",
+    "timekeeper": ">= 0.0.4"
   }
 }
