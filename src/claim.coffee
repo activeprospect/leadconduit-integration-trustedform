@@ -7,13 +7,13 @@ content = (vars) ->
     vendor: vars.source.name
   }
 
-  if vars.scan?
-    vars.scan   = [ vars.scan ] unless vars.scan instanceof Array
-    params.scan = vars.scan
+  if vars.trustedform.scan?
+    vars.trustedform.scan   = [ vars.trustedform.scan ] unless vars.trustedform.scan instanceof Array
+    params.scan = vars.trustedform.scan
 
-  if vars.scan_absence?
-    vars.scan_absence   = [ vars.scan_absence ] unless vars.scan_absence instanceof Array
-    params.scan_absence = vars.scan_absence
+  if vars.trustedform.scan_absence?
+    vars.trustedform.scan_absence   = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
+    params.scan_absence = vars.trustedform.scan_absence
 
   params.email   = vars.lead.email   if vars.lead.email?
   params.phone_1 = vars.lead.phone_1 if vars.lead.phone_1?

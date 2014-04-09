@@ -60,7 +60,8 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scan: scan
+      fullRequest = baseRequest trustedform:
+                                  scan: scan
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{scan}"
@@ -70,7 +71,8 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scan: [ first, last ]
+      fullRequest = baseRequest trustedform:
+                                  scan: [ first, last ]
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{first}&scan=#{last}"
@@ -79,7 +81,8 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest scan_absence: scan
+      fullRequest = baseRequest trustedform:
+                                  scan_absence: scan
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan_absence=#{scan}"
@@ -89,7 +92,8 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest scan_absence: [ first, last ]
+      fullRequest = baseRequest trustedform:
+                                  scan_absence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
       assert.include request.body, "scan_absence=#{first}&scan_absence=#{last}"
@@ -99,7 +103,8 @@ describe 'Claim Request', ->
     scan_absence = 'barscan'
 
     before ->
-      fullRequest = baseRequest scan: scan, scan_absence: scan_absence
+      fullRequest = baseRequest trustedform:
+                                  scan: scan, scan_absence: scan_absence
 
     it 'includes the parameters in the URL', ->
       assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
