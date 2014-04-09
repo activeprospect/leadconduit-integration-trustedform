@@ -17,9 +17,6 @@ describe 'Claim Request', ->
       claim_id: claimId
       lead:
         id: 'lead_id_123',
-        email: 'TomJones@vegas.com',
-        phone_1: '512-789-1111',
-        phone_2: '512.555.5785'
       source:
         name: 'Foo, Inc.'
 
@@ -110,24 +107,42 @@ describe 'Claim Request', ->
       assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
 
   context 'with a lead email', ->
+    email = 'TomJones@vegas.com'
+
     before ->
-      fullRequest = baseRequest()
+      fullRequest = baseRequest lead:
+                                  email: email
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, 'email=TomJones%40vegas.com'
+      assert.include request.body, "email=#{encodeURIComponent email}"
 
   context 'with a lead phone_1', ->
+    phone = '512-789-1111'
+
     before ->
-      fullRequest = baseRequest()
+      fullRequest = baseRequest lead:
+                                  phone_1: phone
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, 'phone_1=512-789-1111'
+      assert.include request.body, "phone_1=#{phone}"
 
   context 'with a lead phone_2', ->
+    phone = '512.555.5785'
+
+    before ->
+      fullRequest = baseRequest lead:
+                                  phone_2: phone
+
     it 'includes the parameters in the URL', ->
-      assert.include request.body, 'phone_2=512.555.5785'
+      assert.include request.body, "phone_2=#{phone}"
 
   context 'without a lead phone_3', ->
+    phone = null
+
+    before ->
+      fullRequest = baseRequest lead:
+                                  phone_3: phone
+
     it 'doesnt include the parameters in the URL', ->
       assert.notInclude request.body, 'phone_3'
 
