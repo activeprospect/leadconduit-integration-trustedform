@@ -16,7 +16,10 @@ describe 'Claim Request', ->
         cert_url: baseUrl
       claim_id: claimId
       lead:
-        id: 'lead_id_123'
+        id: 'lead_id_123',
+        email: 'TomJones@vegas.com',
+        phone_1: '512-789-1111',
+        phone_2: '512.555.5785'
       source:
         name: 'Foo, Inc.'
 
@@ -101,24 +104,27 @@ describe 'Claim Request', ->
     it 'includes the parameters in the URL', ->
       assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
 
-  context 'with fingerprint parameters', ->
-    fingerprint = 'touch'
-
+  context 'with a lead email', ->
     before ->
-      fullRequest = baseRequest fingerprint: fingerprint
+      fullRequest = baseRequest()
 
-    it 'includes the parameter in the url', ->
-      assert.include request.body, "fingerprint=#{fingerprint}"
+    it 'includes the parameters in the URL', ->
+      assert.include request.body, 'email=TomJones%40vegas.com'
 
-  context 'with multiple fingerprint parameters', ->
-    first = 'first'
-    last  = 'last'
-
+  context 'with a lead phone_1', ->
     before ->
-      fullRequest = baseRequest fingerprint: [ first, last ]
+      fullRequest = baseRequest()
 
-    it 'includes the parameters in the url', ->
-      assert.include request.body, "fingerprint=#{first}&fingerprint=#{last}"
+    it 'includes the parameters in the URL', ->
+      assert.include request.body, 'phone_1=512-789-1111'
+
+  context 'with a lead phone_2', ->
+    it 'includes the parameters in the URL', ->
+      assert.include request.body, 'phone_2=512.555.5785'
+
+  context 'without a lead phone_3', ->
+    it 'doesnt include the parameters in the URL', ->
+      assert.notInclude request.body, 'phone_3'
 
 describe 'Claim Response', ->
   vars = {}

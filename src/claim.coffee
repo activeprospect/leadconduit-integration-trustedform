@@ -15,9 +15,10 @@ content = (vars) ->
     vars.scan_absence   = [ vars.scan_absence ] unless vars.scan_absence instanceof Array
     params.scan_absence = vars.scan_absence
 
-  if vars.fingerprint?
-    vars.fingerprint   = [ vars.fingerprint ] unless vars.fingerprint instanceof Array
-    params.fingerprint = vars.fingerprint
+  params.email   = vars.lead.email   if vars.lead.email?
+  params.phone_1 = vars.lead.phone_1 if vars.lead.phone_1?
+  params.phone_2 = vars.lead.phone_2 if vars.lead.phone_2?
+  params.phone_3 = vars.lead.phone_3 if vars.lead.phone_3?
 
   querystring.encode params
 
@@ -43,7 +44,10 @@ request.variables = ->
     { name: 'trustedform.api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
     { name: 'trustedform.scan', type: 'string', required: false, description: 'Required text in snapshot' },
     { name: 'trustedform.scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
-    { name: 'trustedform.fingerprint', type: 'string', required: false, description: 'Lead fingerprint information' }
+    { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' },
+    { name: 'lead.phone_1', type: 'string', required: false, description: 'Lead phone 1 that will be fingerprinted' },
+    { name: 'lead.phone_2', type: 'string', required: false, description: 'Lead phone 2 that will be fingerprinted' },
+    { name: 'lead.phone_3', type: 'string', required: false, description: 'Lead phone 3 that will be fingerprinted' },
   ]
 
 #
