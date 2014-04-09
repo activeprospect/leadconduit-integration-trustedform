@@ -1,6 +1,6 @@
 {
   "name": "leadconduit-trustedform",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {

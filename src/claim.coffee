@@ -35,8 +35,8 @@ request = (vars) ->
   url:     vars.trustedform.cert_url,
   method:  'POST',
   headers:
-    Accepts:        'application/json',
-    Authorization:  encodeAuthentication vars.api_key
+    Accept:        'application/json',
+    Authorization:  encodeAuthentication vars.trustedform.api_key
     'Content-Type': 'application/x-www-form-urlencoded'
   body: content vars
 

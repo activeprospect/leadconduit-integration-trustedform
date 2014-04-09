@@ -12,9 +12,9 @@ describe 'Claim Request', ->
   baseRequest = (extraKeys) ->
     hash =
       trustedform:
+        api_key:  apiKey
         cert_url: baseUrl
       claim_id: claimId
-      api_key:  apiKey
 
     for key, value of extraKeys
       hash[key] = value
@@ -38,7 +38,7 @@ describe 'Claim Request', ->
       assert.equal request.method, 'POST'
 
     it 'accepts JSON', ->
-      assert.equal request.headers.Accepts, 'application/json'
+      assert.equal request.headers.Accept, 'application/json'
 
     it 'has a form-urlencoded content-type', ->
       assert.equal request.headers['Content-Type'], 'application/x-www-form-urlencoded'
