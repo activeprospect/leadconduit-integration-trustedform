@@ -220,6 +220,8 @@ describe 'Claim Response', ->
               """
 
       expected =
+        outcome: 'success'
+        reason: null
         trustedform:
           user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
           browser: "Chrome 33.0.1750"
@@ -238,8 +240,6 @@ describe 'Claim Response', ->
           domain: "localhost"
           age_in_seconds: 172290
           created_at: "2014-04-02T21:24:22Z"
-          reason: null
-          outcome: 'success'
 
       response = integration.response vars, req, res
 
@@ -273,7 +273,7 @@ describe 'Claim Response', ->
 
         assert.deepEqual response, expected
 
-  it 'returns an error on non-201 response status', ->
+  it 'returns an error when cert not found', ->
     res  =
       status: 404
       headers:
@@ -288,3 +288,18 @@ describe 'Claim Response', ->
       reason:  'TrustedForm error - certificate not found (404)'
     response = integration.response(vars, req, res)
     assert.deepEqual response, expected
+
+
+  it 'returns an error when unauthorized', ->
+    res =
+      status: 401
+      headers:
+        'Content-Type': 'application/json'
+      body: null
+
+    expected =
+      outcome: 'error'
+      reason: 'TrustedForm error - undefined (401)'
+
+    response = integration.response(vars, req, res)
+    assert.deepEqual expected, response

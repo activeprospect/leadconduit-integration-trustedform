@@ -61,9 +61,11 @@ ageInSeconds = (date) ->
 response = (vars, req, res) ->
   event = JSON.parse(res.body)
 
-  if res.status == 201
-    hosted_url = event.cert.parent_location or event.cert.location
+  if res.status == 201 && event?.cert?
+    hosted_url = event.cert.parent_location ? event.cert.location
 
+    outcome: 'success'
+    reason: null
     trustedform:
       user_agent: event.cert.user_agent
       browser: event.cert.browser
@@ -79,35 +81,37 @@ response = (vars, req, res) ->
         time_zone: event.cert.geo.time_zone
       snapshot_url: event.cert.snapshot_url
       url: hosted_url
-      domain: url.parse(hosted_url).hostname
+      domain: url.parse(hosted_url).hostname if hosted_url?
       age_in_seconds: ageInSeconds event.cert.created_at
       created_at: event.cert.created_at
-      reason: null
-      outcome: 'success'
   else
     outcome: 'error'
-    reason:  "TrustedForm error - #{event.message} (#{res.status})"
+    reason:  "TrustedForm error - #{event?.message} (#{res.status})"
 
 response.variables = ->
   [
-    { name: 'trustedform.user_agent', type: 'string', required: 'true', description: 'Consumer browsers user-agent' },
-    { name: 'trustedform.browser', type: 'string', required: 'true', description: 'Human friendly version of user-agent' },
-    { name: 'trustedform.os', type: 'string', required: 'true', description: 'Human friendly version of the users operating system' },
-    { name: 'trustedform.ip', type: 'string', required: 'true', description: 'Consumers IP address' },
-    { name: 'trustedform.geo.city', type: 'string', required: 'true', description: 'City name' },
-    { name: 'trustedform.geo.country_code', type: 'string', required: 'true', description: 'Country code' },
-    { name: 'trustedform.geo.lat', type: 'number', required: 'true', description: 'Latitude' },
-    { name: 'trustedform.geo.lon', type: 'number', required: 'true', description: 'Longitude' },
-    { name: 'trustedform.geo.postal_code', type: 'string', required: 'true', description: 'Mailing address postal code' },
-    { name: 'trustedform.geo.state', type: 'string', required: 'true', description: 'State or province name' },
-    { name: 'trustedform.geo.time_zone', type: 'string', required: 'true', description: 'Time zone name' },
-    { name: 'trustedform.snapshot_url', type: 'string', required: 'true', description: 'URL of the snapshot of the offer page as seen by the user' },
-    { name: 'trustedform.url', type: 'string', required: 'true', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' },
-    { name: 'trustedform.domain', type: 'string', required: 'true', description: 'Domain of the url' },
-    { name: 'trustedform.age_in_seconds', type: 'number', required: 'true', description: 'Number of seconds since the certificate was created' },
-    { name: 'trustedform.created_at', type: 'time', required: 'true', description: 'Time the user loaded the form in UTC ISO8601 format' },
-    { name: 'trustedform.reason', type: 'string', required: 'true', description: 'Will be null for successful responses' },
-    { name: 'trustedform.outcome', type: 'string', required: 'true', description: 'Will be success for successful responses' },
+    { name: 'outcome', type: 'string', description: 'certificate claim result' }
+    { name: 'reason', type: 'string', description: 'in case of failure, the reason for failure' }
+    { trustedform:
+      [
+        { name: 'user_agent', type: 'string', required: 'true', description: 'Consumer browsers user-agent' },
+        { name: 'browser', type: 'string', required: 'true', description: 'Human friendly version of user-agent' },
+        { name: 'os', type: 'string', required: 'true', description: 'Human friendly version of the users operating system' },
+        { name: 'ip', type: 'string', required: 'true', description: 'Consumers IP address' },
+        { name: 'geo.city', type: 'string', required: 'true', description: 'City name' },
+        { name: 'geo.country_code', type: 'string', required: 'true', description: 'Country code' },
+        { name: 'geo.lat', type: 'number', required: 'true', description: 'Latitude' },
+        { name: 'geo.lon', type: 'number', required: 'true', description: 'Longitude' },
+        { name: 'geo.postal_code', type: 'string', required: 'true', description: 'Mailing address postal code' },
+        { name: 'geo.state', type: 'string', required: 'true', description: 'State or province name' },
+        { name: 'geo.time_zone', type: 'string', required: 'true', description: 'Time zone name' },
+        { name: 'snapshot_url', type: 'string', required: 'true', description: 'URL of the snapshot of the offer page as seen by the user' },
+        { name: 'url', type: 'string', required: 'true', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' },
+        { name: 'domain', type: 'string', required: 'true', description: 'Domain of the url' },
+        { name: 'age_in_seconds', type: 'number', required: 'true', description: 'Number of seconds since the certificate was created' },
+        { name: 'created_at', type: 'time', required: 'true', description: 'Time the user loaded the form in UTC ISO8601 format' },
+      ]
+    }
   ]
 
 #
