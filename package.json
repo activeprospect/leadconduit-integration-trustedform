@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/activeprospect/node-leadconduit-trustedform.git"
+    "url": "git://github.com/activeprospect/leadconduit-integration-trustedform.git"
   },
   "author": "Ben Hicks <ben@activeprospect.com>",
   "licenses": [
