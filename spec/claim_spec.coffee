@@ -222,24 +222,23 @@ describe 'Claim Response', ->
       expected =
         outcome: 'success'
         reason: null
-        trustedform:
-          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
-          browser: "Chrome 33.0.1750"
-          os: "Mac OS X 10.9.2"
-          ip: "127.0.0.1"
-          geo:
-            city: "Austin"
-            country_code: "US"
-            lat: 30.2966
-            lon: -97.7663
-            postal_code: "78703"
-            state: "TX"
-            time_zone: "America/Chicago"
-          snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
-          url: expectedLocation
-          domain: "localhost"
-          age_in_seconds: 172290
-          created_at: "2014-04-02T21:24:22Z"
+        user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
+        browser: "Chrome 33.0.1750"
+        os: "Mac OS X 10.9.2"
+        ip: "127.0.0.1"
+        geo:
+          city: "Austin"
+          country_code: "US"
+          lat: 30.2966
+          lon: -97.7663
+          postal_code: "78703"
+          state: "TX"
+          time_zone: "America/Chicago"
+        snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+        url: expectedLocation
+        domain: "localhost"
+        age_in_seconds: 172290
+        created_at: "2014-04-02T21:24:22Z"
 
       response = integration.response vars, req, res
 
@@ -268,8 +267,8 @@ describe 'Claim Response', ->
                            """
 
       it 'uses the parent location in the response', ->
-        expected.trustedform.url    = expectedLocation
-        expected.trustedform.domain = host
+        expected.url    = expectedLocation
+        expected.domain = host
 
         assert.deepEqual response, expected
 
