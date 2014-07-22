@@ -70,11 +70,11 @@ response = (vars, req, res) ->
     browser: event.cert.browser
     os: event.cert.operating_system
     ip: event.cert.ip
-    geo:
+    location:
       city: event.cert.geo.city
       country_code: event.cert.geo.country_code
-      lat: event.cert.geo.lat
-      lon: event.cert.geo.lon
+      latitude: event.cert.geo.lat
+      longitude: event.cert.geo.lon
       postal_code: event.cert.geo.postal_code
       state: event.cert.geo.state
       time_zone: event.cert.geo.time_zone
@@ -95,13 +95,13 @@ response.variables = ->
     { name: 'browser', type: 'string', required: 'true', description: 'Human friendly version of user-agent' }
     { name: 'os', type: 'string', required: 'true', description: 'Human friendly version of the users operating system' }
     { name: 'ip', type: 'string', required: 'true', description: 'Consumers IP address' }
-    { name: 'geo.city', type: 'string', required: 'true', description: 'City name' }
-    { name: 'geo.country_code', type: 'string', required: 'true', description: 'Country code' }
-    { name: 'geo.lat', type: 'number', required: 'true', description: 'Latitude' }
-    { name: 'geo.lon', type: 'number', required: 'true', description: 'Longitude' }
-    { name: 'geo.postal_code', type: 'string', required: 'true', description: 'Mailing address postal code' }
-    { name: 'geo.state', type: 'string', required: 'true', description: 'State or province name' }
-    { name: 'geo.time_zone', type: 'string', required: 'true', description: 'Time zone name' }
+    { name: 'location.city', type: 'string', required: 'true', description: 'City name' }
+    { name: 'location.country_code', type: 'string', required: 'true', description: 'Country code' }
+    { name: 'location.latitude', type: 'number', required: 'true', description: 'Latitude' }
+    { name: 'location.longitude', type: 'number', required: 'true', description: 'Longitude' }
+    { name: 'location.postal_code', type: 'string', required: 'true', description: 'Mailing address postal code' }
+    { name: 'location.state', type: 'string', required: 'true', description: 'State or province name' }
+    { name: 'location.time_zone', type: 'string', required: 'true', description: 'Time zone name' }
     { name: 'snapshot_url', type: 'string', required: 'true', description: 'URL of the snapshot of the offer page as seen by the user' }
     { name: 'url', type: 'string', required: 'true', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' }
     { name: 'domain', type: 'string', required: 'true', description: 'Domain of the url' }
