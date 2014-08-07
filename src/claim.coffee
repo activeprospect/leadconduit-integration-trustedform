@@ -30,7 +30,7 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  url:     vars.trustedform.cert_url,
+  url:     vars.lead.trustedform_cert_url,
   method:  'POST',
   headers:
     Accept:        'application/json',
@@ -40,7 +40,7 @@ request = (vars) ->
 
 request.variables = ->
   [
-    { name: 'trustedform.cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
+    { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
     { name: 'trustedform.api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
     { name: 'trustedform.scan', type: 'string', required: false, description: 'Required text in snapshot' },
     { name: 'trustedform.scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
