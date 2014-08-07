@@ -5,18 +5,17 @@ tk          = require('timekeeper')
 describe 'Claim Request', ->
   request     = null
   fullRequest = null
-  claimId     = '533c80270218239ec3000012'
   apiKey      = 'c9351ff49a8e38a23493c6b7328c7629'
-  baseUrl     = "https://cert.trustedform.com/#{claimId}"
+  trustedform_cert_url = 'https://cert.trustedform.com/533c80270218239ec3000012'
 
   baseRequest = (extraKeys) ->
     hash =
       trustedform:
         api_key:  apiKey
-        cert_url: baseUrl
-      claim_id: claimId
+      #claim_id: claimId
       lead:
         id: 'lead_id_123',
+        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
       source:
         name: 'Foo, Inc.'
 
@@ -33,7 +32,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest()
 
     it 'uses the claim id in the url', ->
-      assert.equal request.url, baseUrl
+      assert.equal request.url, trustedform_cert_url
 
     it 'uses the api_key in the auth header', ->
       assert.equal request.headers.Authorization, 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5'
