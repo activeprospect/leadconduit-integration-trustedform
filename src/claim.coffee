@@ -79,7 +79,7 @@ response = (vars, req, res) ->
       state: event.cert.geo.state
       time_zone: event.cert.geo.time_zone
     snapshot_url: event.cert.snapshot_url
-    masked_cert_url: event.cert.masked_cert_url
+    masked_cert_url: event.masked_cert_url
     masked: event.masked
     url: hosted_url
     domain: url.parse(hosted_url).hostname if hosted_url?
