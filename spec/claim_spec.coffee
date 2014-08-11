@@ -10,9 +10,8 @@ describe 'Claim Request', ->
 
   baseRequest = (extraKeys) ->
     hash =
-      trustedform:
+      activeprospect:
         api_key:  apiKey
-      #claim_id: claimId
       lead:
         id: 'lead_id_123',
         trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'

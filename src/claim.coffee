@@ -7,11 +7,11 @@ content = (vars) ->
     vendor: vars.source.name
   }
 
-  if vars.trustedform.scan?
+  if vars.trustedform?.scan?
     vars.trustedform.scan   = [ vars.trustedform.scan ] unless vars.trustedform.scan instanceof Array
     params.scan = vars.trustedform.scan
 
-  if vars.trustedform.scan_absence?
+  if vars.trustedform?.scan_absence?
     vars.trustedform.scan_absence   = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
     params.scan_absence = vars.trustedform.scan_absence
 
@@ -34,14 +34,13 @@ request = (vars) ->
   method:  'POST',
   headers:
     Accept:        'application/json',
-    Authorization:  encodeAuthentication vars.trustedform.api_key
+    Authorization:  encodeAuthentication vars.activeprospect.api_key
     'Content-Type': 'application/x-www-form-urlencoded'
   body: content vars
 
 request.variables = ->
   [
     { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
-    { name: 'trustedform.api_key', type: 'string', required: true, description: 'TrustedForm API Key' },
     { name: 'trustedform.scan', type: 'string', required: false, description: 'Required text in snapshot' },
     { name: 'trustedform.scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
     { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' },
