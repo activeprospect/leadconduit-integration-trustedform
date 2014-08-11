@@ -200,6 +200,8 @@ describe 'Claim Response', ->
                   "operating_system": "Mac OS X 10.9.2",
                   "parent_location": #{parentLocation},
                   "snapshot_url": "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html",
+                  "masked_cert_url": "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4",
+                  "masked": false,
                   "token": "0dcf20941b6b4f196331ff7ae1ca534befa269dd",
                   "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
                 },
@@ -211,6 +213,8 @@ describe 'Claim Response', ->
                 },
                 "id": "533c80270218239ec3000012",
                 "page_id": "533c76bd0218239ec3000007",
+                "masked_cert_url": "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4",
+                "masked": false,
                 "reference": null,
                 "scans": null,
                 "vendor": null,
@@ -234,6 +238,8 @@ describe 'Claim Response', ->
           state: "TX"
           time_zone: "America/Chicago"
         snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+        masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
+        masked: false
         url: expectedLocation
         domain: "localhost"
         age_in_seconds: 172290

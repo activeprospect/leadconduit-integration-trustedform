@@ -79,6 +79,8 @@ response = (vars, req, res) ->
       state: event.cert.geo.state
       time_zone: event.cert.geo.time_zone
     snapshot_url: event.cert.snapshot_url
+    masked_cert_url: event.cert.masked_cert_url
+    masked: event.masked
     url: hosted_url
     domain: url.parse(hosted_url).hostname if hosted_url?
     age_in_seconds: ageInSeconds event.cert.created_at
@@ -103,10 +105,12 @@ response.variables = ->
     { name: 'geo.state', type: 'string', required: 'true', description: 'State or province name' }
     { name: 'geo.time_zone', type: 'string', required: 'true', description: 'Time zone name' }
     { name: 'snapshot_url', type: 'string', required: 'true', description: 'URL of the snapshot of the offer page as seen by the user' }
+    { name: 'masked_cert_url', type: 'string', required: 'true', description: 'The certificate url that masks the lead source url and snapshot' }
     { name: 'url', type: 'string', required: 'true', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' }
     { name: 'domain', type: 'string', required: 'true', description: 'Domain of the url' }
     { name: 'age_in_seconds', type: 'number', required: 'true', description: 'Number of seconds since the certificate was created' }
     { name: 'created_at', type: 'time', required: 'true', description: 'Time the user loaded the form in UTC ISO8601 format' }
+    { name: 'masked', type: 'boolean', required: 'true', description: 'Whether the cert being claimed is masked'}
   ]
 
 #
