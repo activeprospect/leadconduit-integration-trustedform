@@ -226,11 +226,11 @@ describe 'Claim Response', ->
         browser: "Chrome 33.0.1750"
         os: "Mac OS X 10.9.2"
         ip: "127.0.0.1"
-        geo:
+        location:
           city: "Austin"
           country_code: "US"
-          lat: 30.2966
-          lon: -97.7663
+          latitude: 30.2966
+          longitude: -97.7663
           postal_code: "78703"
           state: "TX"
           time_zone: "America/Chicago"
