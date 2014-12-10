@@ -50,6 +50,16 @@ request.variables = ->
   ]
 
 #
+# Validate Function ------------------------------------------------------
+#
+validate = (vars) ->
+  return 'TrustedForm cert URL must not be blank' unless vars.lead.trustedform_cert_url
+  # https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985
+  tf_regex = /https:\/\/cert.trustedform.com\/[a-z0-9]{40}/
+  return 'TrustedForm cert URL must be valid' unless tf_regex.test(vars.lead.trustedform_cert_url)
+
+
+#
 # Response Function ------------------------------------------------------
 #
 
@@ -117,5 +127,6 @@ response.variables = ->
 #
 
 module.exports =
+  validate: validate,
   request:  request,
   response: response

@@ -2,6 +2,25 @@ assert      = require('chai').assert
 integration = require('../src/claim')
 tk          = require('timekeeper')
 
+describe 'Cert URL validate', ->
+
+  it 'should error on undefined cert url', ->
+    error = integration.validate(lead: {})
+    assert.equal error, 'TrustedForm cert URL must not be blank'
+
+  it 'should error on null cert url', ->
+    error = integration.validate(lead: { trustedform_cert_url: null })
+    assert.equal error, 'TrustedForm cert URL must not be blank'
+
+  it 'should error on invalid cert url', ->
+    error = integration.validate(lead: { trustedform_cert_url: 'http://someothersite.com' })
+    assert.equal error, 'TrustedForm cert URL must be valid'
+
+  it 'should not error when cert url is valid', ->
+    error = integration.validate(lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' })
+    assert.isUndefined error
+
+
 describe 'Claim Request', ->
   request     = null
   fullRequest = null
