@@ -15,10 +15,10 @@ content = (vars) ->
     vars.trustedform.scan_absence   = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
     params.scan_absence = vars.trustedform.scan_absence
 
-  params.email   = vars.lead.email   if vars.lead.email?
-  params.phone_1 = vars.lead.phone_1 if vars.lead.phone_1?
-  params.phone_2 = vars.lead.phone_2 if vars.lead.phone_2?
-  params.phone_3 = vars.lead.phone_3 if vars.lead.phone_3?
+  params.email   = vars.lead.email.toString()   if vars.lead.email?
+  params.phone_1 = vars.lead.phone_1.toString() if vars.lead.phone_1?
+  params.phone_2 = vars.lead.phone_2.toString() if vars.lead.phone_2?
+  params.phone_3 = vars.lead.phone_3.toString() if vars.lead.phone_3?
 
   querystring.encode params
 

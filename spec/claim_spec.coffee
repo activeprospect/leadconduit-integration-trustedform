@@ -1,6 +1,8 @@
 assert      = require('chai').assert
 integration = require('../src/claim')
 tk          = require('timekeeper')
+emailtype   = require('leadconduit-types').email
+phonetype   = require('leadconduit-types').phone
 
 describe 'Cert URL validate', ->
 
@@ -124,7 +126,7 @@ describe 'Claim Request', ->
       assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
 
   context 'with a lead email', ->
-    email = 'TomJones@vegas.com'
+    email = emailtype.parse('TomJones@vegas.com')
 
     before ->
       fullRequest = baseRequest lead:
@@ -134,7 +136,7 @@ describe 'Claim Request', ->
       assert.include request.body, "email=#{encodeURIComponent email}"
 
   context 'with a lead phone_1', ->
-    phone = '512-789-1111'
+    phone = phonetype.parse('512-789-1111')
 
     before ->
       fullRequest = baseRequest lead:
@@ -144,7 +146,7 @@ describe 'Claim Request', ->
       assert.include request.body, "phone_1=#{phone}"
 
   context 'with a lead phone_2', ->
-    phone = '512.555.5785'
+    phone = phonetype.parse('512.555.5785')
 
     before ->
       fullRequest = baseRequest lead:
