@@ -27,6 +27,7 @@
     "coffee-script": ">= 1.7.0",
     "mocha": ">= 1.17.0",
     "chai": ">= 1.9.0",
-    "timekeeper": ">= 0.0.4"
+    "timekeeper": ">= 0.0.4",
+    "leadconduit-types": ">= 0.2"
   }
 }
