@@ -11,7 +11,10 @@
     "type": "git",
     "url": "git://github.com/activeprospect/leadconduit-integration-trustedform.git"
   },
-  "author": "Ben Hicks <ben@activeprospect.com>",
+  "contributors": [
+    "Ben Hicks <ben@activeprospect.com>",
+    "Chris Grayson <chris@activeprospect.com>"
+  ],
   "licenses": [
     {
       "type": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
@@ -19,15 +22,15 @@
     }
   ],
   "engines": {
-    "node": ">=0.8.1"
+    "node": "^0.10.32"
   },
   "dependencies": {
   },
   "devDependencies": {
-    "coffee-script": ">= 1.7.0",
-    "mocha": ">= 1.17.0",
-    "chai": ">= 1.9.0",
-    "timekeeper": ">= 0.0.4",
-    "leadconduit-types": ">= 0.2"
+    "coffee-script": "^1.7.0",
+    "mocha": "^2.1.0",
+    "chai": "^1.10.0",
+    "timekeeper": "^0.0",
+    "leadconduit-types": "^0.3"
   }
 }
