@@ -196,6 +196,49 @@ describe 'Claim Response', ->
 
       assert.deepEqual getResponse({parentLocation: url}), expected({url: url, domain: host})
 
+
+    describe 'scan results parsing', ->
+
+      it 'captures scans_found', ->
+        scanText1 = "some disclosure text"
+        response = getResponse({scans: { found: [scanText1], not_found: [] } })
+        assert.equal response.scans.found.length, 1
+        assert.equal response.scans.found[0], scanText1
+
+        scanText2 = "other disclosure text"
+        response = getResponse({scans: { found: [scanText1, scanText2], not_found: [] } })
+        assert.equal response.scans.found.length, 2
+        assert.equal response.scans.found[0], scanText1
+        assert.equal response.scans.found[1], scanText2
+
+      it 'captures scans_not_found', ->
+        response = getResponse({scans: { found: [], not_found: ["free iPod from Obama!"] } })
+        assert.equal response.scans.not_found[0], "free iPod from Obama!"
+
+      it 'sets failure outcome and reason when required scan is missing', ->
+        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text"] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')"
+
+      it 'correctly formats reason when multiple required scans are missing', ->
+        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text", "other disclosure text"] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')"
+
+      it 'sets failure outcome and reason when forbidden scan is present', ->
+        response = getResponse({warnings: ["string found in snapshot"], scans: { found: ["free iPod from Obama!"], not_found: [] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
+
+      it 'sets failure outcome and reason when both required scan is missing and forbidden scan is present', ->
+        response = getResponse({
+          warnings: ["string not found in snapshot", "string found in snapshot"],
+          scans: { found: ["free iPod from Obama!"], not_found: ["some disclosure text"] }
+        })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
+
+
   it 'returns an error when cert not found', ->
     res  =
       status: 404
@@ -262,7 +305,7 @@ responseBody = (vars = {}) ->
       location: vars.location || null
       operating_system: "Mac OS X 10.9.2"
       parent_location: vars.parentLocation || null
-      snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+      snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
       token: "0dcf20941b6b4f196331ff7ae1ca534befa269dd"
       user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
     created_at: "2014-04-02T21:24:55Z"
@@ -277,6 +320,7 @@ responseBody = (vars = {}) ->
     reference: null
     scans: vars.scans || []
     vendor: null
+    warnings: vars.warnings || []
 
   JSON.stringify(response)
 
@@ -296,10 +340,13 @@ expected = (vars = {}) ->
     postal_code: "78703"
     state: "TX"
     time_zone: "America/Chicago"
-  snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+  snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
   masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
   masked: false
   url: vars.url || null
-  domain: "#{vars.domain || "localhost"}"
+  domain: vars.domain || "localhost"
   age_in_seconds: 172290
   created_at: "2014-04-02T21:24:22Z"
+  scans:
+    found: []
+    not_found: []

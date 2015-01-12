@@ -67,59 +67,86 @@ ageInSeconds = (date) ->
   difference = Date.now() - new Date(date)
   Math.floor difference / 1000
 
+
+formatScanReason = (textArray) ->
+  # sort text items for uniformity of reason across leads, and (arbitrary) limit in case of long scan text
+  "#{textArray.length}: '#{textArray.sort().join(', ').substr(0, 255)}'"
+
+
 response = (vars, req, res) ->
   event = JSON.parse(res.body)
 
   if res.status == 201 && event?.cert?
     hosted_url = event.cert.parent_location ? event.cert.location
 
-    outcome: 'success'
-    reason: null
-    user_agent: event.cert.user_agent
-    browser: event.cert.browser
-    os: event.cert.operating_system
-    ip: event.cert.ip
-    location:
-      city: event.cert.geo.city
-      country_code: event.cert.geo.country_code
-      latitude: event.cert.geo.lat
-      longitude: event.cert.geo.lon
-      postal_code: event.cert.geo.postal_code
-      state: event.cert.geo.state
-      time_zone: event.cert.geo.time_zone
-    snapshot_url: event.cert.snapshot_url
-    masked_cert_url: event.masked_cert_url
-    masked: event.masked
-    url: hosted_url
-    domain: url.parse(hosted_url).hostname if hosted_url?
-    age_in_seconds: ageInSeconds event.cert.created_at
-    created_at: event.cert.created_at
+    appended =
+      outcome: 'success'
+      reason: null
+      user_agent: event.cert.user_agent
+      browser: event.cert.browser
+      os: event.cert.operating_system
+      ip: event.cert.ip
+      location:
+        city: event.cert.geo.city
+        country_code: event.cert.geo.country_code
+        latitude: event.cert.geo.lat
+        longitude: event.cert.geo.lon
+        postal_code: event.cert.geo.postal_code
+        state: event.cert.geo.state
+        time_zone: event.cert.geo.time_zone
+      snapshot_url: event.cert.snapshot_url
+      masked_cert_url: event.masked_cert_url
+      masked: event.masked
+      url: hosted_url
+      domain: url.parse(hosted_url).hostname if hosted_url?
+      age_in_seconds: ageInSeconds event.cert.created_at
+      created_at: event.cert.created_at
+      scans:
+        found: event.scans.found || []
+        not_found: event.scans.not_found || []
+
+    if event.warnings?
+      if event.warnings.some((warning) -> warning == 'string not found in snapshot')
+        appended.outcome = 'failure'
+        appended.reason  = "Required scan text not found in TrustedForm snapshot (missing #{formatScanReason(event.scans.not_found)})"
+
+      if event.warnings.some((warning) -> warning == 'string found in snapshot')
+        appended.outcome = 'failure'
+        appended.reason  = if appended.reason? then "#{appended.reason}; " else ""
+        appended.reason += "Forbidden scan text found in TrustedForm snapshot (found #{formatScanReason(event.scans.found)})"
+
   else
-    outcome: 'error'
-    reason:  "TrustedForm error - #{event?.message} (#{res.status})"
+    appended =
+      outcome: 'error'
+      reason:  "TrustedForm error - #{event?.message} (#{res.status})"
+
+  return appended
+
 
 response.variables = ->
   [
     { name: 'outcome', type: 'string', description: 'certificate claim result' }
     { name: 'reason', type: 'string', description: 'in case of failure, the reason for failure' }
-    { name: 'user_agent', type: 'string', required: 'true', description: 'Consumer browsers user-agent' }
-    { name: 'browser', type: 'string', required: 'true', description: 'Human friendly version of user-agent' }
-    { name: 'os', type: 'string', required: 'true', description: 'Human friendly version of the users operating system' }
-    { name: 'ip', type: 'string', required: 'true', description: 'Consumers IP address' }
-    { name: 'location.city', type: 'string', required: 'true', description: 'City name' }
-    { name: 'location.country_code', type: 'string', required: 'true', description: 'Country code' }
-    { name: 'location.latitude', type: 'number', required: 'true', description: 'Latitude' }
-    { name: 'location.longitude', type: 'number', required: 'true', description: 'Longitude' }
-    { name: 'location.postal_code', type: 'string', required: 'true', description: 'Mailing address postal code' }
-    { name: 'location.state', type: 'string', required: 'true', description: 'State or province name' }
-    { name: 'location.time_zone', type: 'string', required: 'true', description: 'Time zone name' }
-    { name: 'snapshot_url', type: 'string', required: 'true', description: 'URL of the snapshot of the offer page as seen by the user' }
-    { name: 'masked_cert_url', type: 'string', required: 'true', description: 'The certificate url that masks the lead source url and snapshot' }
-    { name: 'url', type: 'string', required: 'true', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' }
-    { name: 'domain', type: 'string', required: 'true', description: 'Domain of the url' }
-    { name: 'age_in_seconds', type: 'number', required: 'true', description: 'Number of seconds since the certificate was created' }
-    { name: 'created_at', type: 'time', required: 'true', description: 'Time the user loaded the form in UTC ISO8601 format' }
-    { name: 'masked', type: 'boolean', required: 'true', description: 'Whether the cert being claimed is masked'}
+    { name: 'user_agent', type: 'string', description: 'Consumer browsers user-agent' }
+    { name: 'browser', type: 'string', description: 'Human friendly version of user-agent' }
+    { name: 'os', type: 'string', description: 'Human friendly version of the users operating system' }
+    { name: 'ip', type: 'string', description: 'Consumers IP address' }
+    { name: 'location.city', type: 'string', description: 'City name' }
+    { name: 'location.country_code', type: 'string', description: 'Country code' }
+    { name: 'location.latitude', type: 'number', description: 'Latitude' }
+    { name: 'location.longitude', type: 'number', description: 'Longitude' }
+    { name: 'location.postal_code', type: 'string', description: 'Mailing address postal code' }
+    { name: 'location.state', type: 'string', description: 'State or province name' }
+    { name: 'location.time_zone', type: 'string', description: 'Time zone name' }
+    { name: 'snapshot_url', type: 'string', description: 'URL of the snapshot of the offer page as seen by the user' }
+    { name: 'masked_cert_url', type: 'string', description: 'The certificate url that masks the lead source url and snapshot' }
+    { name: 'url', type: 'string', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' }
+    { name: 'domain', type: 'string', description: 'Domain of the url' }
+    { name: 'age_in_seconds', type: 'number', description: 'Number of seconds since the certificate was created' }
+    { name: 'created_at', type: 'time', description: 'Time the user loaded the form in UTC ISO8601 format' }
+    { name: 'masked', type: 'boolean', description: 'Whether the cert being claimed is masked'}
+    { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
+    { name: 'scans.not_found', type: 'array', description: 'Required scan terms not found in the claim'}
   ]
 
 #
