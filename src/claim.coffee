@@ -7,13 +7,13 @@ content = (vars) ->
     vendor: vars.source.name
   }
 
-  if vars.trustedform?.scan?
-    vars.trustedform.scan   = [ vars.trustedform.scan ] unless vars.trustedform.scan instanceof Array
-    params.scan = vars.trustedform.scan
+  if vars.trustedform?.scan_required_text?
+    vars.trustedform.scan_required_text = [ vars.trustedform.scan_required_text ] unless vars.trustedform.scan_required_text instanceof Array
+    params.scan = vars.trustedform.scan_required_text
 
-  if vars.trustedform?.scan_absence?
-    vars.trustedform.scan_absence = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
-    params['scan!'] = vars.trustedform.scan_absence
+  if vars.trustedform?.scan_forbidden_text?
+    vars.trustedform.scan_forbidden_text = [ vars.trustedform.scan_forbidden_text ] unless vars.trustedform.scan_forbidden_text instanceof Array
+    params['scan!'] = vars.trustedform.scan_forbidden_text
 
   params.email   = vars.lead.email.toString()   if vars.lead.email?
   params.phone_1 = vars.lead.phone_1.toString() if vars.lead.phone_1?
@@ -41,8 +41,8 @@ request = (vars) ->
 request.variables = ->
   [
     { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
-    { name: 'trustedform.scan', type: 'string', required: false, description: 'Required text in snapshot' },
-    { name: 'trustedform.scan_absence', type: 'string', required: false, description: 'Forbidden text in snapshot' },
+    { name: 'trustedform.scan_required_text', type: 'string', required: false, description: 'Required text to search snapshot for' },
+    { name: 'trustedform.scan_forbidden_text', type: 'string', required: false, description: 'Forbidden text to search snapshot for' },
     { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' },
     { name: 'lead.phone_1', type: 'string', required: false, description: 'Lead phone 1 that will be fingerprinted' },
     { name: 'lead.phone_2', type: 'string', required: false, description: 'Lead phone 2 that will be fingerprinted' },
