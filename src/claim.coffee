@@ -12,8 +12,8 @@ content = (vars) ->
     params.scan = vars.trustedform.scan
 
   if vars.trustedform?.scan_absence?
-    vars.trustedform.scan_absence   = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
-    params.scan_absence = vars.trustedform.scan_absence
+    vars.trustedform.scan_absence = [ vars.trustedform.scan_absence ] unless vars.trustedform.scan_absence instanceof Array
+    params['scan!'] = vars.trustedform.scan_absence
 
   params.email   = vars.lead.email.toString()   if vars.lead.email?
   params.phone_1 = vars.lead.phone_1.toString() if vars.lead.phone_1?

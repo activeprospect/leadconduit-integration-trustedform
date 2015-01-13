@@ -77,7 +77,7 @@ describe 'Claim Request', ->
 
     before ->
       fullRequest = baseRequest trustedform:
-                                  scan: scan
+                                  scan_required: scan
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{scan}"
@@ -88,7 +88,7 @@ describe 'Claim Request', ->
 
     before ->
       fullRequest = baseRequest trustedform:
-                                  scan: [ first, last ]
+                                  scan_required: [ first, last ]
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{first}&scan=#{last}"
@@ -101,7 +101,7 @@ describe 'Claim Request', ->
                                   scan_absence: scan
 
     it 'includes the parameter in the URL', ->
-      assert.include request.body, "scan_absence=#{scan}"
+      assert.include request.body, "scan!=#{scan}"
 
   context 'with multiple scan_absence parameters', ->
     first = 'first'
@@ -112,7 +112,7 @@ describe 'Claim Request', ->
                                   scan_absence: [ first, last ]
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan_absence=#{first}&scan_absence=#{last}"
+      assert.include request.body, "scan!=#{first}&scan!=#{last}"
 
   context 'with multiple parameters', ->
     scan         = 'fooscan'
@@ -120,10 +120,10 @@ describe 'Claim Request', ->
 
     before ->
       fullRequest = baseRequest trustedform:
-                                  scan: scan, scan_absence: scan_absence
+                                  scan_required: scan, scan_absence: scan_absence
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
+      assert.include request.body, "scan=#{scan}&scan!=#{scan_absence}"
 
   context 'with a lead email', ->
     email = emailtype.parse('TomJones@vegas.com')
