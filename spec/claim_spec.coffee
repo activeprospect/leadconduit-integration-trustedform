@@ -166,134 +166,78 @@ describe 'Claim Request', ->
       assert.notInclude request.body, 'phone_3'
 
 describe 'Claim Response', ->
-  vars = {}
-  req  = {}
+
+  getResponse = (vars) ->
+    res =
+      status: 201,
+      headers:
+        'Content-Type': 'application/json'
+      body: responseBody(vars)
+
+    integration.response({}, {}, res)
+
 
   context 'a successful response', ->
-    location         = null
-    parentLocation   = null
-    expectedLocation = null
-    expected         = null
-    response         = null
 
     beforeEach ->
       tk.freeze new Date 1396646152539
 
-      res =
-        status: 201,
-        headers:
-          'Content-Type': 'application/json'
-        body: """
-              {
-                "cert": {
-                  "browser": "Chrome 33.0.1750",
-                  "claims": [
-                    {
-                      "created_at": "2014-04-02T21:24:55Z",
-                      "expires_at": "2019-04-01T21:24:55Z",
-                      "fingerprints": {
-                        "matching": [],
-                        "non_matching": []
-                      },
-                      "id": "533c80270218239ec3000012",
-                      "page_id": "533c76bd0218239ec3000007",
-                      "reference": null,
-                      "scans": null,
-                      "vendor": null,
-                      "warnings": []
-                    }
-                  ],
-                  "created_at": "2014-04-02T21:24:22Z",
-                  "expires_at": "2014-04-05T21:24:22Z",
-                  "framed": false,
-                  "geo": {
-                    "city": "Austin",
-                    "country_code": "US",
-                    "lat": 30.2966,
-                    "lon": -97.7663,
-                    "postal_code": "78703",
-                    "state": "TX",
-                    "time_zone": "America/Chicago"
-                  },
-                  "ip": "127.0.0.1",
-                  "location": #{location},
-                  "operating_system": "Mac OS X 10.9.2",
-                  "parent_location": #{parentLocation},
-                  "snapshot_url": "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html",
-                  "token": "0dcf20941b6b4f196331ff7ae1ca534befa269dd",
-                  "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
-                },
-                "created_at": "2014-04-02T21:24:55Z",
-                "expires_at": "2019-04-01T21:24:55Z",
-                "fingerprints": {
-                  "matching": [],
-                  "non_matching": []
-                },
-                "id": "533c80270218239ec3000012",
-                "page_id": "533c76bd0218239ec3000007",
-                "masked_cert_url": "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4",
-                "masked": false,
-                "reference": null,
-                "scans": null,
-                "vendor": null,
-                "warnings": []
-              }
-              """
-
-      expected =
-        outcome: 'success'
-        reason: null
-        user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
-        browser: "Chrome 33.0.1750"
-        os: "Mac OS X 10.9.2"
-        ip: "127.0.0.1"
-        location:
-          city: "Austin"
-          country_code: "US"
-          latitude: 30.2966
-          longitude: -97.7663
-          postal_code: "78703"
-          state: "TX"
-          time_zone: "America/Chicago"
-        snapshot_url: "http://snapshots.trustedform.dev/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
-        masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
-        masked: false
-        url: expectedLocation
-        domain: "localhost"
-        age_in_seconds: 172290
-        created_at: "2014-04-02T21:24:22Z"
-
-      response = integration.response vars, req, res
-
     afterEach ->
       tk.reset()
 
-    context 'without a parent location', ->
-      before ->
-        expectedLocation = 'http://localhost:81/leadconduit_iframe.html'
-        parentLocation   = null
-        location         = """
-                           "#{expectedLocation}"
-                           """
+    it 'uses the location when there is no parent location', ->
+      url = 'http://localhost:81/leadconduit_iframe.html'
+      assert.deepEqual getResponse({location: url}), expected({url: url})
 
-      it 'uses the location in the response', ->
-        assert.deepEqual response, expected
 
-    context 'with a parent location', ->
+    it 'uses the parent location when it is present', ->
       host = 'yourhost'
+      url = "http://#{host}:81/my_iframe.html"
 
-      before ->
-        expectedLocation = "http://#{host}:81/my_iframe.html"
-        location         = null
-        parentLocation   = """
-                           "#{expectedLocation}"
-                           """
+      assert.deepEqual getResponse({parentLocation: url}), expected({url: url, domain: host})
 
-      it 'uses the parent location in the response', ->
-        expected.url    = expectedLocation
-        expected.domain = host
 
-        assert.deepEqual response, expected
+    describe 'scan results parsing', ->
+
+      it 'captures scans_found', ->
+        scanText1 = "some disclosure text"
+        response = getResponse({scans: { found: [scanText1], not_found: [] } })
+        assert.equal response.scans.found.length, 1
+        assert.equal response.scans.found[0], scanText1
+
+        scanText2 = "other disclosure text"
+        response = getResponse({scans: { found: [scanText1, scanText2], not_found: [] } })
+        assert.equal response.scans.found.length, 2
+        assert.equal response.scans.found[0], scanText1
+        assert.equal response.scans.found[1], scanText2
+
+      it 'captures scans_not_found', ->
+        response = getResponse({scans: { found: [], not_found: ["free iPod from Obama!"] } })
+        assert.equal response.scans.not_found[0], "free iPod from Obama!"
+
+      it 'sets failure outcome and reason when required scan is missing', ->
+        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text"] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')"
+
+      it 'correctly formats reason when multiple required scans are missing', ->
+        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text", "other disclosure text"] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')"
+
+      it 'sets failure outcome and reason when forbidden scan is present', ->
+        response = getResponse({warnings: ["string found in snapshot"], scans: { found: ["free iPod from Obama!"], not_found: [] } })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
+
+      it 'sets failure outcome and reason when both required scan is missing and forbidden scan is present', ->
+        response = getResponse({
+          warnings: ["string not found in snapshot", "string found in snapshot"],
+          scans: { found: ["free iPod from Obama!"], not_found: ["some disclosure text"] }
+        })
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
+
 
   it 'returns an error when cert not found', ->
     res  =
@@ -308,7 +252,7 @@ describe 'Claim Response', ->
     expected =
       outcome: 'error'
       reason:  'TrustedForm error - certificate not found (404)'
-    response = integration.response(vars, req, res)
+    response = integration.response({}, {}, res)
     assert.deepEqual response, expected
 
 
@@ -323,5 +267,86 @@ describe 'Claim Response', ->
       outcome: 'error'
       reason: 'TrustedForm error - undefined (401)'
 
-    response = integration.response(vars, req, res)
+    response = integration.response({}, {}, res)
     assert.deepEqual expected, response
+
+
+responseBody = (vars = {}) ->
+  response =
+    cert:
+      browser: "Chrome 33.0.1750"
+      claims: [
+        {
+          created_at: "2014-04-02T21:24:55Z"
+          expires_at: "2019-04-01T21:24:55Z"
+          fingerprints:
+            matching: []
+            non_matching: []
+          id: "533c80270218239ec3000012"
+          page_id: "533c76bd0218239ec3000007"
+          reference: null
+          scans: null
+          vendor: null
+          warnings: []
+        }
+      ]
+      created_at: "2014-04-02T21:24:22Z"
+      expires_at: "2014-04-05T21:24:22Z"
+      framed: false
+      geo:
+        city: "Austin"
+        country_code: "US"
+        lat: 30.2966
+        lon: -97.7663
+        postal_code: "78703"
+        state: "TX"
+        time_zone: "America/Chicago"
+      ip: "127.0.0.1"
+      location: vars.location || null
+      operating_system: "Mac OS X 10.9.2"
+      parent_location: vars.parentLocation || null
+      snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+      token: "0dcf20941b6b4f196331ff7ae1ca534befa269dd"
+      user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
+    created_at: "2014-04-02T21:24:55Z"
+    expires_at: "2019-04-01T21:24:55Z"
+    fingerprints:
+      matching: []
+      non_matching: []
+    id: "533c80270218239ec3000012"
+    page_id: "533c76bd0218239ec3000007"
+    masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
+    masked: false
+    reference: null
+    scans: vars.scans || []
+    vendor: null
+    warnings: vars.warnings || []
+
+  JSON.stringify(response)
+
+
+expected = (vars = {}) ->
+  outcome: 'success'
+  reason: null
+  user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36"
+  browser: "Chrome 33.0.1750"
+  os: "Mac OS X 10.9.2"
+  ip: "127.0.0.1"
+  location:
+    city: "Austin"
+    country_code: "US"
+    latitude: 30.2966
+    longitude: -97.7663
+    postal_code: "78703"
+    state: "TX"
+    time_zone: "America/Chicago"
+  snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
+  masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
+  masked: false
+  url: vars.url || null
+  domain: vars.domain || "localhost"
+  age_in_seconds: 172290
+  created_at: "2014-04-02T21:24:22Z"
+  scans:
+    found: []
+    not_found: []
