@@ -76,8 +76,7 @@ describe 'Claim Request', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest trustedform:
-                                  scan: scan
+      fullRequest = baseRequest { trustedform: { scan_required_text: scan }}
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{scan}"
@@ -87,50 +86,45 @@ describe 'Claim Request', ->
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest trustedform:
-                                  scan: [ first, last ]
+      fullRequest = baseRequest { trustedform: { scan_required_text: [ first, last ] }}
 
     it 'includes the parameter in the URL', ->
       assert.include request.body, "scan=#{first}&scan=#{last}"
 
-  context 'with a scan_absence parameter', ->
+  context 'with a scan_forbidden_text parameter', ->
     scan = 'string'
 
     before ->
-      fullRequest = baseRequest trustedform:
-                                  scan_absence: scan
+      fullRequest = baseRequest { trustedform: { scan_forbidden_text: scan }}
 
     it 'includes the parameter in the URL', ->
-      assert.include request.body, "scan_absence=#{scan}"
+      assert.include request.body, "scan!=#{scan}"
 
-  context 'with multiple scan_absence parameters', ->
+  context 'with multiple scan_forbidden_text parameters', ->
     first = 'first'
     last  = 'last'
 
     before ->
-      fullRequest = baseRequest trustedform:
-                                  scan_absence: [ first, last ]
+      fullRequest = baseRequest { trustedform: { scan_forbidden_text: [ first, last ] }}
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan_absence=#{first}&scan_absence=#{last}"
+      assert.include request.body, "scan!=#{first}&scan!=#{last}"
 
   context 'with multiple parameters', ->
-    scan         = 'fooscan'
-    scan_absence = 'barscan'
+    scan          = 'fooscan'
+    scanForbidden = 'barscan'
 
     before ->
-      fullRequest = baseRequest trustedform:
-                                  scan: scan, scan_absence: scan_absence
+      fullRequest = baseRequest { trustedform: { scan_required_text: scan, scan_forbidden_text: scanForbidden }}
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan=#{scan}&scan_absence=#{scan_absence}"
+      assert.include request.body, "scan=#{scan}&scan!=#{scanForbidden}"
 
   context 'with a lead email', ->
     email = emailtype.parse('TomJones@vegas.com')
 
     before ->
-      fullRequest = baseRequest lead:
-                                  email: email
+      fullRequest = baseRequest { lead: { email: email }}
 
     it 'includes the parameters in the URL', ->
       assert.include request.body, "email=#{encodeURIComponent email}"
@@ -139,8 +133,7 @@ describe 'Claim Request', ->
     phone = phonetype.parse('512-789-1111')
 
     before ->
-      fullRequest = baseRequest lead:
-                                  phone_1: phone
+      fullRequest = baseRequest { lead: { phone_1: phone }}
 
     it 'includes the parameters in the URL', ->
       assert.include request.body, "phone_1=#{phone}"
@@ -149,8 +142,7 @@ describe 'Claim Request', ->
     phone = phonetype.parse('512.555.5785')
 
     before ->
-      fullRequest = baseRequest lead:
-                                  phone_2: phone
+      fullRequest = baseRequest { lead: { phone_2: phone }}
 
     it 'includes the parameters in the URL', ->
       assert.include request.body, "phone_2=#{phone}"
@@ -159,8 +151,7 @@ describe 'Claim Request', ->
     phone = null
 
     before ->
-      fullRequest = baseRequest lead:
-                                  phone_3: phone
+      fullRequest = baseRequest { lead: { phone_3: phone }}
 
     it 'doesnt include the parameters in the URL', ->
       assert.notInclude request.body, 'phone_3'
