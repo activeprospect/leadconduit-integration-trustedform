@@ -158,14 +158,14 @@ describe 'Claim Request', ->
 
 describe 'Claim Response', ->
 
-  getResponse = (vars) ->
+  getResponse = (body, vars = {}) ->
     res =
       status: 201,
       headers:
         'Content-Type': 'application/json'
-      body: responseBody(vars)
+      body: responseBody(body)
 
-    integration.response({}, {}, res)
+    integration.response(vars, {}, res)
 
 
   context 'a successful response', ->
@@ -207,28 +207,77 @@ describe 'Claim Response', ->
         assert.equal response.scans.not_found[0], "free iPod from Obama!"
 
       it 'sets failure outcome and reason when required scan is missing', ->
-        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text"] } })
+        vars = trustedform: scan_required_text: "some disclosure text"
+        body = warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text"] }
+        response = getResponse(body, vars)
         assert.equal response.outcome, "failure"
         assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')"
 
       it 'correctly formats reason when multiple required scans are missing', ->
-        response = getResponse({warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text", "other disclosure text"] } })
+        vars = trustedform: scan_required_text: ["some disclosure text", "other disclosure text"]
+        body = warnings: ["string not found in snapshot"], scans: { found: [], not_found: ["some disclosure text", "other disclosure text"] }
+        response = getResponse(body, vars)
         assert.equal response.outcome, "failure"
         assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')"
 
       it 'sets failure outcome and reason when forbidden scan is present', ->
-        response = getResponse({warnings: ["string found in snapshot"], scans: { found: ["free iPod from Obama!"], not_found: [] } })
+        vars = trustedform: scan_forbidden_text: "free iPod from Obama!"
+        body = warnings: ["string found in snapshot"], scans: { found: ["free iPod from Obama!"], not_found: [] }
+        response = getResponse(body, vars)
         assert.equal response.outcome, "failure"
         assert.equal response.reason, "Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
 
       it 'sets failure outcome and reason when both required scan is missing and forbidden scan is present', ->
-        response = getResponse({
+        vars =
+          trustedform:
+            scan_required_text: "some disclosure text"
+            scan_forbidden_text: "free iPod from Obama!"
+        body =
           warnings: ["string not found in snapshot", "string found in snapshot"],
           scans: { found: ["free iPod from Obama!"], not_found: ["some disclosure text"] }
-        })
+
+        response = getResponse(body, vars)
         assert.equal response.outcome, "failure"
         assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
 
+      it 'sets correct reason when required and forbidden text are both present', ->
+        vars =
+          trustedform:
+            scan_required_text: "some disclosure text"
+            scan_forbidden_text: "free iPod from Obama!"
+        body =
+          warnings: ["string found in snapshot"],
+          scans: { found: ["free iPod from Obama!", "some disclosure text"] }
+
+        response = getResponse(body, vars)
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')"
+
+      it 'sets correct reason when neither required or forbidden text are present', ->
+        vars =
+          trustedform:
+            scan_required_text: "some disclosure text"
+            scan_forbidden_text: "free iPod from Obama!"
+        body =
+          warnings: ["string not found in snapshot"],
+          scans: { not_found: ["free iPod from Obama!", "some disclosure text"] }
+
+        response = getResponse(body, vars)
+        assert.equal response.outcome, "failure"
+        assert.equal response.reason, "Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')"
+
+      it 'sets success outcome when required scan is present and forbidden scan is not', ->
+        vars =
+          trustedform:
+            scan_required_text: "some disclosure text"
+            scan_forbidden_text: "free iPod from Obama!"
+        body =
+          warnings: [],
+          scans: { found: ["some disclosure text"] }
+
+        response = getResponse(body, vars)
+        assert.equal response.outcome, "success"
+        assert.equal response.reason, null
 
   it 'returns an error when cert not found', ->
     res  =
