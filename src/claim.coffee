@@ -104,8 +104,8 @@ response = (vars, req, res) ->
       age_in_seconds: ageInSeconds event.cert.created_at
       created_at: event.cert.created_at
       scans:
-        found: event.scans.found || []
-        not_found: event.scans.not_found || []
+        found: event.scans?.found || []
+        not_found: event.scans?.not_found || []
 
     if event.warnings?
       if event.warnings.some((warning) -> warning == 'string not found in snapshot')

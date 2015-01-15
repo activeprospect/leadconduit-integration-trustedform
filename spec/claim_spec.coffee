@@ -190,6 +190,10 @@ describe 'Claim Response', ->
 
     describe 'scan results parsing', ->
 
+      it 'handles null value for scans', ->
+        response = getResponse()
+        assert.equal response.scans.found.length, 0
+
       it 'captures scans_found', ->
         scanText1 = "some disclosure text"
         response = getResponse({scans: { found: [scanText1], not_found: [] } })
@@ -358,7 +362,7 @@ responseBody = (vars = {}) ->
     masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
     masked: false
     reference: null
-    scans: vars.scans || []
+    scans: vars.scans || null
     vendor: null
     warnings: vars.warnings || []
 
