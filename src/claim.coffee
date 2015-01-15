@@ -68,9 +68,11 @@ ageInSeconds = (date) ->
   Math.floor difference / 1000
 
 
-formatScanReason = (textArray) ->
+formatScanReason = (scannedFor, textArray) ->
+  matches = textArray.filter (t) ->
+    scannedFor.indexOf(t) >= 0
   # sort text items for uniformity of reason across leads, and (arbitrary) limit in case of long scan text
-  "#{textArray.length}: '#{textArray.sort().join(', ').substr(0, 255)}'"
+  "#{matches.length}: '#{matches.sort().join(', ').substr(0, 255)}'"
 
 
 response = (vars, req, res) ->
@@ -108,12 +110,12 @@ response = (vars, req, res) ->
     if event.warnings?
       if event.warnings.some((warning) -> warning == 'string not found in snapshot')
         appended.outcome = 'failure'
-        appended.reason  = "Required scan text not found in TrustedForm snapshot (missing #{formatScanReason(event.scans.not_found)})"
+        appended.reason  = "Required scan text not found in TrustedForm snapshot (missing #{formatScanReason(vars.trustedform.scan_required_text, event.scans.not_found)})"
 
       if event.warnings.some((warning) -> warning == 'string found in snapshot')
         appended.outcome = 'failure'
         appended.reason  = if appended.reason? then "#{appended.reason}; " else ""
-        appended.reason += "Forbidden scan text found in TrustedForm snapshot (found #{formatScanReason(event.scans.found)})"
+        appended.reason += "Forbidden scan text found in TrustedForm snapshot (found #{formatScanReason(vars.trustedform.scan_forbidden_text, event.scans.found)})"
 
   else
     appended =
