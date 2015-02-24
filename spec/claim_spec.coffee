@@ -283,6 +283,12 @@ describe 'Claim Response', ->
         assert.equal response.outcome, "success"
         assert.equal response.reason, null
 
+      it 'age in seconds includes event duration when present', ->
+        vars = {}
+        body = event_duration: 61999
+        response = getResponse(body, vars)
+        assert.equal response.age_in_seconds, 172353 # 172291s + 61.999s
+
   it 'returns an error when cert not found', ->
     res  =
       status: 404
@@ -366,6 +372,8 @@ responseBody = (vars = {}) ->
     vendor: null
     warnings: vars.warnings || []
 
+  response.event_duration = vars.event_duration if vars.event_duration?
+
   JSON.stringify(response)
 
 
@@ -389,7 +397,7 @@ expected = (vars = {}) ->
   masked: false
   url: vars.url || null
   domain: vars.domain || "localhost"
-  age_in_seconds: 172290
+  age_in_seconds: 172291
   created_at: "2014-04-02T21:24:22Z"
   scans:
     found: []
