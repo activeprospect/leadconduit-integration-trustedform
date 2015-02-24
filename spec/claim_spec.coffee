@@ -289,6 +289,14 @@ describe 'Claim Response', ->
         response = getResponse(body, vars)
         assert.equal response.age_in_seconds, 172353 # 172291s + 61.999s
 
+
+      it 'time on page included when event duration present', ->
+        vars = {}
+        body = event_duration: 61999
+        response = getResponse(body, vars)
+        assert.equal response.time_on_page_in_seconds, 62 # 61.999s rounded
+
+
   it 'returns an error when cert not found', ->
     res  =
       status: 404
@@ -398,6 +406,7 @@ expected = (vars = {}) ->
   url: vars.url || null
   domain: vars.domain || "localhost"
   age_in_seconds: 172291
+  time_on_page_in_seconds: null
   created_at: "2014-04-02T21:24:22Z"
   scans:
     found: []
