@@ -69,6 +69,11 @@ ageInSeconds = (claim) ->
   Math.round difference / 1000
 
 
+timeOnPageInSeconds = (event_duration) ->
+  return null if !event_duration? or isNaN(event_duration)
+  Math.round parseInt(event_duration) / 1000
+
+
 formatScanReason = (scannedFor, textArray) ->
   matches = textArray.filter (t) ->
     scannedFor.indexOf(t) >= 0
@@ -103,6 +108,7 @@ response = (vars, req, res) ->
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
       age_in_seconds: ageInSeconds event
+      time_on_page_in_seconds: timeOnPageInSeconds event.event_duration
       created_at: event.cert.created_at
       scans:
         found: event.scans?.found || []
@@ -146,6 +152,7 @@ response.variables = ->
     { name: 'url', type: 'string', description: 'Parent frames URL if the page is framed, or location of the page hosting the javascript' }
     { name: 'domain', type: 'string', description: 'Domain of the url' }
     { name: 'age_in_seconds', type: 'number', description: 'Number of seconds since the certificate was created' }
+    { name: 'time_on_page_in_seconds', type: 'number', description: 'Number of seconds the consumer spent filling out the offer form' }
     { name: 'created_at', type: 'time', description: 'Time the user loaded the form in UTC ISO8601 format' }
     { name: 'masked', type: 'boolean', description: 'Whether the cert being claimed is masked'}
     { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
