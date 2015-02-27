@@ -99,7 +99,7 @@ response = (vars, req, res) ->
         time_zone: event.cert.geo.time_zone
       snapshot_url: event.cert.snapshot_url
       masked_cert_url: event.masked_cert_url
-      masked: event.masked
+      is_masked: event.masked
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
       age_in_seconds: ageInSeconds event
@@ -147,7 +147,7 @@ response.variables = ->
     { name: 'domain', type: 'string', description: 'Domain of the url' }
     { name: 'age_in_seconds', type: 'number', description: 'Number of seconds since the certificate was created' }
     { name: 'created_at', type: 'time', description: 'Time the user loaded the form in UTC ISO8601 format' }
-    { name: 'masked', type: 'boolean', description: 'Whether the cert being claimed is masked'}
+    { name: 'is_masked', type: 'boolean', description: 'Whether the cert being claimed is masked'}
     { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
     { name: 'scans.not_found', type: 'array', description: 'Required scan terms not found in the claim'}
   ]

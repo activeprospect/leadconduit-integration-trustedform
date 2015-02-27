@@ -394,7 +394,7 @@ expected = (vars = {}) ->
     time_zone: "America/Chicago"
   snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
   masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
-  masked: false
+  is_masked: false
   url: vars.url || null
   domain: vars.domain || "localhost"
   age_in_seconds: 172291
