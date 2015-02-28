@@ -380,7 +380,7 @@ responseBody = (vars = {}) ->
     vendor: null
     warnings: vars.warnings || []
 
-  response.event_duration = vars.event_duration if vars.event_duration?
+  response.cert.event_duration = vars.event_duration if vars.event_duration?
 
   JSON.stringify(response)
 

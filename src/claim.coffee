@@ -63,9 +63,9 @@ validate = (vars) ->
 # Response Function ------------------------------------------------------
 #
 
-ageInSeconds = (claim) ->
-  difference = Date.now() - new Date(claim.cert.created_at)
-  difference += parseInt(claim.event_duration) if claim.event_duration? and not isNaN(claim.event_duration)
+ageInSeconds = (cert) ->
+  difference = Date.now() - new Date(cert.created_at)
+  difference += parseInt(cert.event_duration) if cert.event_duration? and not isNaN(cert.event_duration)
   Math.round difference / 1000
 
 
@@ -107,8 +107,8 @@ response = (vars, req, res) ->
       is_masked: event.masked
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
-      age_in_seconds: ageInSeconds event
-      time_on_page_in_seconds: timeOnPageInSeconds event.event_duration
+      age_in_seconds: ageInSeconds event.cert
+      time_on_page_in_seconds: timeOnPageInSeconds event.cert.event_duration
       created_at: event.cert.created_at
       scans:
         found: event.scans?.found || []
