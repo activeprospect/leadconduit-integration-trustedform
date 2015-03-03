@@ -283,12 +283,13 @@ describe 'Claim Response', ->
         assert.equal response.outcome, "success"
         assert.equal response.reason, null
 
-      it 'age in seconds includes event duration when present', ->
+      it 'calculates age in seconds', ->
         vars = {}
-        body = event_duration: 61999
+        body = {}
         response = getResponse(body, vars)
-        assert.equal response.age_in_seconds, 172353 # 172291s + 61.999s
-
+        # cert.created_at:  "2014-04-02T21:24:22Z"
+        # timekeeper "now": "2014-04-04T21:15:52.539Z"
+        assert.equal response.age_in_seconds, 172291 # ~ 47.86 h
 
       it 'time on page included when event duration present', ->
         vars = {}

@@ -65,7 +65,6 @@ validate = (vars) ->
 
 ageInSeconds = (cert) ->
   difference = Date.now() - new Date(cert.created_at)
-  difference += parseInt(cert.event_duration) if cert.event_duration? and not isNaN(cert.event_duration)
   Math.round difference / 1000
 
 
