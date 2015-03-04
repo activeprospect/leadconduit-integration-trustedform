@@ -64,8 +64,9 @@ validate = (vars) ->
 #
 
 ageInSeconds = (cert) ->
-  difference = Date.now() - new Date(cert.created_at)
-  Math.round difference / 1000
+  timeOnPage = timeOnPageInSeconds(cert.event_duration) or 0
+  certAge = (Date.now() - new Date(cert.created_at)) / 1000
+  Math.round certAge - timeOnPage
 
 
 timeOnPageInSeconds = (event_duration) ->
