@@ -285,19 +285,31 @@ describe 'Claim Response', ->
 
       it 'calculates age in seconds with event_duration', ->
         vars = {}
-        body = event_duration: 61999 # 62 s
+        body = event_duration: 19999 # 20 s
         response = getResponse(body, vars)
-        # timekeeper "now": "2014-04-04T21:15:52.539Z" # 1396646153 s
-        # cert.created_at:  "2014-04-02T21:24:22Z"     # 1396473862 s
-        assert.equal response.age_in_seconds, 172229   # now - (created_at + event_duration)
+        # cert.created_at:  "2014-04-02T21:24:22Z"
+        # claim.created_at: "2014-04-02T21:24:55Z" # 33s later
+        assert.equal response.age_in_seconds, 13   # with duration subtracted
 
       it 'calculates age in seconds without event_duration', ->
         vars = {}
         body = {}
         response = getResponse(body, vars)
-        # timekeeper "now": "2014-04-04T21:15:52.539Z" # 1396646153 s
-        # cert.created_at:  "2014-04-02T21:24:22Z"     # 1396473862 s
-        assert.equal response.age_in_seconds, 172291   # now - created_at
+        # cert.created_at:  "2014-04-02T21:24:22Z"
+        # claim.created_at: "2014-04-02T21:24:55Z" # 33s later
+        assert.equal response.age_in_seconds, 33
+
+      it 'calculates age in seconds with multiple claims', ->
+        vars = {}
+        body =
+          # add a 2nd, later claim
+          claims: [
+            {
+              created_at: "2014-04-02T21:25:11Z" # 49 s after cert.created_at ("2014-04-02T21:24:22Z")
+            }
+          ]
+        response = getResponse(body, vars)
+        assert.equal response.age_in_seconds, 49
 
       it 'time on page included when event duration present', ->
         vars = {}
@@ -390,6 +402,7 @@ responseBody = (vars = {}) ->
     warnings: vars.warnings || []
 
   response.cert.event_duration = vars.event_duration if vars.event_duration?
+  response.cert.claims = response.cert.claims.concat vars.claims if vars.claims?
 
   JSON.stringify(response)
 
@@ -414,7 +427,7 @@ expected = (vars = {}) ->
   is_masked: false
   url: vars.url || null
   domain: vars.domain || "localhost"
-  age_in_seconds: 172291
+  age_in_seconds: 33
   time_on_page_in_seconds: null
   created_at: "2014-04-02T21:24:22Z"
   scans:

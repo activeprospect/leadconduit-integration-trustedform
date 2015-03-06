@@ -65,9 +65,15 @@ validate = (vars) ->
 
 ageInSeconds = (cert) ->
   timeOnPage = timeOnPageInSeconds(cert.event_duration) or 0
-  certAge = (Date.now() - new Date(cert.created_at)) / 1000
-  Math.round certAge - timeOnPage
 
+  latestClaim = cert.claims.sort( (a, b) ->
+    return -1 if a.created_at < b.created_at
+    return 1 if a.created_at > b.created_at
+    return 0
+  )[cert.claims.length - 1]
+
+  certAge = (new Date(latestClaim.created_at) - new Date(cert.created_at)) / 1000
+  Math.round certAge - timeOnPage
 
 timeOnPageInSeconds = (event_duration) ->
   return null if !event_duration? or isNaN(event_duration)
