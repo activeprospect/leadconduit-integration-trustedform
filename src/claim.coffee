@@ -63,16 +63,9 @@ validate = (vars) ->
 # Response Function ------------------------------------------------------
 #
 
-ageInSeconds = (cert) ->
-  timeOnPage = timeOnPageInSeconds(cert.event_duration) or 0
-
-  latestClaim = cert.claims.sort( (a, b) ->
-    return -1 if a.created_at < b.created_at
-    return 1 if a.created_at > b.created_at
-    return 0
-  )[cert.claims.length - 1]
-
-  certAge = (new Date(latestClaim.created_at) - new Date(cert.created_at)) / 1000
+ageInSeconds = (event) ->
+  timeOnPage = timeOnPageInSeconds(event.cert.event_duration) or 0
+  certAge = (new Date(event.created_at) - new Date(event.cert.created_at)) / 1000
   Math.round certAge - timeOnPage
 
 timeOnPageInSeconds = (event_duration) ->
@@ -113,7 +106,7 @@ response = (vars, req, res) ->
       is_masked: event.masked
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
-      age_in_seconds: ageInSeconds event.cert
+      age_in_seconds: ageInSeconds event
       time_on_page_in_seconds: timeOnPageInSeconds event.cert.event_duration
       created_at: event.cert.created_at
       scans:

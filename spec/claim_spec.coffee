@@ -299,18 +299,6 @@ describe 'Claim Response', ->
         # claim.created_at: "2014-04-02T21:24:55Z" # 33s later
         assert.equal response.age_in_seconds, 33
 
-      it 'calculates age in seconds with multiple claims', ->
-        vars = {}
-        body =
-          # add a 2nd, later claim
-          claims: [
-            {
-              created_at: "2014-04-02T21:25:11Z" # 49 s after cert.created_at ("2014-04-02T21:24:22Z")
-            }
-          ]
-        response = getResponse(body, vars)
-        assert.equal response.age_in_seconds, 49
-
       it 'time on page included when event duration present', ->
         vars = {}
         body = event_duration: 61999
