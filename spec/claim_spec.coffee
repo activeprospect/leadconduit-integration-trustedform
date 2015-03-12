@@ -283,12 +283,21 @@ describe 'Claim Response', ->
         assert.equal response.outcome, "success"
         assert.equal response.reason, null
 
-      it 'age in seconds includes event duration when present', ->
+      it 'calculates age in seconds with event_duration', ->
         vars = {}
-        body = event_duration: 61999
+        body = event_duration: 19999 # 20 s
         response = getResponse(body, vars)
-        assert.equal response.age_in_seconds, 172353 # 172291s + 61.999s
+        # cert.created_at:  "2014-04-02T21:24:22Z"
+        # claim.created_at: "2014-04-02T21:24:55Z" # 33s later
+        assert.equal response.age_in_seconds, 13   # with duration subtracted
 
+      it 'calculates age in seconds without event_duration', ->
+        vars = {}
+        body = {}
+        response = getResponse(body, vars)
+        # cert.created_at:  "2014-04-02T21:24:22Z"
+        # claim.created_at: "2014-04-02T21:24:55Z" # 33s later
+        assert.equal response.age_in_seconds, 33
 
       it 'time on page included when event duration present', ->
         vars = {}
@@ -381,6 +390,7 @@ responseBody = (vars = {}) ->
     warnings: vars.warnings || []
 
   response.cert.event_duration = vars.event_duration if vars.event_duration?
+  response.cert.claims = response.cert.claims.concat vars.claims if vars.claims?
 
   JSON.stringify(response)
 
@@ -405,7 +415,7 @@ expected = (vars = {}) ->
   is_masked: false
   url: vars.url || null
   domain: vars.domain || "localhost"
-  age_in_seconds: 172291
+  age_in_seconds: 33
   time_on_page_in_seconds: null
   created_at: "2014-04-02T21:24:22Z"
   scans:

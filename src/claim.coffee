@@ -63,11 +63,10 @@ validate = (vars) ->
 # Response Function ------------------------------------------------------
 #
 
-ageInSeconds = (cert) ->
-  difference = Date.now() - new Date(cert.created_at)
-  difference += parseInt(cert.event_duration) if cert.event_duration? and not isNaN(cert.event_duration)
-  Math.round difference / 1000
-
+ageInSeconds = (event) ->
+  timeOnPage = timeOnPageInSeconds(event.cert.event_duration) or 0
+  certAge = (new Date(event.created_at) - new Date(event.cert.created_at)) / 1000
+  Math.round certAge - timeOnPage
 
 timeOnPageInSeconds = (event_duration) ->
   return null if !event_duration? or isNaN(event_duration)
@@ -107,7 +106,7 @@ response = (vars, req, res) ->
       is_masked: event.masked
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
-      age_in_seconds: ageInSeconds event.cert
+      age_in_seconds: ageInSeconds event
       time_on_page_in_seconds: timeOnPageInSeconds event.cert.event_duration
       created_at: event.cert.created_at
       scans:
