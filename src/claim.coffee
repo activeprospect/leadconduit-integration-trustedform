@@ -3,7 +3,7 @@ url         = require 'url'
 
 content = (vars) ->
   params = {
-    reference: vars.lead.id
+    reference: "https://next.leadconduit.com/events/#{vars.lead.id}"
     vendor: vars.source.name
   }
 

@@ -67,7 +67,7 @@ describe 'Claim Request', ->
       assert.equal request.headers['Content-Type'], 'application/x-www-form-urlencoded'
 
     it 'includes the reference in the URL', ->
-      assert.include request.body, "reference=lead_id_123"
+      assert.include request.body, "reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123"
 
     it 'includes the vendor in the URL', ->
       assert.include request.body, "vendor=Foo%2C%20Inc."
