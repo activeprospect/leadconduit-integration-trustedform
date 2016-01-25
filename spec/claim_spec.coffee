@@ -184,8 +184,11 @@ describe 'Claim Response', ->
     it 'uses the parent location when it is present', ->
       host = 'yourhost'
       url = "http://#{host}:81/my_iframe.html"
-
       assert.deepEqual getResponse({parentLocation: url}), expected({url: url, domain: host})
+
+    it 'uses the cert location when parent location is an empty string', ->
+      url = 'http://localhost:81/leadconduit_iframe.html'
+      assert.deepEqual getResponse({parentLocation: '', location: url}), expected({url: url})
 
 
     describe 'scan results parsing', ->

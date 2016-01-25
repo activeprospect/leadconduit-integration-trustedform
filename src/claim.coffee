@@ -84,7 +84,7 @@ response = (vars, req, res) ->
   event = JSON.parse(res.body)
 
   if res.status == 201 && event?.cert?
-    hosted_url = event.cert.parent_location ? event.cert.location
+    hosted_url = event.cert.parent_location or event.cert.location
 
     appended =
       outcome: 'success'
