@@ -1,6 +1,6 @@
 {
   "name": "leadconduit-trustedform",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {
@@ -24,8 +24,7 @@
   "engines": {
     "node": "^0.10.32"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "coffee-script": "^1.7.0",
     "mocha": "^2.1.0",
