@@ -81,7 +81,11 @@ formatScanReason = (scannedFor, textArray) ->
 
 
 response = (vars, req, res) ->
-  event = JSON.parse(res.body)
+  event = {}
+  try
+    event = JSON.parse(res.body)
+  catch e
+    event.message = 'unable to parse response'
 
   if res.status == 201 && event?.cert?
     hosted_url = event.cert.parent_location or event.cert.location
@@ -104,6 +108,7 @@ response = (vars, req, res) ->
       snapshot_url: event.cert.snapshot_url
       masked_cert_url: event.masked_cert_url
       is_masked: event.masked
+      share_url: event.share_url
       url: hosted_url
       domain: url.parse(hosted_url).hostname if hosted_url?
       age_in_seconds: ageInSeconds event
@@ -126,7 +131,7 @@ response = (vars, req, res) ->
   else
     appended =
       outcome: 'error'
-      reason:  "TrustedForm error - #{event?.message} (#{res.status})"
+      reason:  "TrustedForm error - #{event?.message or ''} (#{res.status})"
 
   return appended
 
@@ -154,6 +159,7 @@ response.variables = ->
     { name: 'time_on_page_in_seconds', type: 'number', description: 'Number of seconds the consumer spent filling out the offer form' }
     { name: 'created_at', type: 'time', description: 'Time the user loaded the form in UTC ISO8601 format' }
     { name: 'is_masked', type: 'boolean', description: 'Whether the cert being claimed is masked'}
+    { name: 'share_url', type: 'url', description: 'The expiring share URL of the certificate' }
     { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
     { name: 'scans.not_found', type: 'array', description: 'Required scan terms not found in the claim'}
   ]

@@ -309,6 +309,21 @@ describe 'Claim Response', ->
         assert.equal response.time_on_page_in_seconds, 62 # 61.999s rounded
 
 
+  describe 'error response', ->
+
+    it 'should parse it without blowing up', ->
+      res  =
+        status: 503
+        headers:
+          'Content-Type': 'text/html; charset=UTF-8'
+        body: "<h1>This website is under heavy load</h1><p>We're sorry, too many people are accessing this website at the same time. We're working on this problem. Please try again later.</p>"
+      expected =
+        outcome: 'error'
+        reason:  'TrustedForm error - unable to parse response (503)'
+      response = integration.response({}, {}, res)
+      assert.deepEqual response, expected
+
+
   it 'returns an error when cert not found', ->
     res  =
       status: 404
@@ -335,7 +350,7 @@ describe 'Claim Response', ->
 
     expected =
       outcome: 'error'
-      reason: 'TrustedForm error - undefined (401)'
+      reason: 'TrustedForm error -  (401)'
 
     response = integration.response({}, {}, res)
     assert.deepEqual expected, response
@@ -388,6 +403,7 @@ responseBody = (vars = {}) ->
     masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
     masked: false
     reference: null
+    share_url: "https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE"
     scans: vars.scans || null
     vendor: null
     warnings: vars.warnings || []
@@ -416,6 +432,7 @@ expected = (vars = {}) ->
   snapshot_url: "http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html"
   masked_cert_url: "https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4"
   is_masked: false
+  share_url: "https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE"
   url: vars.url || null
   domain: vars.domain || "localhost"
   age_in_seconds: 33
