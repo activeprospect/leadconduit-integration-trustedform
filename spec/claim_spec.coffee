@@ -26,23 +26,7 @@ describe 'Cert URL validate', ->
 describe 'Claim Request', ->
   request     = null
   fullRequest = null
-  apiKey      = 'c9351ff49a8e38a23493c6b7328c7629'
   trustedform_cert_url = 'https://cert.trustedform.com/533c80270218239ec3000012'
-
-  baseRequest = (extraKeys) ->
-    hash =
-      activeprospect:
-        api_key:  apiKey
-      lead:
-        id: 'lead_id_123',
-        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
-      source:
-        name: 'Foo, Inc.'
-
-    for key, value of extraKeys
-      hash[key] = value
-
-    hash
 
   beforeEach ->
     request = integration.request fullRequest
@@ -155,6 +139,24 @@ describe 'Claim Request', ->
 
     it 'doesnt include the parameters in the URL', ->
       assert.notInclude request.body, 'phone_3'
+
+
+describe 'with more than one cert_url', ->
+
+  it 'ignores empty value', ->
+    claimUrl = 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985'
+
+    request = integration.request(baseRequest({ lead: { trustedform_cert_url: ['', claimUrl] }}))
+    assert.equal request.url, claimUrl
+
+
+  it 'uses the first value', ->
+    claimUrl1 = 'https://cert.trustedform.com/1111111111111111111111111111111111111111'
+    claimUrl2 = 'https://cert.trustedform.com/2222222222222222222222222222222222222222'
+
+    request = integration.request(baseRequest({ lead: { trustedform_cert_url: [claimUrl1, claimUrl2] }}))
+    assert.equal request.url, claimUrl1
+
 
 describe 'Claim Response', ->
 
@@ -354,6 +356,22 @@ describe 'Claim Response', ->
 
     response = integration.response({}, {}, res)
     assert.deepEqual expected, response
+
+
+baseRequest = (extraKeys) ->
+  hash =
+    activeprospect:
+      api_key: 'c9351ff49a8e38a23493c6b7328c7629'
+    lead:
+      id: 'lead_id_123',
+      trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
+    source:
+      name: 'Foo, Inc.'
+
+  for key, value of extraKeys
+    hash[key] = value
+
+  hash
 
 
 responseBody = (vars = {}) ->

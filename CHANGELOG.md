@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [1.3.0] - 2017-01-18
+## [1.3.1] - 2017-04-14
+### Fixed
+- fixed to use single cert URL when multiple provided (fixes #37)
+
+## [1.3.0] - 2017-03-08
 ### Added
 - added append of `share_url` (fixes #35)
 

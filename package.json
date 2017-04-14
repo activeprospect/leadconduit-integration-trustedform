@@ -19,7 +19,9 @@
   "engines": {
     "node": "^0.10.32"
   },
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
     "chai": "^1.10.0",
     "coffee-script": "^1.7.0",
