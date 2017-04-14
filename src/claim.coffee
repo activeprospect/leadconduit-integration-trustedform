@@ -1,5 +1,6 @@
 querystring = require 'querystring'
-url         = require 'url'
+url = require 'url'
+_ = require 'lodash'
 
 content = (vars) ->
   params = {
@@ -30,7 +31,10 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  url:     vars.lead.trustedform_cert_url,
+  # if tf_cert_url is array (i.e., multiple values posted), compact to remove empties and use the first one
+  certUrl = if _.isArray(vars.lead.trustedform_cert_url) then _.compact(vars.lead.trustedform_cert_url)[0] else vars.lead.trustedform_cert_url
+
+  url: certUrl,
   method:  'POST',
   headers:
     Accept:        'application/json',
