@@ -31,26 +31,26 @@ encodeAuthentication = (apiKey) ->
 #
 
 request = (vars) ->
-  # if tf_cert_url is array (i.e., multiple values posted), compact to remove empties and use the first one
-  certUrl = if _.isArray(vars.lead.trustedform_cert_url) then _.compact(vars.lead.trustedform_cert_url)[0] else vars.lead.trustedform_cert_url
+  # if tf_cert_url is stringified array (i.e., multiple values posted) then split, compact, and use the first one
+  certUrl = if vars.lead.trustedform_cert_url?.includes(',') then _.compact(vars.lead.trustedform_cert_url?.split(','))[0] else vars.lead.trustedform_cert_url
 
-  url: certUrl,
-  method:  'POST',
+  url: certUrl
+  method:  'POST'
   headers:
-    Accept:        'application/json',
+    Accept:        'application/json'
     Authorization:  encodeAuthentication vars.activeprospect.api_key
     'Content-Type': 'application/x-www-form-urlencoded'
   body: content vars
 
 request.variables = ->
   [
-    { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' },
-    { name: 'trustedform.scan_required_text', type: 'string', required: false, description: 'Required text to search snapshot for' },
-    { name: 'trustedform.scan_forbidden_text', type: 'string', required: false, description: 'Forbidden text to search snapshot for' },
-    { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' },
-    { name: 'lead.phone_1', type: 'string', required: false, description: 'Lead phone 1 that will be fingerprinted' },
-    { name: 'lead.phone_2', type: 'string', required: false, description: 'Lead phone 2 that will be fingerprinted' },
-    { name: 'lead.phone_3', type: 'string', required: false, description: 'Lead phone 3 that will be fingerprinted' },
+    { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' }
+    { name: 'trustedform.scan_required_text', type: 'string', required: false, description: 'Required text to search snapshot for' }
+    { name: 'trustedform.scan_forbidden_text', type: 'string', required: false, description: 'Forbidden text to search snapshot for' }
+    { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' }
+    { name: 'lead.phone_1', type: 'string', required: false, description: 'Lead phone 1 that will be fingerprinted' }
+    { name: 'lead.phone_2', type: 'string', required: false, description: 'Lead phone 2 that will be fingerprinted' }
+    { name: 'lead.phone_3', type: 'string', required: false, description: 'Lead phone 3 that will be fingerprinted' }
   ]
 
 #
