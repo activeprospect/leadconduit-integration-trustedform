@@ -69,20 +69,10 @@ validate = (vars) ->
 # Handle Function ------------------------------------------------------
 #
 handle = (vars, callback) ->
-  retry = 0
   async.retry {
-    times: 6
+    times: 3
     interval: 30000
-  }, request requestParams(vars)
-  ,(err, response, body) ->
-    retry++
-    if err
-      cb err
-    else if response.statusCode == 400
-      cb new Error('error finding certificate')
-    else
-      cb null, response
-  ,(error, response) ->
+  },apiMethod.bind(null, vars) ,(error, response) ->
     responseData = {}
     if error
       responseData.outcome = 'failure'
@@ -91,6 +81,14 @@ handle = (vars, callback) ->
       responseData = handleResponse(vars, response)
 
     callback null, responseData
+
+
+apiMethod = (vars, cb) ->
+  request requestParams(vars), (err, response) ->
+    if response.statusCode == 404
+      cb new Error('error finding certificate')
+    else
+      cb null, response
 
 
 ageInSeconds = (event) ->
@@ -117,7 +115,7 @@ handleResponse = (vars, res) ->
   catch e
     event.message = 'unable to parse response'
 
-  if res.status == 201 && event?.cert?
+  if res.statusCode == 201 && event?.cert?
     hosted_url = event.cert.parent_location or event.cert.location
 
     appended =
@@ -161,7 +159,7 @@ handleResponse = (vars, res) ->
   else
     appended =
       outcome: 'error'
-      reason:  "TrustedForm error - #{event?.message or ''} (#{res.status})"
+      reason:  "TrustedForm error - #{event?.message or ''} (#{res.statusCode})"
 
   return appended
 

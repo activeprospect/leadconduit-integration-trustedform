@@ -1,6 +1,7 @@
 assert = require('chai').assert
 integration = require('../src/claim')
 tk = require('timekeeper')
+nock = require('nock')
 emailtype = require('leadconduit-types').email
 phonetype = require('leadconduit-types').phone
 parser = require('leadconduit-integration').test.types.parser(integration.requestVariables())
@@ -161,11 +162,11 @@ describe 'with more than one cert_url', ->
     assert.equal request.url, claimUrl1
 
 
-describe 'Claim Response Handler', ->
+describe 'Claim HandleResponse', ->
 
   getResponse = (body, vars = {}) ->
     res =
-      status: 201,
+      statusCode: 201,
       headers:
         'Content-Type': 'application/json'
       body: responseBody(body)
@@ -318,7 +319,7 @@ describe 'Claim Response Handler', ->
 
     it 'should parse it without blowing up', ->
       res  =
-        status: 503
+        statusCode: 503
         headers:
           'Content-Type': 'text/html; charset=UTF-8'
         body: "<h1>This website is under heavy load</h1><p>We're sorry, too many people are accessing this website at the same time. We're working on this problem. Please try again later.</p>"
@@ -331,7 +332,7 @@ describe 'Claim Response Handler', ->
 
     it 'returns an error when cert not found', ->
       res  =
-        status: 404
+        statusCode: 404
         headers:
           'Content-Type': 'application/json'
         body: """
@@ -348,7 +349,7 @@ describe 'Claim Response Handler', ->
 
     it 'returns an error when unauthorized', ->
       res =
-        status: 401
+        statusCode: 401
         headers:
           'Content-Type': 'application/json'
         body: null
@@ -359,6 +360,39 @@ describe 'Claim Response Handler', ->
 
       response = integration.handleResponse({}, res)
       assert.deepEqual expected, response
+
+
+  describe 'handle', ->
+    timeoutDuration = 200000
+
+    it 'should retry three times when the error is 404', (done) ->
+      this.timeout(timeoutDuration)
+      vars = baseRequest()
+      count = 0
+      nock 'https://cert.trustedform.com'
+        .post '/533c80270218239ec3000012'
+        .times 3
+        .reply 404, () ->
+          count++
+
+      integration.handle vars, (err, response) ->
+        assert.equal count, 3
+        assert.equal response.outcome, 'failure'
+        assert.equal response.reason, 'Error: error finding certificate'
+        done()
+
+    it 'should not retry when there is no error', (done) ->
+      vars = baseRequest()
+      count = 0
+
+      nock 'https://cert.trustedform.com'
+        .post '/533c80270218239ec3000012'
+        .reply 201, () ->
+          count++
+
+      integration.handle vars, (err, response) ->
+        assert.equal count, 1
+        done()
 
 
 baseRequest = (extraKeys) ->
