@@ -3,7 +3,7 @@ integration = require('../src/claim')
 tk = require('timekeeper')
 emailtype = require('leadconduit-types').email
 phonetype = require('leadconduit-types').phone
-parser = require('leadconduit-integration').test.types.parser(integration.request.variables())
+parser = require('leadconduit-integration').test.types.parser(integration.requestVariables())
 
 describe 'Cert URL validate', ->
 
@@ -24,13 +24,13 @@ describe 'Cert URL validate', ->
     assert.isUndefined error
 
 
-describe 'Claim Request', ->
+describe 'Claim RequestParams', ->
   request     = null
   fullRequest = null
   trustedform_cert_url = 'https://cert.trustedform.com/533c80270218239ec3000012'
 
   beforeEach ->
-    request = integration.request fullRequest
+    request = integration.requestParams fullRequest
 
   context 'without parameters', ->
     before ->
@@ -149,7 +149,7 @@ describe 'with more than one cert_url', ->
   it 'ignores empty value', ->
     claimUrl = 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985'
 
-    request = integration.request(baseRequest({ lead: { trustedform_cert_url: ['', claimUrl] }}))
+    request = integration.requestParams(baseRequest({ lead: { trustedform_cert_url: ['', claimUrl] }}))
     assert.equal request.url, claimUrl
 
 
@@ -157,11 +157,11 @@ describe 'with more than one cert_url', ->
     claimUrl1 = 'https://cert.trustedform.com/1111111111111111111111111111111111111111'
     claimUrl2 = 'https://cert.trustedform.com/2222222222222222222222222222222222222222'
 
-    request = integration.request(baseRequest({ lead: { trustedform_cert_url: [claimUrl1, claimUrl2] }}))
+    request = integration.requestParams(baseRequest({ lead: { trustedform_cert_url: [claimUrl1, claimUrl2] }}))
     assert.equal request.url, claimUrl1
 
 
-describe 'Claim Response', ->
+describe 'Claim Response Handler', ->
 
   getResponse = (body, vars = {}) ->
     res =
@@ -170,7 +170,7 @@ describe 'Claim Response', ->
         'Content-Type': 'application/json'
       body: responseBody(body)
 
-    integration.response(vars, {}, res)
+    integration.handleResponse(vars, res)
 
 
   context 'a successful response', ->
@@ -325,40 +325,40 @@ describe 'Claim Response', ->
       expected =
         outcome: 'error'
         reason:  'TrustedForm error - unable to parse response (503)'
-      response = integration.response({}, {}, res)
+      response = integration.handleResponse({}, res)
       assert.deepEqual response, expected
 
 
-  it 'returns an error when cert not found', ->
-    res  =
-      status: 404
-      headers:
-        'Content-Type': 'application/json'
-      body: """
-            {
-              "message": "certificate not found"
-            }
-            """
-    expected =
-      outcome: 'error'
-      reason:  'TrustedForm error - certificate not found (404)'
-    response = integration.response({}, {}, res)
-    assert.deepEqual response, expected
+    it 'returns an error when cert not found', ->
+      res  =
+        status: 404
+        headers:
+          'Content-Type': 'application/json'
+        body: """
+              {
+                "message": "certificate not found"
+              }
+              """
+      expected =
+        outcome: 'error'
+        reason:  'TrustedForm error - certificate not found (404)'
+      response = integration.handleResponse({}, res)
+      assert.deepEqual response, expected
 
 
-  it 'returns an error when unauthorized', ->
-    res =
-      status: 401
-      headers:
-        'Content-Type': 'application/json'
-      body: null
+    it 'returns an error when unauthorized', ->
+      res =
+        status: 401
+        headers:
+          'Content-Type': 'application/json'
+        body: null
 
-    expected =
-      outcome: 'error'
-      reason: 'TrustedForm error -  (401)'
+      expected =
+        outcome: 'error'
+        reason: 'TrustedForm error -  (401)'
 
-    response = integration.response({}, {}, res)
-    assert.deepEqual expected, response
+      response = integration.handleResponse({}, res)
+      assert.deepEqual expected, response
 
 
 baseRequest = (extraKeys) ->

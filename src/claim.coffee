@@ -1,6 +1,8 @@
 querystring = require 'querystring'
 url = require 'url'
 _ = require 'lodash'
+request = require('request')
+async = require('async')
 
 content = (vars) ->
   params = {
@@ -30,7 +32,7 @@ encodeAuthentication = (apiKey) ->
 # Request Function -------------------------------------------------------
 #
 
-request = (vars) ->
+requestParams = (vars) ->
   # if tf_cert_url is stringified array (i.e., multiple values posted) then split, compact, and use the first one
   certUrl = if vars.lead.trustedform_cert_url?.includes(',') then _.compact(vars.lead.trustedform_cert_url?.split(','))[0] else vars.lead.trustedform_cert_url
 
@@ -42,7 +44,7 @@ request = (vars) ->
     'Content-Type': 'application/x-www-form-urlencoded'
   body: content vars
 
-request.variables = ->
+requestVariables = ->
   [
     { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' }
     { name: 'trustedform.scan_required_text', type: 'string', required: false, description: 'Required text to search snapshot for' }
@@ -64,8 +66,32 @@ validate = (vars) ->
 
 
 #
-# Response Function ------------------------------------------------------
+# Handle Function ------------------------------------------------------
 #
+handle = (vars, callback) ->
+  retry = 0
+  async.retry {
+    times: 6
+    interval: 30000
+  }, request requestParams(vars)
+  ,(err, response, body) ->
+    retry++
+    if err
+      cb err
+    else if response.statusCode == 400
+      cb new Error('error finding certificate')
+    else
+      cb null, response
+  ,(error, response) ->
+    responseData = {}
+    if error
+      responseData.outcome = 'failure'
+      responseData.reason = error
+    else
+      responseData = handleResponse(vars, response)
+
+    callback null, responseData
+
 
 ageInSeconds = (event) ->
   timeOnPage = timeOnPageInSeconds(event.cert.event_duration) or 0
@@ -84,7 +110,7 @@ formatScanReason = (scannedFor, textArray) ->
   "#{matches.length}: '#{matches.sort().join(', ').substr(0, 255)}'"
 
 
-response = (vars, req, res) ->
+handleResponse = (vars, res) ->
   event = {}
   try
     event = JSON.parse(res.body)
@@ -140,7 +166,7 @@ response = (vars, req, res) ->
   return appended
 
 
-response.variables = ->
+responseVariables = ->
   [
     { name: 'outcome', type: 'string', description: 'certificate claim result' }
     { name: 'reason', type: 'string', description: 'in case of failure, the reason for failure' }
@@ -174,5 +200,8 @@ response.variables = ->
 
 module.exports =
   validate: validate,
-  request:  request,
-  response: response
+  requestVariables: requestVariables
+  responseVariables: responseVariables
+  handle: handle
+  handleResponse: handleResponse
+  requestParams: requestParams
