@@ -395,6 +395,24 @@ describe 'Claim HandleResponse', ->
         done()
 
 
+    it 'should succeed once the response changes from 404 to 200', (done) ->
+      this.timeout(timeoutDuration)
+      vars = baseRequest()
+      url = 'https://cert.trustedform.com/533c80270218239ec3000012'
+      res = responseBody({location: url})
+
+      nock 'https://cert.trustedform.com'
+        .post '/533c80270218239ec3000012'
+        .times 2
+        .reply 404
+        .post '/533c80270218239ec3000012'
+        .reply 201, res
+
+      integration.handle vars, (err, response) ->
+        assert.equal response.outcome, 'success'
+        done()
+
+
 baseRequest = (extraKeys) ->
   hash =
     activeprospect:
