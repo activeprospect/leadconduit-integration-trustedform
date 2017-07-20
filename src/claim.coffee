@@ -10,11 +10,11 @@ content = (vars) ->
 
   if vars.trustedform?.scan_required_text?
     vars.trustedform.scan_required_text = [ vars.trustedform.scan_required_text ] unless vars.trustedform.scan_required_text instanceof Array
-    params.scan = vars.trustedform.scan_required_text
+    params['scan[]'] = vars.trustedform.scan_required_text
 
   if vars.trustedform?.scan_forbidden_text?
     vars.trustedform.scan_forbidden_text = [ vars.trustedform.scan_forbidden_text ] unless vars.trustedform.scan_forbidden_text instanceof Array
-    params['scan!'] = vars.trustedform.scan_forbidden_text
+    params['scan![]'] = vars.trustedform.scan_forbidden_text
 
   params.email   = vars.lead.email.toString()   if vars.lead.email?
   params.phone_1 = vars.lead.phone_1.toString() if vars.lead.phone_1?
@@ -45,8 +45,8 @@ request = (vars) ->
 request.variables = ->
   [
     { name: 'lead.trustedform_cert_url', type: 'string', required: true, description: 'TrustedForm Certificate URL' }
-    { name: 'trustedform.scan_required_text', type: 'string', required: false, description: 'Required text to search snapshot for' }
-    { name: 'trustedform.scan_forbidden_text', type: 'string', required: false, description: 'Forbidden text to search snapshot for' }
+    { name: 'trustedform.scan_required_text', type: 'array', required: false, description: 'Required text to search snapshot for' }
+    { name: 'trustedform.scan_forbidden_text', type: 'array', required: false, description: 'Forbidden text to search snapshot for' }
     { name: 'lead.email', type: 'string', required: false, description: 'Lead email that will be fingerprinted' }
     { name: 'lead.phone_1', type: 'string', required: false, description: 'Lead phone 1 that will be fingerprinted' }
     { name: 'lead.phone_2', type: 'string', required: false, description: 'Lead phone 2 that will be fingerprinted' }
@@ -94,6 +94,9 @@ response = (vars, req, res) ->
   if res.status == 201 && event?.cert?
     hosted_url = event.cert.parent_location or event.cert.location
 
+    found = _.uniq(event.scans?.found || [])
+    notFound = _.uniq(event.scans?.not_found || [])
+
     appended =
       outcome: 'success'
       reason: null
@@ -119,18 +122,18 @@ response = (vars, req, res) ->
       time_on_page_in_seconds: timeOnPageInSeconds event.cert.event_duration
       created_at: event.cert.created_at
       scans:
-        found: event.scans?.found || []
-        not_found: event.scans?.not_found || []
+        found: found
+        not_found: notFound
 
     if event.warnings?
       if event.warnings.some((warning) -> warning == 'string not found in snapshot')
         appended.outcome = 'failure'
-        appended.reason  = "Required scan text not found in TrustedForm snapshot (missing #{formatScanReason(vars.trustedform.scan_required_text, event.scans.not_found)})"
+        appended.reason  = "Required scan text not found in TrustedForm snapshot (missing #{formatScanReason(vars.trustedform.scan_required_text, notFound)})"
 
       if event.warnings.some((warning) -> warning == 'string found in snapshot')
         appended.outcome = 'failure'
         appended.reason  = if appended.reason? then "#{appended.reason}; " else ""
-        appended.reason += "Forbidden scan text found in TrustedForm snapshot (found #{formatScanReason(vars.trustedform.scan_forbidden_text, event.scans.found)})"
+        appended.reason += "Forbidden scan text found in TrustedForm snapshot (found #{formatScanReason(vars.trustedform.scan_forbidden_text, found)})"
 
   else
     appended =

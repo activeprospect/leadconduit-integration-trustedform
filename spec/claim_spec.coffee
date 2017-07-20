@@ -64,7 +64,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest { trustedform: { scan_required_text: scan }}
 
     it 'includes the parameter in the URL', ->
-      assert.include request.body, "scan=#{scan}"
+      assert.include request.body, "scan%5B%5D=#{scan}"
 
   # invalid test until issue #11 fixed
   xcontext 'with multiple scan parameters', ->
@@ -75,7 +75,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest { trustedform: { scan_required_text: [ first, last ] }}
 
     it 'includes the parameter in the URL', ->
-      assert.include request.body, "scan=#{first}&scan=#{last}"
+      assert.include request.body, "scan%5B%5D=#{first}&scan%5B%5D=#{last}"
 
   context 'with a scan_forbidden_text parameter', ->
     scan = 'string'
@@ -84,7 +84,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest { trustedform: { scan_forbidden_text: scan }}
 
     it 'includes the parameter in the URL', ->
-      assert.include request.body, "scan!=#{scan}"
+      assert.include request.body, "scan!%5B%5D=#{scan}"
 
   # invalid test until issue #11 fixed
   xcontext 'with multiple scan_forbidden_text parameters', ->
@@ -95,7 +95,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest { trustedform: { scan_forbidden_text: [ first, last ] }}
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan!=#{first}&scan!=#{last}"
+      assert.include request.body, "scan!%5B%5D=#{first}&scan!%5B%5D=#{last}"
 
   context 'with multiple parameters', ->
     scan          = 'fooscan'
@@ -105,7 +105,7 @@ describe 'Claim Request', ->
       fullRequest = baseRequest { trustedform: { scan_required_text: scan, scan_forbidden_text: scanForbidden }}
 
     it 'includes the parameters in the URL', ->
-      assert.include request.body, "scan=#{scan}&scan!=#{scanForbidden}"
+      assert.include request.body, "scan%5B%5D=#{scan}&scan!%5B%5D=#{scanForbidden}"
 
   context 'with a lead email', ->
     email = emailtype.parse('TomJones@vegas.com')
