@@ -88,7 +88,6 @@ response = (vars, req, res) ->
   event = {}
   try
     event = JSON.parse(res.body)
-    runtime = res.headers['x-runtime']
   catch e
     event.message = 'unable to parse response'
 
@@ -97,6 +96,8 @@ response = (vars, req, res) ->
 
     found = _.uniq(event.scans?.found || [])
     notFound = _.uniq(event.scans?.not_found || [])
+
+    duration = res.headers['X-Runtime']
 
     appended =
       outcome: 'success'
@@ -125,7 +126,7 @@ response = (vars, req, res) ->
       scans:
         found: found
         not_found: notFound
-      duration: runtime
+      duration: duration
 
     if event.warnings?
       if event.warnings.some((warning) -> warning == 'string not found in snapshot')
