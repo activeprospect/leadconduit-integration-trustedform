@@ -172,7 +172,7 @@ response.variables = ->
     { name: 'share_url', type: 'url', description: 'The expiring share URL of the certificate' }
     { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
     { name: 'scans.not_found', type: 'array', description: 'Required scan terms not found in the claim'}
-    { name: 'duration', type: 'number', description: 'How long the TrustForm claim call took, in seconds'}
+    { name: 'duration', type: 'number', description: 'The number of seconds the API call took, according to TrustedForm'}
   ]
 
 #
