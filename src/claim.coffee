@@ -97,6 +97,8 @@ response = (vars, req, res) ->
     found = _.uniq(event.scans?.found || [])
     notFound = _.uniq(event.scans?.not_found || [])
 
+    duration = res.headers['X-Runtime']
+
     appended =
       outcome: 'success'
       reason: null
@@ -124,6 +126,7 @@ response = (vars, req, res) ->
       scans:
         found: found
         not_found: notFound
+      duration: duration
 
     if event.warnings?
       if event.warnings.some((warning) -> warning == 'string not found in snapshot')
@@ -169,6 +172,7 @@ response.variables = ->
     { name: 'share_url', type: 'url', description: 'The expiring share URL of the certificate' }
     { name: 'scans.found', type: 'array', description: 'Forbidden scan terms found in the claim'}
     { name: 'scans.not_found', type: 'array', description: 'Required scan terms not found in the claim'}
+    { name: 'duration', type: 'number', description: 'The number of seconds the API call took, according to TrustedForm'}
   ]
 
 #

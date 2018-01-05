@@ -168,6 +168,7 @@ describe 'Claim Response', ->
       status: 201,
       headers:
         'Content-Type': 'application/json'
+        'X-Runtime': 0.497349
       body: responseBody(body)
 
     integration.response(vars, {}, res)
@@ -462,3 +463,4 @@ expected = (vars = {}) ->
   scans:
     found: []
     not_found: []
+  duration: 0.497349
