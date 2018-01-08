@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.5.1] - 2018-01-08
+### Added
+- Convert to JS
+
 ## [1.5.0] - 2018-01-05
 ### Added
 - Capture duration data from TF api
