@@ -4,8 +4,7 @@
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {
-    "test": "cake test",
-    "prepublish": "cake build"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -28,6 +27,7 @@
     "coffee-script": "^1.7.0",
     "leadconduit-cakefile": "^0.1.1",
     "leadconduit-types": "^4",
+    "mocha": "^4.1.0",
     "timekeeper": "^0.0"
   }
 }
