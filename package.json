@@ -15,9 +15,6 @@
     "Chris Grayson <chris@activeprospect.com>"
   ],
   "license": "CC-BY-NC-ND-4.0",
-  "engines": {
-    "node": "^0.10.32"
-  },
   "dependencies": {
     "leadconduit-integration": "^0.4.1",
     "lodash": "^4.17.4"
