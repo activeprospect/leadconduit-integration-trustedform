@@ -443,7 +443,7 @@ describe('Claim Response', () => {
 });
 
 const baseRequest = (extraKeys = {}) => {
-  const hash = {
+  const baseReq = {
     activeprospect: {
       api_key: 'c9351ff49a8e38a23493c6b7328c7629'
     },
@@ -456,10 +456,7 @@ const baseRequest = (extraKeys = {}) => {
     }
   };
 
-  // LOOK FOR A LODASH EQUIVALENT HERE
-  Object.keys(extraKeys).forEach(key => {
-    hash[key] = extraKeys[key];
-  });
+  const hash = Object.assign(baseReq, extraKeys);
 
   return parser(hash);
 };
