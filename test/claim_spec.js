@@ -182,6 +182,22 @@ describe('Claim Request', () => {
       assert.notInclude(request.body, 'phone_3');
     });
   });
+
+  context('with trustedform.vendor', () => {
+    const vendor = 'E Corp.';
+
+    before(() => {
+      fullRequest = baseRequest({ trustedform: { vendor: vendor }});
+    });
+
+    it('should use trustedform.vendor', () => {
+      assert.include(request.body, 'vendor=E%20Corp.');
+    });
+
+    it('should ignore source', () => {
+      assert.notInclude(request.body, 'vendor=Foo%2C%20Inc.');
+    });
+  });
 });
 
 describe('with more than one cert_url', () => {
