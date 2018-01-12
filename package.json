@@ -4,8 +4,7 @@
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {
-    "test": "cake test",
-    "prepublish": "cake build"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -16,18 +15,14 @@
     "Chris Grayson <chris@activeprospect.com>"
   ],
   "license": "CC-BY-NC-ND-4.0",
-  "engines": {
-    "node": "^0.10.32"
-  },
   "dependencies": {
     "leadconduit-integration": "^0.4.1",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
     "chai": "^1.10.0",
-    "coffee-script": "^1.7.0",
-    "leadconduit-cakefile": "^0.1.1",
     "leadconduit-types": "^4",
+    "mocha": "^4.1.0",
     "timekeeper": "^0.0"
   }
 }
