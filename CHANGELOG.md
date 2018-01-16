@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](http://semver.org)
 
 ## [1.6.0] - 2018-01-10
 ### Added
-- Add support for setting custom vendor name
+- Add support for setting custom vendor name (fixes #46)
 
 ## [1.5.1] - 2018-01-08
 ### Added
