@@ -23,8 +23,11 @@ describe('Cert URL validate', () => {
   });
 
   it('should not error when cert url is valid', () => {
-    const error = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    const error = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/' }});
     assert.isUndefined(error);
+
+    const error2 = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    assert.isUndefined(error2);
   });
 });
 
