@@ -1,6 +1,6 @@
 ---
 provider: ActiveProspect
-name: ActiveProspect
-link: https://activeprospect.com/
+name: TrustedForm
+link: https://activeprospect.com/products/trustedform/
 ---
-Marketing automation middleware platform that instantly qualifies internet leads.
+Independently verify the origin of Internet leads with a real-time replay of the web form as seen by the consumer.
