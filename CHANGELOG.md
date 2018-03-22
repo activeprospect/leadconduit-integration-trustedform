@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.7.0] - 2018-03-22
+### Added
+- Add support for user-provided api key
+
 ## [1.6.1] - 2018-01-31
 ### Added
 - Changed cert URL validation (fixes #48)
