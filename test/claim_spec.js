@@ -36,7 +36,7 @@ describe('Cert URL validate', () => {
 
 describe('Claim Request', () => {
   let request;
-  let  fullRequest;
+  let fullRequest;
   const trustedform_cert_url = 'https://cert.trustedform.com/533c80270218239ec3000012';
 
   beforeEach(() => {
@@ -75,6 +75,18 @@ describe('Claim Request', () => {
 
     it('includes the vendor in the URL', () => {
       assert.include(request.body, 'vendor=Foo%2C%20Inc.');
+    });
+  });
+
+  context('with a user-provided api key', () => {
+    let key = 'abcdefg1234567';
+
+    before(() => {
+      fullRequest = baseRequest({ trustedform: { api_key: key }});
+    });
+
+    it('prefers the user-provided api key', () => {
+      assert.equal(request.headers.Authorization, 'Basic QVBJOmFiY2RlZmcxMjM0NTY3');
     });
   });
 
