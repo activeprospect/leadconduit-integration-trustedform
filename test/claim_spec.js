@@ -473,6 +473,23 @@ describe('Claim Response', () => {
       const response = integration.response({}, {}, res);
       assert.deepEqual(expected, response);
     });
+
+    it('returns an error message when cert ia expired', () => {
+      const res = {
+        status: 410,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: null
+      };
+      const expected = {
+        outcome: 'error',
+        reason: `TrustedForm error - The TrustedForm certificate already passed the 72-hour origination timeframe and can no longer be claimed. (410)`
+      };
+
+      const response = integration.response({}, {}, res);
+      assert.deepEqual(expected, response);
+    });
   });
 });
 
