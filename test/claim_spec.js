@@ -490,6 +490,23 @@ describe('Claim Response', () => {
       const response = integration.response({}, {}, res);
       assert.deepEqual(expected, response);
     });
+
+    it('returns an error message when cert hash is invalid', () => {
+      const res = {
+        status: 404,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: 'This Certificate of Authenticity was not found'
+      };
+      const expected = {
+        outcome: 'error',
+        reason: `TrustedForm error - This Certificate of Authenticity was not found (404)`
+      };
+
+      const response = integration.response({}, {}, res);
+      assert.deepEqual(expected, response);
+    });
   });
 });
 
