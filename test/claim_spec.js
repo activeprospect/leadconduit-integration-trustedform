@@ -265,7 +265,6 @@ describe('Claim Response', () => {
       assert.deepEqual(getResponse({location: url}), expected({url: url}));
     });
 
-
     it('uses the parent location when it is present', () => {
       const host = 'yourhost';
       const url = `http://${host}:81/my_iframe.html`;
@@ -286,15 +285,19 @@ describe('Claim Response', () => {
 
       it('captures scans_found', () => {
         const scanText1 = 'some disclosure text';
-        let response = getResponse({scans: { found: [scanText1], not_found: [] } });
+        let vars = { trustedform: {scan_required_text: scanText1 }};
+        let response = getResponse({scans: { found: [scanText1], not_found: [] } }, vars);
         assert.equal(response.scans.found.length, 1);
         assert.equal(response.scans.found[0], scanText1);
+        assert.equal(response.scans.how_many_required_found, 'all');
 
         const scanText2 = 'other disclosure text';
-        response = getResponse({scans: { found: [scanText1, scanText2], not_found: [] } });
+        vars.trustedform.scan_required_text = [scanText1, scanText2];
+        response = getResponse({scans: { found: [scanText1, scanText2], not_found: [] } }, vars);
         assert.equal(response.scans.found.length, 2);
         assert.equal(response.scans.found[0], scanText1);
         assert.equal(response.scans.found[1], scanText2);
+        assert.equal(response.scans.how_many_required_found, 'all');
       });
 
       it('captures scans_not_found', () => {
@@ -302,20 +305,31 @@ describe('Claim Response', () => {
         assert.equal(response.scans.not_found[0], 'free iPod from Obama!');
       });
 
-      it('sets failure outcome and reason when required scan is missing', () => {
+      it('correctly formats response when required scan is missing', () => {
         const vars = { trustedform: {scan_required_text: 'some disclosure text' }};
         const body = { warnings: ['string not found in snapshot'], scans: { found: [], not_found: ['some disclosure text'] } };
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
         assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
+        assert.equal(response.scans.how_many_required_found, 'none');
       });
 
-      it('correctly formats reason when multiple required scans are missing', () => {
+      it('correctly formats resposnse when multiple required scans are missing', () => {
         const vars = { trustedform: { scan_required_text: ['some disclosure text', 'other disclosure text'] }};
         const body = { warnings: ['string not found in snapshot'], scans: { found: [], not_found: ['some disclosure text', 'other disclosure text'] } };
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
         assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
+        assert.equal(response.scans.how_many_required_found, 'none');
+      });
+
+      it('correctly formats reason when some required scans are missing', () => {
+        const vars = { trustedform: { scan_required_text: ['some disclosure text', 'other disclosure text'] }};
+        const body = { warnings: ['string not found in snapshot'], scans: { found: ['other disclosure text'], not_found: ['some disclosure text', 'other disclosure text'] } };
+        const response = getResponse(body, vars);
+        assert.equal(response.outcome, 'failure');
+        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
+        assert.equal(response.scans.how_many_required_found, 'some');
       });
 
       it('sets failure outcome and reason when forbidden scan is present', () => {
