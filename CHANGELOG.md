@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.9.0] - 2018-04-09
+### Added
+- Parse 404 errors returned by bad cert hashes
+- Add `how_many_required_matched` appended data
+
 ## [1.8.0] - 2018-04-05
 ### Added
 - Add error message for expiration errors (410)
