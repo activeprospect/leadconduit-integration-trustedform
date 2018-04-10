@@ -289,7 +289,7 @@ describe('Claim Response', () => {
         let response = getResponse({scans: { found: [scanText1], not_found: [] } }, vars);
         assert.equal(response.scans.found.length, 1);
         assert.equal(response.scans.found[0], scanText1);
-        assert.equal(response.scans.how_many_required_matched, 'all');
+        assert.equal(response.scans.num_required_matched, 'all');
 
         const scanText2 = 'other disclosure text';
         vars.trustedform.scan_required_text = [scanText1, scanText2];
@@ -297,7 +297,7 @@ describe('Claim Response', () => {
         assert.equal(response.scans.found.length, 2);
         assert.equal(response.scans.found[0], scanText1);
         assert.equal(response.scans.found[1], scanText2);
-        assert.equal(response.scans.how_many_required_matched, 'all');
+        assert.equal(response.scans.num_required_matched, 'all');
       });
 
       it('captures scans_not_found', () => {
@@ -311,7 +311,7 @@ describe('Claim Response', () => {
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
         assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
-        assert.equal(response.scans.how_many_required_matched, 'none');
+        assert.equal(response.scans.num_required_matched, 'none');
       });
 
       it('correctly formats resposnse when multiple required scans are missing', () => {
@@ -320,7 +320,7 @@ describe('Claim Response', () => {
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
         assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
-        assert.equal(response.scans.how_many_required_matched, 'none');
+        assert.equal(response.scans.num_required_matched, 'none');
       });
 
       it('correctly formats reason when some required scans are missing', () => {
@@ -329,7 +329,7 @@ describe('Claim Response', () => {
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
         assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
-        assert.equal(response.scans.how_many_required_matched, 'some');
+        assert.equal(response.scans.num_required_matched, 'some');
       });
 
       it('sets failure outcome and reason when forbidden scan is present', () => {
@@ -505,7 +505,7 @@ describe('Claim Response', () => {
       assert.deepEqual(expected, response);
     });
 
-    it('returns an error message when cert hash is invalid', () => {
+    it('returns an error message when cert id is invalid', () => {
       const res = {
         status: 404,
         headers: {
