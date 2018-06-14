@@ -408,6 +408,21 @@ describe('Claim Response', () => {
         assert.equal(response.reason, null);
       });
 
+      it('sets failure outcome when required text is included and snapshot scan failed', () => {
+        const vars = {
+          trustedform: {
+            scan_required_text: 'some disclosure text',
+          }
+        };
+        const body = {
+          warnings: ['snapshot scan failed'],
+        };
+
+        const response = getResponse(body, vars);
+        assert.equal(response.outcome, 'failure');
+        assert.equal(response.reason, 'snapshot scan failed')
+      });
+
       it('calculates age in seconds with event_duration', () => {
         const body = { event_duration: 19999 }; // 20 s
         const response = getResponse(body, {});
@@ -638,6 +653,7 @@ const expected = (vars = {}) => {
       found: [],
       not_found: []
     },
-    duration: 0.497349
+    duration: 0.497349,
+    warnings: []
   };
 };

@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.9.1] - 2018-06-13
+### Fixed
+- Now fails when required text is included and snapshot is missing
+- Now appends warnings array
+
 ## [1.9.0] - 2018-04-09
 ### Added
 - Parse 404 errors returned by bad cert hashes
