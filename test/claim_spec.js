@@ -442,7 +442,7 @@ describe('Claim Response', () => {
 
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, 'snapshot scan failed')
+        assert.equal(response.reason, 'snapshot scan failed');
       });
 
       it('calculates age in seconds with event_duration', () => {
