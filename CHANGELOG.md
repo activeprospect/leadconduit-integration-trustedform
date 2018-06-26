@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.9.2] - 2018-06-26
+### Fixed
+- Handle null geo data
+
 ## [1.9.1] - 2018-06-13
 ### Fixed
 - Now fails when required text is included and snapshot is missing
