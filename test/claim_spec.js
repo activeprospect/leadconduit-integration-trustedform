@@ -245,7 +245,7 @@ describe('Claim Response', () => {
         'Content-Type': 'application/json',
         'X-Runtime': 0.497349
       },
-      body: responseBody(body)
+      body: JSON.stringify(responseBody(body))
     };
     return integration.response(vars, {}, res);
   };
@@ -274,6 +274,28 @@ describe('Claim Response', () => {
     it('uses the cert location when parent location is an empty string', () => {
       const url = 'http://localhost:81/leadconduit_iframe.html';
       assert.deepEqual(getResponse({parentLocation: '', location: url}), expected({url: url}));
+    });
+
+    it('should not bonk with null geo data', () => {
+      const url = 'http://localhost:81/leadconduit_iframe.html';
+      const body = responseBody({location: url});
+      delete body.cert.geo;
+
+      const res = {
+        status: 201,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Runtime': 0.497349
+        },
+        body: JSON.stringify(body)
+      };
+
+      const expectedResponse = expected({url  : url});
+      Object.keys(expectedResponse.location).forEach(key => {
+        expectedResponse.location[key] = undefined;
+      });
+
+      assert.deepEqual(integration.response({},{},res), expectedResponse);
     });
 
     describe('scan results parsing', () => {
@@ -420,7 +442,7 @@ describe('Claim Response', () => {
 
         const response = getResponse(body, vars);
         assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, 'snapshot scan failed')
+        assert.equal(response.reason, 'snapshot scan failed');
       });
 
       it('calculates age in seconds with event_duration', () => {
@@ -619,7 +641,7 @@ const responseBody = (vars = {}) => {
   if (vars.event_duration) { response.cert.event_duration = vars.event_duration; }
   if (vars.claims) { response.cert.claims = response.cert.claims.concat(vars.claims); }
 
-  return JSON.stringify(response);
+  return response;
 };
 
 
