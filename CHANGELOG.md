@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.9.4] - 2019-03-08
+### Fixed
+- Updated icon for current branding
+
 ## [1.9.2] - 2018-06-26
 ### Fixed
 - Handle null geo data
