@@ -676,6 +676,7 @@ const expected = (vars = {}) => {
       not_found: []
     },
     duration: 0.497349,
+    fingerprints_summary: 'No Fingerprinting Data',
     warnings: []
   };
 };
