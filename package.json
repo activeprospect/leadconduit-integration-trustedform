@@ -16,6 +16,7 @@
   ],
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
+    "crypto": "^1.0.1",
     "leadconduit-integration": "^0.4.1",
     "lodash": "^4.17.4"
   },

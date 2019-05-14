@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.10.0] - 2019-05-09
+### Added
+- Added support for fingerprint results, per [TP #8409](https://activeprospect.tpondemand.com/entity/8409-trustedform-append-fingerprinting)
+
 ## [1.9.5] - 2019-03-08
 ### Fixed
 - Updated icon for current branding
