@@ -262,18 +262,18 @@ describe('Claim Response', () => {
 
     it('uses the location when there is no parent location', () => {
       const url = 'http://localhost:81/leadconduit_iframe.html';
-      assert.deepEqual(getResponse({location: url}), expected({url: url}));
+      assert.deepEqual(getResponse({location: url}), expected({url: url, location: url}));
     });
 
     it('uses the parent location when it is present', () => {
       const host = 'yourhost';
       const url = `http://${host}:81/my_iframe.html`;
-      assert.deepEqual(getResponse({parentLocation: url}), expected({url: url, domain: host}));
+      assert.deepEqual(getResponse({parentLocation: url}), expected({url: url, domain: host, parent_location: url}));
     });
 
     it('uses the cert location when parent location is an empty string', () => {
       const url = 'http://localhost:81/leadconduit_iframe.html';
-      assert.deepEqual(getResponse({parentLocation: '', location: url}), expected({url: url}));
+      assert.deepEqual(getResponse({parentLocation: '', location: url}), expected({url: url, location: url}));
     });
 
     it('should not bonk with null geo data', () => {
@@ -290,7 +290,7 @@ describe('Claim Response', () => {
         body: JSON.stringify(body)
       };
 
-      const expectedResponse = expected({url  : url});
+      const expectedResponse = expected({url: url, location: url});
       Object.keys(expectedResponse.location).forEach(key => {
         expectedResponse.location[key] = undefined;
       });
@@ -668,6 +668,10 @@ const expected = (vars = {}) => {
     share_url: 'https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE',
     url: vars.url || null,
     domain: vars.domain || 'localhost',
+    website:{
+      parent_location: vars.parent_location || null,
+      location: vars.location || null
+    },
     age_in_seconds: 33,
     time_on_page_in_seconds: null,
     created_at: '2014-04-02T21:24:22Z',
