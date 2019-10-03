@@ -18,7 +18,7 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "leadconduit-integration": "^0.4.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "chai": "^1.10.0",
