@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.11.0] - 2019-10-02
+### Added
+- Capture all URL colation data [CH #1862](https://app.clubhouse.io/active-prospect/story/1862/trustedform-integration-provide-all-url-location-data)
+
 ## [1.10.0] - 2019-05-09
 ### Added
 - Added support for fingerprint results, per [TP #8409](https://activeprospect.tpondemand.com/entity/8409-trustedform-append-fingerprinting)
