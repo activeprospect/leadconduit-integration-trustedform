@@ -26,11 +26,12 @@ describe('Cert URL validate', () => {
   });
 
   it('should not error when cert url is valid', () => {
-    const error = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/' }});
+    const error = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
     assert.isUndefined(error);
 
-    const error2 = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    const error2 = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/0.YpUzjEEpW3vIkuEJFst4gSDQ7KiFGLZGYkTwIMzRXt8TxcnRUnx3p1U34EWx6KUZ9hyJUuwVm11qoEodrSfsXYDLS7LDFWOyeuCP2MNCHdnAXYkG.IW3iXaUjponmuoB4HNdsWQ.H6cCZ53mOpSXUtUlpdwlWw' }});
     assert.isUndefined(error2);
+
   });
 });
 
