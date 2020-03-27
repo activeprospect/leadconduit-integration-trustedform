@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.12.1] - 2020-03-26
+### Changed
+- Now uses the TF node library
+
 ## [1.12.0] - 2019-10-02
 ### Added
 - Ensure cert url is valid [CH #1101](https://app.clubhouse.io/active-prospect/story/1101/invalid-trustedform-cert-url-is-not-invalidated-before-sending-a-claim-request-to-trustedform)
