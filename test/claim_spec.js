@@ -101,6 +101,26 @@ describe('Claim', () => {
     });
   });
 
+  it('should use the parent location when it is present', (done) => {
+
+    const host = 'yourhost';
+    const url = `http://${host}:81/my_iframe.html`;
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({parentLocation: url}));
+
+    integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.url, url);
+      assert.equal(event.domain, host);
+      assert.equal(event.website.parent_location, url);
+
+      done();
+    });
+
+  });
+
   it('should handle failure response', (done) => {
 
     nock('https://cert.trustedform.com')
@@ -121,12 +141,28 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
-      .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
+      .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'failure');
       assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
+
+      done();
+    });
+
+  });
+
+  it('should set failure outcome and reason when both required scan is missing and forbidden scan is present', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
+
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'failure');
+      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
 
       done();
     });
