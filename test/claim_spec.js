@@ -53,6 +53,39 @@ describe('Claim', () => {
     });
   });
 
+  it('should capture scans found', (done) => {
+    const scanText1 = 'some disclosure text';
+    const scanText2 = 'other disclosure text';
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({scans: { found: [scanText1, scanText2], not_found: [] }}));
+
+    integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.scans.found[0], scanText1);
+      assert.equal(event.scans.found[1], scanText2);
+
+      done();
+    });
+
+  });
+
+  it('should calculate age in seconds with event_duration', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({ event_duration: 19999 }));
+
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.age_in_seconds, 13);
+
+      done();
+    });
+
+  });
+
   it('should use a user-provided API key', (done) => {
 
     nock('https://cert.trustedform.com')
@@ -72,15 +105,31 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
-      .reply(201, responseBody({warnings: ['string found in snapshot']}), {'X-Runtime': '0.497349'});
+      .reply(201, responseBody({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
 
-    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'scan' }}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'failure');
-      assert.equal(event.reason, `Forbidden scan text found in TrustedForm snapshot (found 0: '')`);
+      assert.equal(event.reason, `Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
 
       done();
-    })
+    });
+
+  });
+
+  it('should set the correct reason when neither required or forbidden text are present', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
+
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'failure');
+      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
+
+      done();
+    });
 
   });
 
