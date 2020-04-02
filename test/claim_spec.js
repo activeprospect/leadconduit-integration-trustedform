@@ -3,7 +3,8 @@ const integration = require('../lib/claim');
 const tk = require('timekeeper');
 const emailtype = require('leadconduit-types').email;
 const phonetype = require('leadconduit-types').phone;
-const parser = require('leadconduit-integration').test.types.parser(integration.request.variables());
+const parser = require('leadconduit-integration').test.types.parser(integration.requestVariables());
+const nock = require('nock');
 
 describe('Cert URL validate', () => {
 
@@ -35,531 +36,155 @@ describe('Cert URL validate', () => {
   });
 });
 
-describe('Claim Request', () => {
-  let request;
-  let fullRequest;
-  const trustedform_cert_url = 'https://cert.trustedform.com/533c80270218239ec3000012';
+describe('Claim', () => {
 
-  beforeEach(() => {
-    request = integration.request(fullRequest);
-  });
+  it('should correctly handle a successful request', (done) => {
 
-  context('without parameters', () => {
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
+      .reply(201, responseBody(), { 'X-Runtime': '0.497349' });
 
-    before(() => {
-      fullRequest = baseRequest();
-    });
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, expected());
 
-    it('uses the claim id in the url', () => {
-      assert.equal(request.url, trustedform_cert_url);
-    });
-
-    it('uses the api_key in the auth header', () => {
-      assert.equal(request.headers.Authorization, 'Basic QVBJOmM5MzUxZmY0OWE4ZTM4YTIzNDkzYzZiNzMyOGM3NjI5');
-    });
-
-    it('is a POST request type', () => {
-      assert.equal(request.method, 'POST');
-    });
-
-    it('accepts JSON', () => {
-      assert.equal(request.headers.Accept, 'application/json');
-    });
-
-    it('has a form-urlencoded content-type', () => {
-      assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded');
-    });
-
-    it('includes the reference in the URL', () => {
-      assert.include(request.body, 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123');
-    });
-
-    it('includes the vendor in the URL', () => {
-      assert.include(request.body, 'vendor=Foo%2C%20Inc.');
+      done();
     });
   });
 
-  context('with a user-provided api key', () => {
-    let key = 'abcdefg1234567';
+  it('should capture scans found', (done) => {
+    const scanText1 = 'some disclosure text';
+    const scanText2 = 'other disclosure text';
 
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { api_key: key }});
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan[]=other%20disclosure%20text&vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({scans: { found: [scanText1, scanText2], not_found: [] }}));
+
+    integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.scans.found[0], scanText1);
+      assert.equal(event.scans.found[1], scanText2);
+
+      done();
     });
 
-    it('prefers the user-provided api key', () => {
-      assert.equal(request.headers.Authorization, 'Basic QVBJOmFiY2RlZmcxMjM0NTY3');
+  });
+
+  it('should calculate age in seconds with event_duration', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({ event_duration: 19999 }));
+
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.age_in_seconds, 13);
+
+      done();
+    });
+
+  });
+
+  it('should use a user-provided API key', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .matchHeader('Authorization', 'Basic WDphYmNkZWZnMTIzNDU2Nw==')
+      .reply(201, responseBody(), {'X-Runtime': '0.497349'});
+
+    integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, expected());
+
+      done();
     });
   });
 
-  context('with a scan parameter', () => {
-    let scan = 'string';
+  it('should use the parent location when it is present', (done) => {
 
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { scan_required_text: scan }});
+    const host = 'yourhost';
+    const url = `http://${host}:81/my_iframe.html`;
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({parentLocation: url}));
+
+    integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.url, url);
+      assert.equal(event.domain, host);
+      assert.equal(event.website.parent_location, url);
+
+      done();
     });
 
-    it('includes the parameter in the URL', () => {
-      assert.include(request.body, `scan%5B%5D=${scan}`);
-    });
   });
 
-  context('with multiple scan parameters', () => {
-    const first = 'first';
-    const last  = 'last';
+  it('should handle failure response', (done) => {
 
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { scan_required_text: [ first, last ] }});
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
+
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'failure');
+      assert.equal(event.reason, `Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
+
+      done();
     });
 
-    it('includes the parameter in the URL', () =>{
-      assert.include(request.body, `scan%5B%5D=${first}&scan%5B%5D=${last}`);
-    });
   });
 
-  context('with a scan_forbidden_text parameter',() => {
-    const scan = 'string';
+  it('should set the correct reason when neither required or forbidden text are present', (done) => {
 
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { scan_forbidden_text: scan }});
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
+
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'failure');
+      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
+
+      done();
     });
 
-    it('includes the parameter in the URL', () => {
-      assert.include(request.body, `scan!%5B%5D=${scan}`);
-    });
   });
 
-  context('with multiple scan_forbidden_text parameters', () => {
-    const first = 'first';
-    const last  = 'last';
+  it('should set failure outcome and reason when both required scan is missing and forbidden scan is present', (done) => {
 
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { scan_forbidden_text: [ first, last ] }});
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
+      .reply(201, responseBody({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
+
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'failure');
+      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
+
+      done();
     });
 
-    it('includes the parameters in the URL', () => {
-      assert.include(request.body, `scan!%5B%5D=${first}&scan!%5B%5D=${last}`);
-    });
   });
 
-  context('with multiple parameters', () => {
-    const scan          = 'fooscan';
-    const scanForbidden = 'barscan';
+  it('should handle error response', (done) => {
 
-    before( () => {
-      fullRequest = baseRequest({ trustedform: { scan_required_text: scan, scan_forbidden_text: scanForbidden }});
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .reply(503, '<h1>This website is under heavy load</h1><p>We\'re sorry, too many people are accessing this website at the same time. We\'re working on this problem. Please try again later.</p>');
+
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'error');
+      assert.equal(event.reason, 'Error: Could not claim form');
+
+      done();
     });
 
-    it('includes the parameters in the URL', () => {
-      assert.include(request.body, `scan%5B%5D=${scan}&scan!%5B%5D=${scanForbidden}`);
-    });
   });
 
-  context('with a lead email', () => {
-    const email = emailtype.parse('TomJones@vegas.com');
-
-    before(() => {
-      fullRequest = baseRequest({ lead: { email: email }});
-    });
-
-    it('includes the parameters in the URL', () => {
-      assert.include(request.body, `email=${encodeURIComponent(email)}`);
-    });
-  });
-
-  context('with a lead phone_1', () => {
-    const phone = phonetype.parse('512-789-1111');
-
-    before(() => {
-      fullRequest = baseRequest({ lead: { phone_1: phone }});
-    });
-
-    it('includes the parameters in the URL', () => {
-      assert.include(request.body, `phone_1=${phone}`);
-    });
-  });
-
-  context('with a lead phone_2', () => {
-    const phone = phonetype.parse('512.555.5785');
-
-    before(() => {
-      fullRequest = baseRequest({ lead: { phone_2: phone }});
-    });
-
-    it('includes the parameters in the URL', () => {
-      assert.include(request.body, `phone_2=${phone}`);
-    });
-  });
-
-  context('without a lead phone_3', () => {
-    const phone = null;
-
-    before(() => {
-      fullRequest = baseRequest({ lead: { phone_3: phone }});
-    });
-
-    it('doesnt include the parameters in the URL', () => {
-      assert.notInclude(request.body, 'phone_3');
-    });
-  });
-
-  context('with trustedform.vendor', () => {
-    const vendor = 'E Corp.';
-
-    before(() => {
-      fullRequest = baseRequest({ trustedform: { vendor: vendor }});
-    });
-
-    it('should use trustedform.vendor', () => {
-      assert.include(request.body, 'vendor=E%20Corp.');
-    });
-
-    it('should ignore source', () => {
-      assert.notInclude(request.body, 'vendor=Foo%2C%20Inc.');
-    });
-  });
-});
-
-describe('with more than one cert_url', () => {
-
-  it('ignores empty value', () => {
-    const claimUrl = 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985';
-
-    const request = integration.request(baseRequest({ lead: { trustedform_cert_url: ['', claimUrl] }}));
-    assert.equal(request.url, claimUrl);
-  });
-
-  it('uses the first value', () => {
-    const claimUrl1 = 'https://cert.trustedform.com/1111111111111111111111111111111111111111';
-    const claimUrl2 = 'https://cert.trustedform.com/2222222222222222222222222222222222222222';
-
-    const request = integration.request(baseRequest({ lead: { trustedform_cert_url: [claimUrl1, claimUrl2] }}));
-    assert.equal(request.url, claimUrl1);
-  });
-});
-
-describe('Claim Response', () => {
-
-  const getResponse = (body, vars = {}) => {
-    const res = {
-      status: 201,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Runtime': 0.497349
-      },
-      body: JSON.stringify(responseBody(body))
-    };
-    return integration.response(vars, {}, res);
-  };
-
-  context('a successful response', () => {
-
-    beforeEach(() => {
-      tk.freeze(new Date(1396646152539));
-    });
-
-    afterEach(() => {
-      tk.reset();
-    });
-
-    it('uses the location when there is no parent location', () => {
-      const url = 'http://localhost:81/leadconduit_iframe.html';
-      assert.deepEqual(getResponse({location: url}), expected({url: url, location: url}));
-    });
-
-    it('uses the parent location when it is present', () => {
-      const host = 'yourhost';
-      const url = `http://${host}:81/my_iframe.html`;
-      assert.deepEqual(getResponse({parentLocation: url}), expected({url: url, domain: host, parent_location: url}));
-    });
-
-    it('uses the cert location when parent location is an empty string', () => {
-      const url = 'http://localhost:81/leadconduit_iframe.html';
-      assert.deepEqual(getResponse({parentLocation: '', location: url}), expected({url: url, location: url}));
-    });
-
-    it('should not bonk with null geo data', () => {
-      const url = 'http://localhost:81/leadconduit_iframe.html';
-      const body = responseBody({location: url});
-      delete body.cert.geo;
-
-      const res = {
-        status: 201,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Runtime': 0.497349
-        },
-        body: JSON.stringify(body)
-      };
-
-      const expectedResponse = expected({url: url, location: url});
-      Object.keys(expectedResponse.location).forEach(key => {
-        expectedResponse.location[key] = undefined;
-      });
-
-      assert.deepEqual(integration.response({},{},res), expectedResponse);
-    });
-
-    describe('scan results parsing', () => {
-
-      it('handles null value for scans', () => {
-        const response = getResponse();
-        assert.equal(response.scans.found.length, 0);
-      });
-
-      it('captures scans_found', () => {
-        const scanText1 = 'some disclosure text';
-        let vars = { trustedform: {scan_required_text: scanText1 }};
-        let response = getResponse({scans: { found: [scanText1], not_found: [] } }, vars);
-        assert.equal(response.scans.found.length, 1);
-        assert.equal(response.scans.found[0], scanText1);
-        assert.equal(response.scans.num_required_matched, 'all');
-
-        const scanText2 = 'other disclosure text';
-        vars.trustedform.scan_required_text = [scanText1, scanText2];
-        response = getResponse({scans: { found: [scanText1, scanText2], not_found: [] } }, vars);
-        assert.equal(response.scans.found.length, 2);
-        assert.equal(response.scans.found[0], scanText1);
-        assert.equal(response.scans.found[1], scanText2);
-        assert.equal(response.scans.num_required_matched, 'all');
-      });
-
-      it('captures scans_not_found', () => {
-        const response = getResponse({scans: { found: [], not_found: ['free iPod from Obama!'] } });
-        assert.equal(response.scans.not_found[0], 'free iPod from Obama!');
-      });
-
-      it('correctly formats response when required scan is missing', () => {
-        const vars = { trustedform: {scan_required_text: 'some disclosure text' }};
-        const body = { warnings: ['string not found in snapshot'], scans: { found: [], not_found: ['some disclosure text'] } };
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
-        assert.equal(response.scans.num_required_matched, 'none');
-      });
-
-      it('correctly formats resposnse when multiple required scans are missing', () => {
-        const vars = { trustedform: { scan_required_text: ['some disclosure text', 'other disclosure text'] }};
-        const body = { warnings: ['string not found in snapshot'], scans: { found: [], not_found: ['some disclosure text', 'other disclosure text'] } };
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
-        assert.equal(response.scans.num_required_matched, 'none');
-      });
-
-      it('correctly formats reason when some required scans are missing', () => {
-        const vars = { trustedform: { scan_required_text: ['some disclosure text', 'other disclosure text'] }};
-        const body = { warnings: ['string not found in snapshot'], scans: { found: ['other disclosure text'], not_found: ['some disclosure text', 'other disclosure text'] } };
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 2: 'other disclosure text, some disclosure text')`);
-        assert.equal(response.scans.num_required_matched, 'some');
-      });
-
-      it('sets failure outcome and reason when forbidden scan is present', () => {
-        const vars = { trustedform: { scan_forbidden_text: 'free iPod from Obama!' }};
-        const body = { warnings: ['string found in snapshot'], scans: { found: ['free iPod from Obama!'], not_found: [] } };
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
-      });
-
-      it('sets failure outcome and reason when both required scan is missing and forbidden scan is present', () => {
-        const vars = {
-          trustedform: {
-            scan_required_text: 'some disclosure text',
-            scan_forbidden_text: 'free iPod from Obama!'
-          }
-        };
-        const body = {
-          warnings: ['string not found in snapshot', 'string found in snapshot'],
-          scans: { found: ['free iPod from Obama!'], not_found: ['some disclosure text'] }
-        };
-
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
-      });
-
-      it('sets correct reason when required and forbidden text are both present', () => {
-        const vars = {
-          trustedform: {
-            scan_required_text: 'some disclosure text',
-            scan_forbidden_text: 'free iPod from Obama!'
-          }
-        };
-        const body = {
-          warnings: ['string found in snapshot'],
-          scans: { found: ['free iPod from Obama!', 'some disclosure text'] }
-        };
-
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
-      });
-
-      it('sets correct reason when neither required or forbidden text are present', () => {
-        const vars = {
-          trustedform: {
-            scan_required_text: 'some disclosure text',
-            scan_forbidden_text: 'free iPod from Obama!'
-          }
-        };
-        const body = {
-          warnings: ['string not found in snapshot'],
-          scans: { not_found: ['free iPod from Obama!', 'some disclosure text'] }
-        };
-
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
-      });
-
-      it('sets success outcome when required scan is present and forbidden scan is not',  () => {
-        const vars = {
-          trustedform: {
-            scan_required_text: 'some disclosure text',
-            scan_forbidden_text: 'free iPod from Obama!'
-          }
-        };
-        const body = {
-          warnings: [],
-          scans: { found: ['some disclosure text'] }
-        };
-
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'success');
-        assert.equal(response.reason, null);
-      });
-
-      it('sets failure outcome when required text is included and snapshot scan failed', () => {
-        const vars = {
-          trustedform: {
-            scan_required_text: 'some disclosure text',
-          }
-        };
-        const body = {
-          warnings: ['snapshot scan failed'],
-        };
-
-        const response = getResponse(body, vars);
-        assert.equal(response.outcome, 'failure');
-        assert.equal(response.reason, 'snapshot scan failed');
-      });
-
-      it('calculates age in seconds with event_duration', () => {
-        const body = { event_duration: 19999 }; // 20 s
-        const response = getResponse(body, {});
-        // cert.created_at:  "2014-04-02T21:24:22Z"
-        // claim.created_at: "2014-04-02T21:24:55Z" 33s later
-        assert.equal(response.age_in_seconds, 13);  // with duration subtracted
-      });
-
-      it('calculates age in seconds without event_duration', () => {
-        const body = {};
-        const response = getResponse(body, {});
-        // cert.created_at:  "2014-04-02T21:24:22Z"
-        // claim.created_at: "2014-04-02T21:24:55Z" // 33s later
-        assert.equal(response.age_in_seconds, 33);
-      });
-
-      it('time on page included when event duration present', () => {
-        const body = { event_duration: 61999 };
-        const response = getResponse(body, {});
-        assert.equal(response.time_on_page_in_seconds, 62); // 61.999s rounded
-      });
-    });
-  });
-
-  describe('error response', () => {
-
-    it('should parse it without blowing up', () => {
-      const res = {
-        status: 503,
-        headers: {
-          'Content-Type': 'text/html; charset=UTF-8'
-        },
-        body: `<h1>This website is under heavy load</h1><p>We're sorry, too many people are accessing this website at the same time. We're working on this problem. Please try again later.</p>`
-      };
-      const expected = {
-        outcome: 'error',
-        reason:  'TrustedForm error - unable to parse response (503)'
-      };
-      const response = integration.response({}, {}, res);
-      assert.deepEqual(response, expected);
-    });
-
-
-    it('returns an error when cert not found', () => {
-      const res = {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: `
-          {
-            "message": "certificate not found"
-          }
-        `
-      };
-      const expected = {
-        outcome: 'error',
-        reason:  'TrustedForm error - certificate not found (404)'
-      };
-      const response = integration.response({}, {}, res);
-      assert.deepEqual(response, expected);
-    });
-
-    it('returns an error when unauthorized', () => {
-      const res = {
-        status: 401,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: null
-      };
-      const expected = {
-        outcome: 'error',
-        reason: 'TrustedForm error -  (401)'
-      };
-
-      const response = integration.response({}, {}, res);
-      assert.deepEqual(expected, response);
-    });
-
-    it('returns an error message when cert is expired', () => {
-      const res = {
-        status: 410,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: null
-      };
-      const expected = {
-        outcome: 'error',
-        reason: `TrustedForm error - The TrustedForm certificate already passed the 72-hour origination timeframe and can no longer be claimed. (410)`
-      };
-
-      const response = integration.response({}, {}, res);
-      assert.deepEqual(expected, response);
-    });
-
-    it('returns an error message when cert id is invalid', () => {
-      const res = {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: 'This Certificate of Authenticity was not found'
-      };
-      const expected = {
-        outcome: 'error',
-        reason: `TrustedForm error - This Certificate of Authenticity was not found (404)`
-      };
-
-      const response = integration.response({}, {}, res);
-      assert.deepEqual(expected, response);
-    });
-  });
 });
 
 const baseRequest = (extraKeys = {}) => {
@@ -668,7 +293,7 @@ const expected = (vars = {}) => {
     is_masked: false,
     share_url: 'https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE',
     url: vars.url || null,
-    domain: vars.domain || 'localhost',
+    domain: vars.domain || null,
     website:{
       parent_location: vars.parent_location || null,
       location: vars.location || null
@@ -680,8 +305,8 @@ const expected = (vars = {}) => {
       found: [],
       not_found: []
     },
-    duration: 0.497349,
+    duration: '0.497349',
     fingerprints_summary: 'No Fingerprinting Data',
-    warnings: []
+    warnings: vars.warnings || []
   };
 };

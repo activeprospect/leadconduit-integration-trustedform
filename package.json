@@ -16,14 +16,15 @@
   ],
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
-    "crypto": "^1.0.1",
     "leadconduit-integration": "^0.4.1",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "trustedform-api-client": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^1.10.0",
     "leadconduit-types": "^4",
     "mocha": "^4.1.0",
+    "nock": "^12.0.3",
     "timekeeper": "^0.0"
   }
 }
