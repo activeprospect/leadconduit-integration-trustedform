@@ -58,7 +58,7 @@ describe('Claim', () => {
     const scanText2 = 'other disclosure text';
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan[]=other%20disclosure%20text&vendor=Foo,%20Inc.&')
       .reply(201, responseBody({scans: { found: [scanText1, scanText2], not_found: [] }}));
 
     integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
@@ -124,7 +124,7 @@ describe('Claim', () => {
   it('should handle failure response', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
       .reply(201, responseBody({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
@@ -140,7 +140,7 @@ describe('Claim', () => {
   it('should set the correct reason when neither required or forbidden text are present', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
       .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
@@ -156,7 +156,7 @@ describe('Claim', () => {
   it('should set failure outcome and reason when both required scan is missing and forbidden scan is present', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012?vendor=Foo,%20Inc.&')
+      .post('/533c80270218239ec3000012?scan[]=some%20disclosure%20text&scan![]=free%20iPod%20from%20Obama!&vendor=Foo,%20Inc.&')
       .reply(201, responseBody({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
