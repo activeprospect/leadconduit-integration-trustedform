@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.12.2] - 2020-05-27
+### Added
+- Now appends certificate ID
+
 ## [1.12.1] - 2020-03-26
 ### Changed
 - Now uses the TF node library
