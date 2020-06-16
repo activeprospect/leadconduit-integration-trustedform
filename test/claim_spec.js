@@ -173,12 +173,12 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
-      .reply(503, '<h1>This website is under heavy load</h1><p>We\'re sorry, too many people are accessing this website at the same time. We\'re working on this problem. Please try again later.</p>');
+      .reply(404, '{"message":"certificate not found"}', { 'content-type': 'application/json'} );
 
     integration.handle(baseRequest(), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'error');
-      assert.equal(event.reason, 'Error: Could not claim form');
+      assert.equal(event.reason, 'TrustedForm error - certificate not found (404)');
 
       done();
     });
