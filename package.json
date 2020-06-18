@@ -4,7 +4,8 @@
   "description": "LeadConduit integration with TrustedForm",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test:coverage:lcov": "nyc --reporter=lcov npm test"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "leadconduit-types": "^4",
     "mocha": "^4.1.0",
     "nock": "^12.0.3",
+    "nyc": "^15.0.0",
     "timekeeper": "^0.0"
   }
 }
