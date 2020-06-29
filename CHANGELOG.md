@@ -20,7 +20,7 @@ This project adheres to [Semantic Versioning](http://semver.org)
 
 ## [1.11.0] - 2019-10-02
 ### Added
-- Capture all URL colation data [CH #1862](https://app.clubhouse.io/active-prospect/story/1862/trustedform-integration-provide-all-url-location-data)
+- Capture all URL collation data [CH #1862](https://app.clubhouse.io/active-prospect/story/1862/trustedform-integration-provide-all-url-location-data)
 
 ## [1.10.0] - 2019-05-09
 ### Added
