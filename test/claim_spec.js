@@ -43,7 +43,7 @@ describe('Claim', () => {
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
-      .reply(201, responseBody(), { 'X-Runtime': '0.497349' });
+      .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
     integration.handle(baseRequest(), (err, event) => {
       assert.isNull(err);
@@ -59,7 +59,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({scans: { found: [scanText1, scanText2], not_found: [] }}));
+      .reply(201, standardResponse({scans: { found: [scanText1, scanText2], not_found: [] }}));
 
     integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
       assert.isNull(err);
@@ -75,7 +75,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({ event_duration: 19999 }));
+      .reply(201, standardResponse({ event_duration: 19999 }));
 
     integration.handle(baseRequest(), (err, event) => {
       assert.isNull(err);
@@ -91,7 +91,7 @@ describe('Claim', () => {
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDphYmNkZWZnMTIzNDU2Nw==')
-      .reply(201, responseBody(), {'X-Runtime': '0.497349'});
+      .reply(201, standardResponse(), {'X-Runtime': '0.497349'});
 
     integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
       assert.isNull(err);
@@ -108,7 +108,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({parentLocation: url}));
+      .reply(201, standardResponse({parentLocation: url}));
 
     integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
       assert.isNull(err);
@@ -125,7 +125,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
+      .reply(201, standardResponse({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
       assert.isNull(err);
@@ -141,7 +141,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
+      .reply(201, standardResponse({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
       assert.isNull(err);
@@ -157,7 +157,7 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
-      .reply(201, responseBody({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
+      .reply(201, standardResponse({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
       assert.isNull(err);
@@ -167,6 +167,18 @@ describe('Claim', () => {
       done();
     });
 
+  });
+
+  it('should correctly handle claiming facebook certs', (done) => {
+    nock('https://cert.trustedform.com')
+      .post('/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDg')
+      .reply(201, facebookResponse());
+
+    integration.handle(baseRequest({ source: { name: undefined }, lead: { trustedform_cert_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDg' }}), (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, facebookEvent());
+      done();
+    });
   });
 
   it('should handle error response', (done) => {
@@ -206,8 +218,7 @@ const baseRequest = (extraKeys = {}) => {
   return parser(hash);
 };
 
-
-const responseBody = (vars = {}) => {
+const standardResponse = (vars = {}) => {
   const response = {
     cert: {
       browser: 'Chrome 33.0.1750',
@@ -270,6 +281,29 @@ const responseBody = (vars = {}) => {
   return response;
 };
 
+const facebookResponse = () => {
+  return {
+    age: 6,
+    cert: {
+      cert_id: "0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG",
+      created_at: "2020-06-22T18:51:40Z"
+    },
+    created_at: "2020-06-22T18:51:46Z",
+    fingerprints: {
+      matching: [],
+      non_matching: []
+    },
+    id: "0305c844-0f04-4e8e-8179-49692685b0f7",
+    reference: null,
+    scans: {
+      found: [],
+      not_found: []
+    },
+    share_url: "https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw",
+    vendor: null,
+    warnings: []
+  };
+};
 
 const expected = (vars = {}) => {
   return {
@@ -279,7 +313,7 @@ const expected = (vars = {}) => {
     browser: 'Chrome 33.0.1750',
     os: 'Mac OS X 10.9.2',
     ip: '127.0.0.1',
-    token: '533c80270218239ec3000012',
+    token: '0dcf20941b6b4f196331ff7ae1ca534befa269dd',
     location: {
       city: 'Austin',
       country_code: 'US',
@@ -295,7 +329,7 @@ const expected = (vars = {}) => {
     share_url: 'https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE',
     url: vars.url || null,
     domain: vars.domain || null,
-    website:{
+    website: {
       parent_location: vars.parent_location || null,
       location: vars.location || null
     },
@@ -310,4 +344,45 @@ const expected = (vars = {}) => {
     fingerprints_summary: 'No Fingerprinting Data',
     warnings: vars.warnings || []
   };
-};
+}
+
+const facebookEvent = () => {
+  return {
+    age_in_seconds: 6,
+    browser: undefined,
+    created_at: "2020-06-22T18:51:40Z",
+    domain: null,
+    duration: undefined,
+    fingerprints_summary: "No Fingerprinting Data",
+    ip: undefined,
+    is_masked: undefined,
+    location: {
+      city: undefined,
+      country_code: undefined,
+      latitude: undefined,
+      longitude: undefined,
+      postal_code: undefined,
+      state: undefined,
+      time_zone: undefined,
+    },
+    masked_cert_url: undefined,
+    os: undefined,
+    outcome: "success",
+    reason: null,
+    scans: {
+      found: [],
+      not_found: [],
+    },
+    share_url: "https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw",
+    snapshot_url: undefined,
+    time_on_page_in_seconds: null,
+    token: "0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG",
+    url: undefined,
+    user_agent: undefined,
+    warnings: [],
+    website: {
+      location: undefined,
+      parent_location: undefined,
+    }
+  };
+}
