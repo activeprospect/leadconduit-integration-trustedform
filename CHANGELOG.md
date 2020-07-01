@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.12.5] - 2020-07-01
+### Fixed
+- Now accepts HTTP cert_urls, but makes them into HTTPS
+
 ## [1.12.4] - 2020-06-25
 ### Fixed
 - Now appends the correct certificate token
