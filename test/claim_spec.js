@@ -64,7 +64,7 @@ describe('Claim', () => {
 
     const req = baseRequest();
     req.lead.trustedform_cert_url = 'http://cert.trustedform.com/533c80270218239ec3000012';
-    integration.handle(baseRequest(), (err, event) => {
+    integration.handle(req, (err, event) => {
       assert.isNull(err);
       assert.deepEqual(event, expected());
 
