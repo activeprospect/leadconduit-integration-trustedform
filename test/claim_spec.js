@@ -1,8 +1,5 @@
 const assert = require('chai').assert;
 const integration = require('../lib/claim');
-const tk = require('timekeeper');
-const emailtype = require('leadconduit-types').email;
-const phonetype = require('leadconduit-types').phone;
 const parser = require('leadconduit-integration').test.types.parser(integration.requestVariables());
 const nock = require('nock');
 
@@ -34,6 +31,11 @@ describe('Cert URL validate', () => {
     assert.isUndefined(error2);
 
   });
+
+  it('should not error when cert url is http', () => {
+    const error = integration.validate({lead: { trustedform_cert_url: 'http://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    assert.isUndefined(error);
+  });
 });
 
 describe('Claim', () => {
@@ -46,6 +48,23 @@ describe('Claim', () => {
       .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
     integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, expected());
+
+      done();
+    });
+  });
+
+  it('should convert a http cert_url to https', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
+      .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
+
+    const req = baseRequest();
+    req.lead.trustedform_cert_url = 'http://cert.trustedform.com/533c80270218239ec3000012';
+    integration.handle(req, (err, event) => {
       assert.isNull(err);
       assert.deepEqual(event, expected());
 
@@ -285,21 +304,21 @@ const facebookResponse = () => {
   return {
     age: 6,
     cert: {
-      cert_id: "0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG",
-      created_at: "2020-06-22T18:51:40Z"
+      cert_id: '0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG',
+      created_at: '2020-06-22T18:51:40Z'
     },
-    created_at: "2020-06-22T18:51:46Z",
+    created_at: '2020-06-22T18:51:46Z',
     fingerprints: {
       matching: [],
       non_matching: []
     },
-    id: "0305c844-0f04-4e8e-8179-49692685b0f7",
+    id: '0305c844-0f04-4e8e-8179-49692685b0f7',
     reference: null,
     scans: {
       found: [],
       not_found: []
     },
-    share_url: "https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw",
+    share_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw',
     vendor: null,
     warnings: []
   };
@@ -350,10 +369,10 @@ const facebookEvent = () => {
   return {
     age_in_seconds: 6,
     browser: undefined,
-    created_at: "2020-06-22T18:51:40Z",
+    created_at: '2020-06-22T18:51:40Z',
     domain: null,
     duration: undefined,
-    fingerprints_summary: "No Fingerprinting Data",
+    fingerprints_summary: 'No Fingerprinting Data',
     ip: undefined,
     is_masked: undefined,
     location: {
@@ -367,16 +386,16 @@ const facebookEvent = () => {
     },
     masked_cert_url: undefined,
     os: undefined,
-    outcome: "success",
+    outcome: 'success',
     reason: null,
     scans: {
       found: [],
       not_found: [],
     },
-    share_url: "https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw",
+    share_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw',
     snapshot_url: undefined,
     time_on_page_in_seconds: null,
-    token: "0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG",
+    token: '0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG',
     url: undefined,
     user_agent: undefined,
     warnings: [],
