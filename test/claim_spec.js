@@ -132,7 +132,6 @@ describe('Claim', () => {
         trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
       }
     });
-    console.log(baseReq)
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.&email=test%40activeprospect.com&phone_1=5122981234&phone_2=5129184321&phone_3=5126721243')
