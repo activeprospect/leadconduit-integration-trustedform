@@ -41,7 +41,7 @@ describe('Claim', () => {
   it('should correctly handle a successful request', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
       .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
@@ -58,7 +58,7 @@ describe('Claim', () => {
     const scanText2 = 'other disclosure text';
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({scans: { found: [scanText1, scanText2], not_found: [] }}));
 
     integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
@@ -74,7 +74,7 @@ describe('Claim', () => {
   it('should calculate age in seconds with event_duration', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({ event_duration: 19999 }));
 
     integration.handle(baseRequest(), (err, event) => {
@@ -89,7 +89,7 @@ describe('Claim', () => {
   it('should use a user-provided API key', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDphYmNkZWZnMTIzNDU2Nw==')
       .reply(201, standardResponse(), {'X-Runtime': '0.497349'});
 
@@ -107,7 +107,7 @@ describe('Claim', () => {
     const url = `http://${host}:81/my_iframe.html`;
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({parentLocation: url}));
 
     integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
@@ -121,10 +121,37 @@ describe('Claim', () => {
 
   });
 
+  it('should send additional fields when present', (done) => {
+    const baseReq = baseRequest({
+      lead: {
+        email: 'test@activeprospect.com',
+        phone_1: '5122981234',
+        phone_2: '5129184321',
+        phone_3: '5126721243',
+        id: 'lead_id_123',
+        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
+      }
+    });
+    console.log(baseReq)
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.&email=test%40activeprospect.com&phone_1=5122981234&phone_2=5129184321&phone_3=5126721243')
+      .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
+
+    integration.handle(baseReq, (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, expected());
+
+      done();
+    })
+
+
+  });
+
   it('should handle failure response', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
@@ -140,7 +167,7 @@ describe('Claim', () => {
   it('should set the correct reason when neither required or forbidden text are present', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
@@ -156,7 +183,7 @@ describe('Claim', () => {
   it('should set failure outcome and reason when both required scan is missing and forbidden scan is present', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
 
     integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
@@ -184,7 +211,7 @@ describe('Claim', () => {
   it('should handle error response', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(404, '{"message":"certificate not found"}', { 'content-type': 'application/json'} );
 
     integration.handle(baseRequest(), (err, event) => {
