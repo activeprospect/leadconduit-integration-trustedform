@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.12.5] - 2020-07-14
+### Fixed
+- Now includes the reference parameter when claiming a certificate
+
 ## [1.12.4] - 2020-06-25
 ### Fixed
 - Now appends the correct certificate token
