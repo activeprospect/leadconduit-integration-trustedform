@@ -58,7 +58,7 @@ describe('Claim', () => {
   it('should convert a http cert_url to https', (done) => {
 
     nock('https://cert.trustedform.com')
-      .post('/533c80270218239ec3000012', 'vendor=Foo%2C%20Inc.')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
       .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
