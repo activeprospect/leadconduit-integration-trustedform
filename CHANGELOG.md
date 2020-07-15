@@ -2,9 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [1.12.5] - 2020-07-14
+## [1.12.6] - 2020-07-14
 ### Fixed
 - Now includes the reference parameter when claiming a certificate
+
+## [1.12.5] - 2020-07-01
+### Fixed
+- Now accepts HTTP cert_urls, but makes them into HTTPS
+>>>>>>> e34cb6c0500e7d5a62653731032b42091ebfa2e6
 
 ## [1.12.4] - 2020-06-25
 ### Fixed
