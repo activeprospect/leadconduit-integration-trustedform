@@ -3,6 +3,10 @@ const integration = require('../lib/claim');
 const parser = require('leadconduit-integration').test.types.parser(integration.requestVariables());
 const nock = require('nock');
 
+beforeEach(() => {
+  process.env.NODE_ENV = 'production';
+});
+
 describe('Cert URL validate', () => {
 
   it('should error on undefined cert url', () => {
@@ -34,6 +38,24 @@ describe('Cert URL validate', () => {
 
   it('should not error when cert url is http', () => {
     const error = integration.validate({lead: { trustedform_cert_url: 'http://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    assert.isUndefined(error);
+  });
+
+
+  it('should accept staging certs on staging', () => {
+    process.env.NODE_ENV = 'staging';
+    const error = integration.validate({lead: { trustedform_cert_url: 'http://cert.staging.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    assert.isUndefined(error);
+  });
+
+  it('should not accept staging certs on production', () => {
+    const error = integration.validate({lead: { trustedform_cert_url: 'http://cert.staging.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
+    assert.equal(error, 'TrustedForm cert URL must be valid');
+  });
+
+  it('should accept a production cert on staging', () => {
+    process.env.NODE_ENV = 'staging';
+    const error = integration.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
     assert.isUndefined(error);
   });
 });
