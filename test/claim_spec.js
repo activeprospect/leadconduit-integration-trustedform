@@ -48,6 +48,15 @@ describe('Cert URL validate', () => {
     assert.isUndefined(error);
   });
 
+  it('should not accept invalid certs on staging', () => {
+    process.env.NODE_ENV = 'staging';
+    const error = integration.validate({lead: { trustedform_cert_url: 'http://someothersite.com' }});
+    assert.equal(error, 'TrustedForm cert URL must be valid');
+
+    const error2 = integration.validate({lead: { trustedform_cert_url: 'KOWABUNGAhttps://cert.trustedform.com/' }});
+    assert.equal(error2, 'TrustedForm cert URL must be valid');
+  });
+
   it('should not accept staging certs on production', () => {
     const error = integration.validate({lead: { trustedform_cert_url: 'http://cert.staging.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
     assert.equal(error, 'TrustedForm cert URL must be valid');
