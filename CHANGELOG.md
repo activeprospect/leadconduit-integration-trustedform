@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.12.7] - 2020-09-08
+## Fixed
+- Staging now accepts staging certificates
+
 ## [1.12.6] - 2020-07-14
 ### Fixed
 - Now includes the reference parameter when claiming a certificate
