@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!isClaim">
     <header>
       Set Up TrustedForm Data Service
     </header>
@@ -12,6 +12,15 @@
       </p>
     </section>
     <Navigation/>
+  </div>
+  <div v-else-if="isClaim">
+    <header>
+      TrustedForm Claim
+    </header>
+    <section>
+      <span class="loading"></span> We're setting up your TrustedForm step now.
+    </section>
+    <Navigation :show-next="false"/>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 ---
-name: TrustedForm
+name: Claim
 tag: TCPA
 integration_type: marketplace enhancement
 link: https://activeprospect.com/products/trustedform/

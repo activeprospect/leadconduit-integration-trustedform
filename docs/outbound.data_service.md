@@ -1,5 +1,5 @@
 ---
-name: TrustedForm Data Service
+name: Data Service
 tag: Data Insights
 integration_type: enhancement marketplace
 link: https://activeprospect.com/products/trustedform/
