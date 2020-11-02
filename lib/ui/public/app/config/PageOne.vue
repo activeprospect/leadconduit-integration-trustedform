@@ -5,7 +5,7 @@
     </header>
     <section>
       <p>
-        TrustedForm Data Service provides lead buyers with optimized lead data that helps them assess the value of a lead. [Data Service] helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.  At the time or purchase, or any time thereafter, the lead buyer can use the LeadConduit platform to access lead metadata (not PII) found in the TrustedForm certificates.
+        TrustedForm Data Service provides lead buyers with optimized lead data that helps them assess the value of a lead. It helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.  At the time of purchase, or any time thereafter, the lead buyer can use the LeadConduit platform to access lead metadata (not PII) found in the TrustedForm certificates.
       </p>
       <p>
         <b>Note:</b> To access TrustedForm Data Service data, your lead source must use the TrustedForm script on their lead forms.
