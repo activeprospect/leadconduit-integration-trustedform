@@ -9,11 +9,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [8.15, 10.x, 12.x, 14.x]
-      
+        node-version: [10.x, 12.x, 14.x]
+
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-  
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,4 +25,4 @@ jobs:
       run: npm run test:coverage:lcov
     - uses: codecov/codecov-action@v1
       with:
-        token: ${{ secrets.CODECOV_TOKEN }} 
+        token: ${{ secrets.CODECOV_TOKEN }}
