@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.13.0] - 2020-11-02
+### Added
+- Added new integration TrustedForm Data Service
+
 ## [1.12.7] - 2020-09-08
 ## Fixed
 - Staging now accepts staging certificates
