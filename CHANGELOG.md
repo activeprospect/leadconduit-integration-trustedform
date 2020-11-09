@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.13.1] - 2020-11-04
+### Fixed
+- Added `billable` property to Data Service integration
+
 ## [1.13.0] - 2020-11-02
 ### Added
 - Added new integration TrustedForm Data Service

@@ -77,6 +77,7 @@ describe('Data Service', () => {
       const expected = {
         data_service: {
           outcome: 'success',
+          billable: 1,
           age: 44,
           browser: 'Chrome 84.0.4147',
           created_at: '2020-10-19T14:01:44Z',
@@ -122,7 +123,8 @@ describe('Data Service', () => {
       const expected = {
         data_service: {
           outcome: 'failure',
-          reason: 'cert not found'
+          reason: 'cert not found',
+          billable: 0
         }
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
@@ -136,7 +138,8 @@ describe('Data Service', () => {
       const expected = {
         data_service: {
           outcome: 'error',
-          reason: 'unable to parse response'
+          reason: 'unable to parse response',
+          billable: 0
         }
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
