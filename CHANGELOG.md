@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.14.0] - 2021-03-25
+### Added
+- Added the ability to customize `reference` field in Claim integration
+
 ## [1.13.1] - 2020-11-04
 ### Fixed
 - Added `billable` property to Data Service integration

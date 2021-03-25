@@ -24,6 +24,30 @@ describe('Claim', () => {
     });
   });
 
+  it('should pass custom reference if one is present', (done) => {
+
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123%3Femail%3Dtest%40example.com&vendor=Foo%2C%20Inc.')
+      .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
+      .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
+
+    const vars = {
+      lead: {
+        id: 'lead_id_123',
+        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
+        reference: 'https://next.leadconduit.com/events/lead_id_123?email=test@example.com'
+      }
+    };
+
+    integration.handle(baseRequest(vars), (err, event) => {
+      assert.isNull(err);
+      assert.deepEqual(event, expected());
+
+      done();
+    });
+
+  });
+
   it('should convert a http cert_url to https', (done) => {
 
     nock('https://cert.trustedform.com')
