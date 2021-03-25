@@ -32,10 +32,8 @@ describe('Claim', () => {
       .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
     const vars = {
-      lead: {
-        id: 'lead_id_123',
-        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
-        reference: 'https://next.leadconduit.com/events/lead_id_123?email=test@example.com'
+      trustedform: {
+        custom_reference: 'https://next.leadconduit.com/events/lead_id_123?email=test@example.com'
       }
     };
 
