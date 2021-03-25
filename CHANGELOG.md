@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [1.14.0] - 2021-03-25
+## [1.14.1] - 2021-03-25
 ### Added
 - Added the ability to customize `reference` field in Claim integration
 
