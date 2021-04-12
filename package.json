@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "test:coverage:lcov": "nyc --reporter=lcov npm test",
-    "prepare": "webpack --config lib/ui/webpack.config.js",
+    "prepublishOnly": "webpack --config node_modules/@activeprospect/integration-dev-webpack/config.js",
     "postpublish": "rm lib/ui/public/dist/*"
   },
   "repository": {
@@ -37,11 +37,8 @@
   },
   "devDependencies": {
     "@activeprospect/integration-dev-dependencies": "^1.0.1",
-    "chai": "^1.10.0",
+    "@activeprospect/integration-dev-webpack": "^1.0.1",
     "leadconduit-types": "^4",
-    "mocha": "^4.1.0",
-    "nock": "^12.0.3",
-    "nyc": "^15.0.0",
-    "timekeeper": "^0.0"
+    "timekeeper": "^2.2.0"
   }
 }
