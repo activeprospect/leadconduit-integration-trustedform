@@ -1,1 +1,0 @@
-/Users/jonathan/ap/leadconduit-integration-trustedform/node_modules/@activeprospect/integration-dev-dependencies/.eslintrc.js
