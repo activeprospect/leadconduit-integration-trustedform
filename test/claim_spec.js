@@ -8,9 +8,7 @@ beforeEach(() => {
 });
 
 describe('Claim', () => {
-
   it('should correctly handle a successful request', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
@@ -25,7 +23,6 @@ describe('Claim', () => {
   });
 
   it('should pass custom reference if one is present', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123%3Femail%3Dtest%40example.com&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
@@ -43,11 +40,9 @@ describe('Claim', () => {
 
       done();
     });
-
   });
 
   it('should convert a http cert_url to https', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
@@ -69,20 +64,18 @@ describe('Claim', () => {
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(201, standardResponse({scans: { found: [scanText1, scanText2], not_found: [] }}));
+      .reply(201, standardResponse({ scans: { found: [scanText1, scanText2], not_found: [] } }));
 
-    integration.handle(baseRequest({trustedform: {scan_required_text: [scanText1, scanText2]}}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { scan_required_text: [scanText1, scanText2] } }), (err, event) => {
       assert.isNull(err);
       assert.equal(event.scans.found[0], scanText1);
       assert.equal(event.scans.found[1], scanText2);
 
       done();
     });
-
   });
 
   it('should calculate age in seconds with event_duration', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(201, standardResponse({ event_duration: 19999 }));
@@ -93,17 +86,15 @@ describe('Claim', () => {
 
       done();
     });
-
   });
 
   it('should use a user-provided API key', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .matchHeader('Authorization', 'Basic WDphYmNkZWZnMTIzNDU2Nw==')
-      .reply(201, standardResponse(), {'X-Runtime': '0.497349'});
+      .reply(201, standardResponse(), { 'X-Runtime': '0.497349' });
 
-    integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { api_key: 'abcdefg1234567' } }), (err, event) => {
       assert.isNull(err);
       assert.deepEqual(event, expected());
 
@@ -112,15 +103,14 @@ describe('Claim', () => {
   });
 
   it('should use the parent location when it is present', (done) => {
-
     const host = 'yourhost';
     const url = `http://${host}:81/my_iframe.html`;
 
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(201, standardResponse({parentLocation: url}));
+      .reply(201, standardResponse({ parentLocation: url }));
 
-    integration.handle(baseRequest({trustedform: {api_key: 'abcdefg1234567'}}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { api_key: 'abcdefg1234567' } }), (err, event) => {
       assert.isNull(err);
       assert.equal(event.url, url);
       assert.equal(event.domain, host);
@@ -128,7 +118,6 @@ describe('Claim', () => {
 
       done();
     });
-
   });
 
   it('should send additional fields when present', (done) => {
@@ -152,57 +141,49 @@ describe('Claim', () => {
       assert.deepEqual(event, expected());
 
       done();
-    })
-
-
+    });
   });
 
   it('should handle failure response', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(201, standardResponse({warnings: ['string found in snapshot'], scans: { found: [ 'free iPod from Obama!', 'some disclosure text' ]}}), {'X-Runtime': '0.497349'});
+      .reply(201, standardResponse({ warnings: ['string found in snapshot'], scans: { found: ['free iPod from Obama!', 'some disclosure text'] } }), { 'X-Runtime': '0.497349' });
 
-    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' } }), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'failure');
-      assert.equal(event.reason, `Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
+      assert.equal(event.reason, 'Forbidden scan text found in TrustedForm snapshot (found 1: \'free iPod from Obama!\')');
 
       done();
     });
-
   });
 
   it('should set the correct reason when neither required or forbidden text are present', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(201, standardResponse({warnings: ['string not found in snapshot'], scans: { not_found: [ 'free iPod from Obama!', 'some disclosure text' ]}}));
+      .reply(201, standardResponse({ warnings: ['string not found in snapshot'], scans: { not_found: ['free iPod from Obama!', 'some disclosure text'] } }));
 
-    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' } }), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'failure');
-      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text')`);
+      assert.equal(event.reason, 'Required scan text not found in TrustedForm snapshot (missing 1: \'some disclosure text\')');
 
       done();
     });
-
   });
 
   it('should set failure outcome and reason when both required scan is missing and forbidden scan is present', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'scan%5B%5D=some%20disclosure%20text&scan!%5B%5D=free%20iPod%20from%20Obama!&reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(201, standardResponse({warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: [ 'some disclosure text' ], found: [ 'free iPod from Obama!' ]}}));
+      .reply(201, standardResponse({ warnings: ['string not found in snapshot', 'string found in snapshot'], scans: { not_found: ['some disclosure text'], found: ['free iPod from Obama!'] } }));
 
-    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' }}), (err, event) => {
+    integration.handle(baseRequest({ trustedform: { scan_forbidden_text: 'free iPod from Obama!', scan_required_text: 'some disclosure text' } }), (err, event) => {
       assert.isNull(err);
       assert.equal(event.outcome, 'failure');
-      assert.equal(event.reason, `Required scan text not found in TrustedForm snapshot (missing 1: 'some disclosure text'); Forbidden scan text found in TrustedForm snapshot (found 1: 'free iPod from Obama!')`);
+      assert.equal(event.reason, 'Required scan text not found in TrustedForm snapshot (missing 1: \'some disclosure text\'); Forbidden scan text found in TrustedForm snapshot (found 1: \'free iPod from Obama!\')');
 
       done();
     });
-
   });
 
   it('should correctly handle claiming facebook certs', (done) => {
@@ -210,7 +191,7 @@ describe('Claim', () => {
       .post('/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDg')
       .reply(201, facebookResponse());
 
-    integration.handle(baseRequest({ source: { name: undefined }, lead: { trustedform_cert_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDg' }}), (err, event) => {
+    integration.handle(baseRequest({ source: { name: undefined }, lead: { trustedform_cert_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDg' } }), (err, event) => {
       assert.isNull(err);
       assert.deepEqual(event, facebookEvent());
       done();
@@ -218,10 +199,9 @@ describe('Claim', () => {
   });
 
   it('should handle error response', (done) => {
-
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
-      .reply(404, '{"message":"certificate not found"}', { 'content-type': 'application/json'} );
+      .reply(404, '{"message":"certificate not found"}', { 'content-type': 'application/json' });
 
     integration.handle(baseRequest(), (err, event) => {
       assert.isNull(err);
@@ -230,9 +210,21 @@ describe('Claim', () => {
 
       done();
     });
-
   });
 
+  it('should successfully catch errors', (done) => {
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
+      .reply(404, 'message: "certificate not found"', { 'content-type': 'application/json' });
+
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'error');
+      assert.equal(event.reason, 'Unexpected token m in JSON at position 0');
+
+      done();
+    });
+  });
 });
 
 const baseRequest = (extraKeys = {}) => {
@@ -380,7 +372,7 @@ const expected = (vars = {}) => {
     fingerprints_summary: 'No Fingerprinting Data',
     warnings: vars.warnings || []
   };
-}
+};
 
 const facebookEvent = () => {
   return {
@@ -399,7 +391,7 @@ const facebookEvent = () => {
       longitude: undefined,
       postal_code: undefined,
       state: undefined,
-      time_zone: undefined,
+      time_zone: undefined
     },
     masked_cert_url: undefined,
     os: undefined,
@@ -407,7 +399,7 @@ const facebookEvent = () => {
     reason: null,
     scans: {
       found: [],
-      not_found: [],
+      not_found: []
     },
     share_url: 'https://cert.trustedform.com/0.Ca5p10CcJX-Xez5OHgF5hkp_mNc166yLBQTEOli6gwengwvrGgFVTkD31eCLCMyExX9JnreuobnY063YIPtpk9FF9gFcoZH13q9ooZlNTXEaclhm.qnOgos1woq9gNjKB71dg9A.11EiuZaqmjiScX8GrYbpDG?shared_token=TqIvDcHVbBSlwO3SyiC_uYCB1pz1TJYntf_eHzf4zXvI_Lyqlh641meMMLxEhWKicaoO6rpDS05oigLMgtVYQ4itcbStqMIKkdZ-zVEyXvePZ_RXCVjlYugE1lJrZSebNtKJja7p6DNCy3RTtG4epHjeNApFjSW5DtTC-06zdUFHDuZ94csEjKAKjQGk0P5YL26z7bU2-mQzSaUyTTYebXqYIFvBoicdLhfk60t1awl_0j-_yt5pmB2fuz_G3KTyIG9pApY.wJZzJdLSHW1Wm1pGrVEDRg.C1cS1Vhh3HaKjmo78GALfw',
     snapshot_url: undefined,
@@ -418,7 +410,7 @@ const facebookEvent = () => {
     warnings: [],
     website: {
       location: undefined,
-      parent_location: undefined,
+      parent_location: undefined
     }
   };
-}
+};
