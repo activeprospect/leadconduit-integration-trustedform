@@ -22,6 +22,7 @@
   ],
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
+    "express": "^4.17.1",
     "leadconduit-integration": "^0.4.1",
     "leadconduit-integration-ui": "^1.1.4",
     "lodash": "^4.17.20",
