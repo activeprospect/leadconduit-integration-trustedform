@@ -18,7 +18,6 @@ describe('Data Service', () => {
   });
 
   describe('Request', () => {
-
     beforeEach(() => {
       process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = '123456';
     });
@@ -30,60 +29,59 @@ describe('Data Service', () => {
         body: 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&phone_1=5122981234&email=test%40activeprospect.com',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Bearer 123456`
+          Authorization: 'Bearer 123456'
         }
-      }
+      };
       assert.deepEqual(integration.request(baseVars()), expected);
     });
 
     it('should mask token on second invocation', () => {
-      let vars = baseVars();
+      const vars = baseVars();
       integration.request(vars);
       assert.equal(integration.request(vars).headers.Authorization, 'Bearer ******');
     });
   });
 
   describe('Response', () => {
-
     it('should correctly handle success responses', () => {
       const res = {
         status: 201,
         body: JSON.stringify({
-          "age": 44,
-          "fingerprints": {
-            "matching": [ "test@activeprospect.com" ],
-            "non_matching": [ "5122981234" ]
+          age: 44,
+          fingerprints: {
+            matching: ['test@activeprospect.com'],
+            non_matching: ['5122981234']
           },
-          "masked": true,
-          "scans": {
-            "found": [ "some disclosure text" ],
-            "not_found": [ "other disclosure text" ]
+          masked: true,
+          scans: {
+            found: ['some disclosure text'],
+            not_found: ['other disclosure text']
           },
-          "warnings": [ "some warning" ],
-          "cert": {
-            "cert_id": "533c80270218239ec3000012",
-            "browser": "Chrome 84.0.4147",
-            "device": "Linux",
-            "operating_system": "Linux",
-            "created_at": "2020-10-19T14:01:44Z",
-            "event_duration": 38,
-            "expires_at": "2020-10-22T14:01:44Z",
-            "framed": true,
-            "geo": {
-              "lat": 45.8696,
-              "lon": -119.688,
-              "city": "Boardman",
-              "state": "OR",
-              "postal_code": "97818",
-              "country_code": "US",
-              "time_zone": "America/Los_Angeles"
+          warnings: ['some warning'],
+          cert: {
+            cert_id: '533c80270218239ec3000012',
+            browser: 'Chrome 84.0.4147',
+            device: 'Linux',
+            operating_system: 'Linux',
+            created_at: '2020-10-19T14:01:44Z',
+            event_duration: 38,
+            expires_at: '2020-10-22T14:01:44Z',
+            framed: true,
+            geo: {
+              lat: 45.8696,
+              lon: -119.688,
+              city: 'Boardman',
+              state: 'OR',
+              postal_code: '97818',
+              country_code: 'US',
+              time_zone: 'America/Los_Angeles'
             },
-            "ip": "52.35.61.232",
-            "page_url": "https://activeprospect.com/example",
-            "parent_page_url": "https://activeprospect.com",
-            "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36",
-            "wpm": 50,
-            "kpm": 112
+            ip: '52.35.61.232',
+            page_url: 'https://activeprospect.com/example',
+            parent_page_url: 'https://activeprospect.com',
+            user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+            wpm: 50,
+            kpm: 112
           }
         })
       };
@@ -128,8 +126,8 @@ describe('Data Service', () => {
       const res = {
         status: 404,
         body: JSON.stringify({
-          "errors": {
-            "detail": "cert not found"
+          errors: {
+            detail: 'cert not found'
           }
         })
       };
@@ -156,7 +154,7 @@ describe('Data Service', () => {
         }
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
-    })
+    });
   });
 });
 
@@ -173,7 +171,7 @@ const baseVars = (custom) => {
         'other disclosure text'
       ]
     }
-  }
+  };
   vars = Object.assign(vars, custom);
 
   return parser(vars);
