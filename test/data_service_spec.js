@@ -3,6 +3,19 @@ const integration = require('../lib/data_service');
 const parser = require('leadconduit-integration').test.types.parser(integration.request.variables());
 
 describe('Data Service', () => {
+  describe('Validate', () => {
+    it('should pass if token env var set', () => {
+      process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = 'foo';
+      const error = integration.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
+      assert.isUndefined(error);
+    });
+
+    it('should skip if token env var not set', () => {
+      delete process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN;
+      const error = integration.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
+      assert.equal(error, 'Missing TrustedForm Data Service token');
+    });
+  });
 
   describe('Request', () => {
 
