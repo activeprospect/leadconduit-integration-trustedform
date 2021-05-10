@@ -73,6 +73,11 @@ describe('Helper functions', () => {
       assert.equal(error2, 'TrustedForm cert URL must be valid');
     });
 
+    it('should error on cert url with excess characters', () => {
+      const error = helper.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/fc8ebbd2eecce602bf3c307a98144f45a5191460.' }});
+      assert.equal(error, 'TrustedForm cert URL must be valid');
+    });
+
     it('should not error when cert url is valid', () => {
       const error = helper.validate({lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' }});
       assert.isUndefined(error);

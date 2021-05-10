@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org)
 
 ## Fixed
 - Added validation of TrustedForm Data Service token environment variable
+- Fixed validation of certificates to skip on > 40 character IDs ([ch22713](https://app.clubhouse.io/active-prospect/story/22713/update-trustedform-integration-to-more-accurately-validate-cert-urls))
 
 ## [1.14.2] - 2021-04-14
 ### Fixed
