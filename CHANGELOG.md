@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.15.0] - 2021-05-10
+### Added
+- Added aliases for `data_service`: `decision_service_ping` and `decision_service_post` ([ch23031](https://app.clubhouse.io/active-prospect/story/23031/integration-wrappers-for-tfds-in-ac-vc-pricing))
+
 ## [1.14.2] - 2021-04-14
 ### Fixed
 - Added additional error handling to Claim integration 
