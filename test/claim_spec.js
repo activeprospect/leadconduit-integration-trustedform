@@ -354,6 +354,7 @@ const expected = (vars = {}) => {
     snapshot_url: 'http://snapshots.trustedform.com/0dcf20941b6b4f196331ff7ae1ca534befa269dd/index.html',
     masked_cert_url: 'https://cert.trustedform.com/e57c02509dda472de4aed9e8950a331fcfda6dc4',
     is_masked: false,
+    expires_at: '2019-04-01T21:24:55Z',
     share_url: 'https://cert.trustedform.com/935818f23f1227002279aee8ce2db094c9bfae90?shared_token=REALLONGSHAREDTOKENGOESHERE',
     url: vars.url || null,
     domain: vars.domain || null,
@@ -384,6 +385,7 @@ const facebookEvent = () => {
     fingerprints_summary: 'No Fingerprinting Data',
     ip: undefined,
     is_masked: undefined,
+    expires_at: undefined,
     location: {
       city: undefined,
       country_code: undefined,
