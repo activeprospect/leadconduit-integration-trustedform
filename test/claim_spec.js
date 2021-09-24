@@ -8,7 +8,6 @@ beforeEach(() => {
 });
 
 describe('Claims', () => {
-
   it('should pass custom reference if one is present', (done) => {
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123%3Femail%3Dtest%40example.com&vendor=Foo%2C%20Inc.')
@@ -151,7 +150,7 @@ describe('Claims', () => {
 
       integration.handle(baseRequest({ trustedform: { scan_required_text: 'some disclosure text' } }), (err, event) => {
         assert.isNull(err);
-        assert.deepEqual(event, v3expected({ outcome: 'failure', reason: 'Not all scans found', scans: { found: [], not_found: ['some disclosure text'] }}));
+        assert.deepEqual(event, v3expected({ outcome: 'failure', reason: 'Not all scans found', scans: { found: [], not_found: ['some disclosure text'] } }));
 
         done();
       });

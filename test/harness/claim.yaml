@@ -1,0 +1,36 @@
+validate:
+-
+  vars:
+    lead:
+      trustedform_cert_url: ''
+  expected: TrustedForm cert URL must not be blank
+-
+  vars:
+    lead:
+      trustedform_cert_url: donkey
+  expected: TrustedForm cert URL must be valid
+-
+
+  vars:
+    lead:
+      trustedform_cert_url: https://cert.trustedform.com/973c5c5ff629cf5a949fa798673eb14868676767
+
+request:
+-
+  vars:
+    lead:
+      trustedform_cert_url: https://cert.trustedform.com/973c5c5ff629cf5a949fa798673eb14868676767
+  expected:
+    body: reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Fundefined&vendor=Vendor%201
+    headers:
+      Accept: application/json
+      Authorization: Basic QVBJOmZvbw==
+      Content-Type: application/x-www-form-urlencoded
+    method: POST
+    url: https://cert.trustedform.com/973c5c5ff629cf5a949fa798673eb14868676767
+
+extra_vars:
+  activeprospect:
+    api_key: foo
+  source:
+    name: Vendor 1
