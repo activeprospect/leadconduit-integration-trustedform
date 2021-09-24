@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.16.0] - 2021-09-23
+### Added
+- Added support for new "version 3.0" Claim API
+
 ## [1.15.1] - 2021-07-21
 ### Fixed
 - Claim now appends `expires_at` field

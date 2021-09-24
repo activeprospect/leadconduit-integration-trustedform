@@ -16,17 +16,13 @@
     "type": "git",
     "url": "git://github.com/activeprospect/leadconduit-integration-trustedform.git"
   },
-  "contributors": [
-    "Ben Hicks <ben@activeprospect.com>",
-    "Chris Grayson <chris@activeprospect.com>"
-  ],
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
     "express": "^4.17.1",
     "leadconduit-integration": "^0.4.1",
     "leadconduit-integration-ui": "^1.1.4",
     "lodash": "^4.17.20",
-    "trustedform-api-client": "^1.0.5",
+    "trustedform-api-client": "^1.1.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"
