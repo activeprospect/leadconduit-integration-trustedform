@@ -66,6 +66,11 @@ describe('Data Service', () => {
             created_at: '2020-10-19T14:01:44Z',
             event_duration: 38,
             expires_at: '2020-10-22T14:01:44Z',
+            form_input_method: [
+              'typing',
+              'autofill',
+              'paste'
+            ],
             framed: true,
             geo: {
               lat: 45.8696,
@@ -96,6 +101,10 @@ describe('Data Service', () => {
           event_duration: 38,
           expires_at: '2020-10-22T14:01:44Z',
           framed: true,
+          form_input_method: [
+            'typing',
+            'autofill',
+            'paste'],
           city: 'Boardman',
           country_code: 'US',
           lat: 45.8696,
