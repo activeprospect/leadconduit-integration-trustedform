@@ -43,55 +43,54 @@ describe('Data Service', () => {
   });
 
   describe('Response', () => {
-    it('should correctly handle success responses', () => {
-      const res = {
-        status: 201,
-        body: JSON.stringify({
-          age: 44,
-          fingerprints: {
-            matching: ['test@activeprospect.com'],
-            non_matching: ['5122981234']
+    let tfResponse, expected;
+    beforeEach(() => {
+      tfResponse = {
+        age: 44,
+        fingerprints: {
+          matching: ['test@activeprospect.com'],
+          non_matching: ['5122981234']
+        },
+        masked: true,
+        scans: {
+          found: ['some disclosure text'],
+          not_found: ['other disclosure text']
+        },
+        warnings: ['some warning'],
+        cert: {
+          cert_id: '533c80270218239ec3000012',
+          browser: 'Chrome 84.0.4147',
+          device: 'Linux',
+          operating_system: 'Linux',
+          consented_at: '2020-10-19T14:01:43Z',
+          created_at: '2020-10-19T14:01:44Z',
+          event_duration: 38,
+          expires_at: '2020-10-22T14:01:44Z',
+          form_input_method: [
+            'typing',
+            'autofill',
+            'paste'
+          ],
+          framed: true,
+          geo: {
+            lat: 45.8696,
+            lon: -119.688,
+            city: 'Boardman',
+            state: 'OR',
+            postal_code: '97818',
+            country_code: 'US',
+            time_zone: 'America/Los_Angeles'
           },
-          masked: true,
-          scans: {
-            found: ['some disclosure text'],
-            not_found: ['other disclosure text']
-          },
-          warnings: ['some warning'],
-          cert: {
-            cert_id: '533c80270218239ec3000012',
-            browser: 'Chrome 84.0.4147',
-            device: 'Linux',
-            operating_system: 'Linux',
-            consented_at: '2020-10-19T14:01:43Z',
-            created_at: '2020-10-19T14:01:44Z',
-            event_duration: 38,
-            expires_at: '2020-10-22T14:01:44Z',
-            form_input_method: [
-              'typing',
-              'autofill',
-              'paste'
-            ],
-            framed: true,
-            geo: {
-              lat: 45.8696,
-              lon: -119.688,
-              city: 'Boardman',
-              state: 'OR',
-              postal_code: '97818',
-              country_code: 'US',
-              time_zone: 'America/Los_Angeles'
-            },
-            ip: '52.35.61.232',
-            page_url: 'https://activeprospect.com/example',
-            parent_page_url: 'https://activeprospect.com',
-            user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
-            wpm: 50,
-            kpm: 112
-          }
-        })
+          ip: '52.35.61.232',
+          page_url: 'https://activeprospect.com/example',
+          parent_page_url: 'https://activeprospect.com',
+          user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
+          wpm: 50,
+          kpm: 112
+        }
       };
-      const expected = {
+
+      expected = {
         data_service: {
           outcome: 'success',
           billable: 1,
@@ -107,6 +106,7 @@ describe('Data Service', () => {
             'typing',
             'autofill',
             'paste'],
+          has_consented: true,
           city: 'Boardman',
           country_code: 'US',
           lat: 45.8696,
@@ -130,6 +130,24 @@ describe('Data Service', () => {
           warnings: ['some warning']
         }
       };
+    });
+
+    it('should correctly handle success response', () => {
+      const res = {
+        status: 201,
+        body: JSON.stringify(tfResponse)
+      };
+      assert.deepEqual(integration.response({}, {}, res), expected);
+    });
+
+    it('should handle response without consented_at', () => {
+      delete tfResponse.cert.consented_at;
+      const res = {
+        status: 201,
+        body: JSON.stringify(tfResponse)
+      };
+      expected.data_service.consented_at = undefined;
+      expected.data_service.has_consented = false;
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
 
