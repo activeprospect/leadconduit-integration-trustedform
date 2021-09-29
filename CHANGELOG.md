@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org)
 ### Added
 - Added Data Service attributes:
   - `form_input_method` ([sc-27130](https://app.shortcut.com/active-prospect/story/27130/update-trustedform-data-service-add-support-for-form-input-method)) 
-  - `consented_at` ([sc-29812](https://app.shortcut.com/active-prospect/story/29812/update-trustedform-data-service-add-support-for-consented-at))
+  - `has_consented` & `consented_at` ([sc-29812](https://app.shortcut.com/active-prospect/story/29812/update-trustedform-data-service-add-support-for-consented-at))
 
 ## [1.15.1] - 2021-07-21
 ### Fixed
