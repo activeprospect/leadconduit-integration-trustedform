@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.16.0] - 2021-09-28
+### Added
+- Added Data Service attributes:
+  - `form_input_method` ([sc-27130](https://app.shortcut.com/active-prospect/story/27130/update-trustedform-data-service-add-support-for-form-input-method)) 
+  - `has_consented` & `consented_at` ([sc-29812](https://app.shortcut.com/active-prospect/story/29812/update-trustedform-data-service-add-support-for-consented-at))
+
 ## [1.15.1] - 2021-07-21
 ### Fixed
 - Claim now appends `expires_at` field
