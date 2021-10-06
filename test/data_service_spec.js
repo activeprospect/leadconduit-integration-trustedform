@@ -146,7 +146,7 @@ describe('Data Service', () => {
         status: 201,
         body: JSON.stringify(tfResponse)
       };
-      expected.data_service.consented_at = undefined;
+      delete expected.data_service.consented_at;
       expected.data_service.has_consented = false;
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
