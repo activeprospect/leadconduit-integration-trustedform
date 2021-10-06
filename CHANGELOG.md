@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.16.1] - 2021-10-06
+### Fixed
+- Fixed to not append `consented_at` at all if not returned by TrustedForm (LC UI shows "Invalid date")
+
 ## [1.16.0] - 2021-09-28
 ### Added
 - Added Data Service attributes:
