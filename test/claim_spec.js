@@ -213,6 +213,7 @@ describe('Claim', () => {
   });
 
   it('should successfully catch errors', (done) => {
+    // trigger error in claim callback with malformed JSON
     nock('https://cert.trustedform.com')
       .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
       .reply(404, 'message: "certificate not found"', { 'content-type': 'application/json' });
@@ -221,6 +222,20 @@ describe('Claim', () => {
       assert.isNull(err);
       assert.equal(event.outcome, 'error');
       assert.equal(event.reason, 'Unexpected token m in JSON at position 0');
+
+      done();
+    });
+  });
+
+  it('should catch server errors (500s)', (done) => {
+    nock('https://cert.trustedform.com')
+      .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
+      .reply(500, '{ "errors": { "detail": "Internal Server Error" }}', { 'content-type': 'application/json' });
+
+    integration.handle(baseRequest(), (err, event) => {
+      assert.isNull(err);
+      assert.equal(event.outcome, 'error');
+      assert.equal(event.reason, 'TrustedForm error - Internal Server Error (500)');
 
       done();
     });
