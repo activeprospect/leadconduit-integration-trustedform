@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.16.2] - 2021-11-12
+### Fixed
+- Fixed to report the same reason on 500 server errors it did before TrustedForm's API change ([sc-25816](https://app.shortcut.com/active-prospect/story/25816/lc-trustedform-integration-is-returning-a-different-error-when-encountering-a-500-system-error))
+
+### Added
+- Added support for mobile cert URL format (40 or 80 alphanumeric, plus dash `-` and underscore `_`) ([sc-30234](https://app.shortcut.com/active-prospect/story/30234/mobile-tf-certs-are-skipped-by-claim-integration))
+
 ## [1.16.1] - 2021-10-06
 ### Fixed
 - Fixed to not append `consented_at` at all if not returned by TrustedForm (LC UI shows "Invalid date")

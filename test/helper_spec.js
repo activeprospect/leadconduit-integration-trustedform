@@ -52,6 +52,10 @@ describe('Helper functions', () => {
   });
 
   describe('Cert URL validate', () => {
+    beforeEach(() => {
+      process.env.NODE_ENV = 'production';
+    });
+
     it('should error on undefined cert url', () => {
       const error = helper.validate({ lead: {} });
       assert.equal(error, 'TrustedForm cert URL must not be blank');
@@ -81,6 +85,30 @@ describe('Helper functions', () => {
 
       const error2 = helper.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/0.YpUzjEEpW3vIkuEJFst4gSDQ7KiFGLZGYkTwIMzRXt8TxcnRUnx3p1U34EWx6KUZ9hyJUuwVm11qoEodrSfsXYDLS7LDFWOyeuCP2MNCHdnAXYkG.IW3iXaUjponmuoB4HNdsWQ.H6cCZ53mOpSXUtUlpdwlWw' } });
       assert.isUndefined(error2);
+    });
+
+    describe('mobile certs', () => {
+      it('should pass with 40-character mobile production cert', () => {
+        const error = helper.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/1CgT5lnszfHVYeb-_YxqZ0tZmOCDfWp_Si_qOTdb' } });
+        assert.isUndefined(error);
+      });
+
+      it('should pass with 80-character mobile production cert', () => {
+        const error = helper.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/1CgT5lnszfHVYeb-_YxqZ0tZmOCDfWp_Si_qOTdbZsKu9UQdfrj8KUZSGFp7ZxEjwMyeySxoLRfJspnD' } });
+        assert.isUndefined(error);
+      });
+
+      it('should pass with 40-character mobile staging cert', () => {
+        process.env.NODE_ENV = 'staging';
+        const error = helper.validate({ lead: { trustedform_cert_url: 'https://cert.staging.trustedform.com/1CgT5lnszfHVYeb-_YxqZ0tZmOCDfWp_Si_qOTdb' } });
+        assert.isUndefined(error);
+      });
+
+      it('should pass with 80-character mobile staging cert', () => {
+        process.env.NODE_ENV = 'staging';
+        const error = helper.validate({ lead: { trustedform_cert_url: 'https://cert.staging.trustedform.com/1CgT5lnszfHVYeb-_YxqZ0tZmOCDfWp_Si_qOTdbZsKu9UQdfrj8KUZSGFp7ZxEjwMyeySxoLRfJspnD' } });
+        assert.isUndefined(error);
+      });
     });
 
     it('should not error when cert url is http', () => {
