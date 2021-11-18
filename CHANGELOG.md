@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.16.3] - 2021-11-18
+### Fixed
+- Rename Data Service field `masked` to `is_masked` ([sc-32622](https://app.shortcut.com/active-prospect/story/32622/change-trustedform-data-service-integration-to-return-is-masked-instead-of-masked))
+
 ## [1.16.2] - 2021-11-12
 ### Fixed
 - Fixed to report the same reason on 500 server errors it did before TrustedForm's API change ([sc-25816](https://app.shortcut.com/active-prospect/story/25816/lc-trustedform-integration-is-returning-a-different-error-when-encountering-a-500-system-error))

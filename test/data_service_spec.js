@@ -124,7 +124,7 @@ describe('Data Service', () => {
           user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
           fingerprints_matching: ['test@activeprospect.com'],
           fingerprints_non_matching: ['5122981234'],
-          masked: true,
+          is_masked: true,
           scans_found: ['some disclosure text'],
           scans_not_found: ['other disclosure text'],
           warnings: ['some warning']
