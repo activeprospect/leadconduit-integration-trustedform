@@ -16,7 +16,7 @@
           </thead>
           <tbody>
             <tr
-                v-for="(value, key, index) in fields"
+                v-for="(value, key) in fields"
                 :key="key"
             >
               <td>{{ key }}</td>
@@ -27,21 +27,26 @@
         </table>
       </div>
     </section>
-    <Navigation/>
+    <Navigation :onNext="onNext"/>
   </div>
 </template>
 
 <script>
-import Navigation from './components/Navigation.vue';
+import { Navigation } from '@activeprospect/integration-components';
 
 export default {
-  data() {
+  data () {
     return {
-      fields: this.$store.state.fieldData,
+      fields: this.$store.state.fieldData
     };
   },
   components: {
     Navigation
+  },
+  methods: {
+    onNext () {
+      this.$router.push('/3');
+    }
   }
 };
 </script>
