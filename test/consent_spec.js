@@ -3,7 +3,7 @@ const integration = require('../lib/consent');
 const parser = require('leadconduit-integration').test.types.parser(integration.requestVariables());
 const nock = require('nock');
 
-describe('Consent', () => {
+describe('Consent (incl. common functionality with Consent + Data)', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'production';
   });
@@ -14,11 +14,11 @@ describe('Consent', () => {
         .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
         .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
         .matchHeader('api-version', '3.0')
-        .reply(201, standardResponse());
+        .reply(201, consentResponse());
 
       integration.handle(baseRequest(), (err, event) => {
         assert.isNull(err);
-        assert.deepEqual(event, baseExpected());
+        assert.deepEqual(event, consentExpected());
         done();
       });
     });
@@ -39,10 +39,10 @@ describe('Consent', () => {
     });
   });
 
-  describe('response parsing', () => {
+  describe('Consent response parsing', () => {
     it('should parse a basic success response', (done) => {
-      const parsed = integration.parseResponse(201, standardResponse(), baseRequest());
-      assert.deepEqual(parsed, baseExpected());
+      const parsed = integration.parseResponse(201, consentResponse(), baseRequest());
+      assert.deepEqual(parsed, consentExpected());
       done();
     });
 
@@ -54,10 +54,10 @@ describe('Consent', () => {
         required_found: ['temperance'],
         required_not_found: ['diligence']
       };
-      const response = standardResponse({ scans: scans });
+      const response = consentResponse({ scans: scans });
       const parsed = integration.parseResponse(201, response, request);
 
-      const expected = baseExpected({
+      const expected = consentExpected({
         forbidden_scans_found: ['gluttony'],
         forbidden_scans_not_found: ['slothfulness'],
         num_required_matched: 'some',
@@ -70,11 +70,11 @@ describe('Consent', () => {
 
     // todo: verify after API docs finalized
     it('should parse a failure response', (done) => {
-      const expected = baseExpected({
+      const expected = consentExpected({
         outcome: 'failure',
         reason: 'yo this failed'
       });
-      const parsed = integration.parseResponse(201, standardResponse({ outcome: 'failure', reason: 'yo this failed' }), baseRequest());
+      const parsed = integration.parseResponse(201, consentResponse({ outcome: 'failure', reason: 'yo this failed' }), baseRequest());
       assert.deepEqual(parsed, expected);
       done();
     });
@@ -93,10 +93,18 @@ describe('Consent', () => {
 
     // todo: verify after API docs finalized
     it('should parse an error outcome', (done) => {
-      const expected = baseExpected({ outcome: 'error', reason: 'an error occurred' });
-      const response = standardResponse({ outcome: 'error', reason: 'an error occurred' });
+      const expected = consentExpected({ outcome: 'error', reason: 'an error occurred' });
+      const response = consentResponse({ outcome: 'error', reason: 'an error occurred' });
       const parsed = integration.parseResponse(201, response, baseRequest());
       assert.deepEqual(parsed, expected);
+      done();
+    });
+  });
+
+  describe('Consent + Data response parsing', () => {
+    it('should parse additional `cert` data', (done) => {
+      const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest());
+      assert.deepEqual(parsed, consentPlusDataExpected());
       done();
     });
   });
@@ -115,13 +123,10 @@ const baseRequest = (extraKeys = {}) => {
       name: 'Foo, Inc.'
     }
   };
-
-  const hash = Object.assign(baseReq, extraKeys);
-
-  return parser(hash);
+  return parser(Object.assign(baseReq, extraKeys));
 };
 
-const standardResponse = (override = {}) => {
+const consentResponse = (override = {}) => {
   const response = {
     fingerprints: {
       matching: [],
@@ -137,7 +142,59 @@ const standardResponse = (override = {}) => {
   return Object.assign(response, override);
 };
 
-const baseExpected = (override = {}) => {
+const consentPlusDataResponse = (override = {}) => {
+  const cert = {
+    cert: {
+      age_seconds: 87,
+      approx_ip_geo: {
+        city: 'Austin',
+        country_code: 'US',
+        lat: 30.4548,
+        lon: -97.7664,
+        postal_code: '78729',
+        state: 'TX',
+        time_zone: 'America/Chicago'
+      },
+      browser: {
+        full: 'Mobile Safari 13.1.2',
+        name: 'Mobile Safari',
+        version: {
+          full: '13.1.2',
+          major: '13',
+          minor: '1',
+          patch: '2'
+        }
+      },
+      cert_id: '7d7207c4b20f9cb5692f02e91871378bced1061d',
+      created_at: '2021-11-18T17:57:09Z',
+      event_duration_ms: 20289,
+      expires_at: '2021-11-24T17:57:09Z',
+      form_input_method: ['typing'],
+      framed: false,
+      ip: '68.203.9.158',
+      kpm: 0,
+      mobile: true,
+      operating_system: {
+        full: 'iOS 13.6.1',
+        name: 'iOS',
+        version: {
+          full: '13.6.1',
+          major: '13',
+          minor: '6',
+          patch: '1'
+        }
+      },
+      page_id: '6058ba082e1fa93abc1b0c20',
+      page_url: 'https://activeprospect.github.io/trustedform_moose.html',
+      parent_page_url: null,
+      user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
+      wpm: 0
+    }
+  };
+  return consentResponse(Object.assign(cert, override));
+};
+
+const consentExpected = (override = {}) => {
   const result = {
     outcome: 'success',
     reason: null,
@@ -147,4 +204,33 @@ const baseExpected = (override = {}) => {
     warnings: []
   };
   return Object.assign(result, override);
+};
+
+const consentPlusDataExpected = () => {
+  const plusData = {
+    age_in_seconds: 87,
+    city: 'Austin',
+    country_code: 'US',
+    latitude: 30.4548,
+    longitude: -97.7664,
+    postal_code: '78729',
+    state: 'TX',
+    time_zone: 'America/Chicago',
+    browser: 'Mobile Safari 13.1.2',
+    is_mobile: true,
+    os: 'iOS 13.6.1',
+    token: '7d7207c4b20f9cb5692f02e91871378bced1061d',
+    time_on_page_in_seconds: 20.289,
+    created_at: '2021-11-18T17:57:09Z',
+    expires_at: '2021-11-24T17:57:09Z',
+    form_input_method: ['typing'],
+    is_framed: false,
+    ip: '68.203.9.158',
+    kpm: 0,
+    wpm: 0,
+    page_url: 'https://activeprospect.github.io/trustedform_moose.html',
+    parent_page_url: null,
+    domain: null
+  };
+  return consentExpected(plusData);
 };

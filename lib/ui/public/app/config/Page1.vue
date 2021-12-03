@@ -43,6 +43,8 @@ export default {
           return 'Claim';
         case 'leadconduit-trustedform.outbound.consent':
           return 'Consent';
+        case 'leadconduit-trustedform.outbound.consent_plus_data':
+          return 'Consent + Data';
         case 'leadconduit-trustedform.outbound.data_service':
           return 'Data Service';
         default:
