@@ -19,7 +19,7 @@
       <Navigation :onNext="onNext"/>
     </div>
     <div v-else-if="!isDataService">
-      <LoadingScreen :module-name="moduleName" :finish="onFinish"/>
+      <LoadingScreen :module-name="'TrustedForm ' + moduleName"/>
     </div>
   </div>
 </template>
@@ -55,9 +55,6 @@ export default {
   methods: {
     onNext () {
       this.$router.push('/2');
-    },
-    onFinish () {
-      this.$store.dispatch('finish');
     }
   },
   mounted () {
