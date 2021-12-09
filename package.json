@@ -18,6 +18,7 @@
   },
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
+    "@activeprospect/integration-components": "^3.0.0",
     "express": "^4.17.1",
     "leadconduit-integration": "^0.4.1",
     "leadconduit-integration-ui": "^1.1.4",

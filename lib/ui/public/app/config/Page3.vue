@@ -8,25 +8,21 @@
         Now you’re ready to map your fields and set up the associated filters in your LeadConduit flow.
       </p>
     </section>
-    <Navigation :show-next="false">
-      <template v-slot:footer>
-        <button @click="finish" class="primary">Finish</button>
-      </template>
-    </Navigation>
+    <Navigation :onFinish="finish"/>
   </div>
 </template>
 
 <script>
-import Navigation from './components/Navigation.vue';
+import { Navigation } from '@activeprospect/integration-components';
 
 export default {
   methods: {
-    finish() {
+    finish () {
       this.$store.dispatch('finish');
-    },
+    }
   },
   components: {
     Navigation
-  },
+  }
 };
 </script>
