@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.17.0] - 2021-12-10
+### Added
+- Added new integrations: [consent](https://app.shortcut.com/active-prospect/story/32490/trustedform-consent-integration) & [consent_plus_data](https://app.shortcut.com/active-prospect/story/32491/trustedform-consent-data-integration)
+
 ## [1.16.3] - 2021-11-18
 ### Fixed
 - Rename Data Service field `masked` to `is_masked` ([sc-32622](https://app.shortcut.com/active-prospect/story/32622/change-trustedform-data-service-integration-to-return-is-masked-instead-of-masked))
