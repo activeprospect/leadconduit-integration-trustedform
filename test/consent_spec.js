@@ -23,7 +23,6 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       });
     });
 
-    // todo: verify after API docs finalized
     it('should handle an error request', (done) => {
       nock('https://cert.trustedform.com')
         .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fnext.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
@@ -68,7 +67,23 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
-    // todo: verify after API docs finalized
+    it('should parse a success response with matched fingerprint', (done) => {
+      const responseOverride = {
+        fingerprints: {
+          matching: ['bc8abb288e52e145695ffc16969c2ec6eba82ff4'],
+          non_matching: ['12864b281c728bdca0f2102dba31308e1014fe4a']
+        },
+        warnings: []
+      };
+      const expectedOverride = {
+        fingerprints_summary: 'Some Matched',
+        warnings: []
+      };
+      const parsed = integration.parseResponse(201, consentResponse(responseOverride), baseRequest());
+      assert.deepEqual(parsed, consentExpected(expectedOverride));
+      done();
+    });
+
     it('should parse a failure response', (done) => {
       const expected = consentExpected({
         outcome: 'failure',
@@ -79,7 +94,6 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
-    // todo: verify after API docs finalized
     it('should parse an unauthorized failure response', (done) => {
       const expected = {
         outcome: 'failure',
@@ -91,7 +105,6 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
-    // todo: verify after API docs finalized
     it('should parse an error outcome', (done) => {
       const expected = consentExpected({ outcome: 'error', reason: 'an error occurred' });
       const response = consentResponse({ outcome: 'error', reason: 'an error occurred' });
@@ -130,14 +143,24 @@ const consentResponse = (override = {}) => {
   const response = {
     fingerprints: {
       matching: [],
-      non_matching: []
+      non_matching: [
+        '12864b281c728bdca0f2102dba31308e1014fe4a',
+        '72a34929a612536dde7e56df15ec7278f2ee97ec'
+      ]
     },
     masked: false,
     masked_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
     outcome: 'success',
     reason: '',
-    scans: {},
-    warnings: []
+    scans: {
+      forbidden_found: [],
+      forbidden_not_found: [],
+      required_found: [],
+      required_not_found: []
+    },
+    warnings: [
+      'none of the provided fingerprints match'
+    ]
   };
   return Object.assign(response, override);
 };
@@ -200,8 +223,12 @@ const consentExpected = (override = {}) => {
     reason: null,
     masked_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
     is_masked: false,
-    fingerprints_summary: 'No Fingerprinting Data',
-    warnings: []
+    forbidden_scans_found: [],
+    forbidden_scans_not_found: [],
+    required_scans_found: [],
+    required_scans_not_found: [],
+    fingerprints_summary: 'None Matched',
+    warnings: ['none of the provided fingerprints match']
   };
   return Object.assign(result, override);
 };
@@ -214,6 +241,10 @@ const consentPlusDataExpected = () => {
     latitude: 30.4548,
     longitude: -97.7664,
     postal_code: '78729',
+    forbidden_scans_found: [],
+    forbidden_scans_not_found: [],
+    required_scans_found: [],
+    required_scans_not_found: [],
     state: 'TX',
     time_zone: 'America/Chicago',
     browser: 'Mobile Safari 13.1.2',
