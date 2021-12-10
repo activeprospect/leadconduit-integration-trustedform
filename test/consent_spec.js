@@ -84,6 +84,12 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
+    it('should not parse cert data even if present', (done) => {
+      const parsed = integration.parseResponse(201, consentPlusDataResponse({ plusData: true }), baseRequest());
+      assert.deepEqual(parsed, consentExpected());
+      done();
+    });
+
     it('should parse a failure response', (done) => {
       const expected = consentExpected({
         outcome: 'failure',
@@ -116,7 +122,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
 
   describe('Consent + Data response parsing', () => {
     it('should parse additional `cert` data', (done) => {
-      const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest());
+      const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest( { plusData: true }));
       assert.deepEqual(parsed, consentPlusDataExpected());
       done();
     });

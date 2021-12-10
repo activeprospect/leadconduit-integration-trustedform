@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.17.1] - 2021-12-10
+### Fixed
+- Fixed to ensure `consent` doesn't append cert data, even when present in the response
+
 ## [1.17.0] - 2021-12-10
 ### Added
 - Added new integrations: [consent](https://app.shortcut.com/active-prospect/story/32490/trustedform-consent-integration) & [consent_plus_data](https://app.shortcut.com/active-prospect/story/32491/trustedform-consent-data-integration)
