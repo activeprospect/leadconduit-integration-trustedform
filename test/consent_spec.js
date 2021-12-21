@@ -111,6 +111,39 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
+    it('should parse a 404 failure response', (done) => {
+      const expected = {
+        outcome: 'failure',
+        reason: 'certificate not found'
+      };
+      const response = { outcome: 'failure', reason: 'certificate not found' };
+      const parsed = integration.parseResponse(404, response, baseRequest());
+      assert.deepEqual(parsed, expected);
+      done();
+    });
+
+    it('should parse a 405 failure response', (done) => {
+      const expected = {
+        outcome: 'failure',
+        reason: 'certificate not claimable'
+      };
+      const response = { outcome: 'failure', reason: 'certificate not claimable' };
+      const parsed = integration.parseResponse(405, response, baseRequest());
+      assert.deepEqual(parsed, expected);
+      done();
+    });
+
+    it('should parse a 422 failure response', (done) => {
+      const expected = {
+        outcome: 'failure',
+        reason: 'certificate has been claimed too many times'
+      };
+      const response = { outcome: 'failure', reason: 'certificate has been claimed too many times' };
+      const parsed = integration.parseResponse(422, response, baseRequest());
+      assert.deepEqual(parsed, expected);
+      done();
+    });
+
     it('should parse an error outcome', (done) => {
       const expected = consentExpected({ outcome: 'error', reason: 'an error occurred' });
       const response = consentResponse({ outcome: 'error', reason: 'an error occurred' });
