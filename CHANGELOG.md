@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.17.2] - 2021-12-21
+### Fixed
+- Fixed to use returned `reason` on 40x responses
+
 ## [1.17.1] - 2021-12-10
 ### Fixed
 - Fixed to ensure `consent` doesn't append cert data, even when present in the response
