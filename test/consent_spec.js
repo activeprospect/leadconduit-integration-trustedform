@@ -9,9 +9,11 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
   });
 
   describe('handle', () => {
+    const queryString = 'reference=https%3A%2F%2Fapp.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.&scan_delimiter=%7C';
+
     it('should handle a successful request', (done) => {
       nock('https://cert.trustedform.com')
-        .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fapp.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
+        .post('/533c80270218239ec3000012', queryString)
         .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
         .matchHeader('api-version', '3.0')
         .reply(201, consentResponse());
@@ -25,7 +27,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
 
     it('should handle an error request', (done) => {
       nock('https://cert.trustedform.com')
-        .post('/533c80270218239ec3000012', 'reference=https%3A%2F%2Fapp.leadconduit.com%2Fevents%2Flead_id_123&vendor=Foo%2C%20Inc.')
+        .post('/533c80270218239ec3000012', queryString)
         .matchHeader('Authorization', 'Basic WDpjOTM1MWZmNDlhOGUzOGEyMzQ5M2M2YjczMjhjNzYyOQ==')
         .matchHeader('api-version', '3.0')
         .reply(500, '{ "errors": { "detail": "Internal Server Error" }}', { 'content-type': 'application/json' });
