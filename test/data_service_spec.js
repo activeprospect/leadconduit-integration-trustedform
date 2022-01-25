@@ -26,7 +26,7 @@ describe('Data Service', () => {
       const expected = {
         url: 'https://cert.trustedform.com/533c80270218239ec3000012/peek',
         method: 'POST',
-        body: 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&phone_1=5122981234&email=test%40activeprospect.com',
+        body: 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&scan_delimiter=%7C&phone_1=5122981234&email=test%40activeprospect.com',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: 'Bearer 123456'

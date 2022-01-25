@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
 ## [1.17.2] - 2021-12-21
+### Added
+- Added support for `scan_delimiter` parameter ([sc-34085](https://app.shortcut.com/active-prospect/story/34085/add-field-mapping-for-scan-delimiter-to-trustedform-integrations))
+
+## [1.17.2] - 2021-12-21
 ### Fixed
 - Fixed to use returned `reason` on 40x responses ([sc-33842](https://app.shortcut.com/active-prospect/story/33842/trustedform-consent-consent-data-return-incorrect-reason))
 

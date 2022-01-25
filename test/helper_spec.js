@@ -2,6 +2,10 @@ const assert = require('chai').assert;
 const helper = require('../lib/helpers');
 
 describe('Helper functions', () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = 'production';
+  });
+
   describe('Fingerprinting', () => {
     it('should set summary to all matching', () => {
       const actual = helper.evalFingerprint({}, { matching: ['abc'], non_matching: [] });
@@ -52,10 +56,6 @@ describe('Helper functions', () => {
   });
 
   describe('Cert URL validate', () => {
-    beforeEach(() => {
-      process.env.NODE_ENV = 'production';
-    });
-
     it('should error on undefined cert url', () => {
       const error = helper.validate({ lead: {} });
       assert.equal(error, 'TrustedForm cert URL must not be blank');
@@ -140,6 +140,56 @@ describe('Helper functions', () => {
       process.env.NODE_ENV = 'staging';
       const error = helper.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
       assert.isUndefined(error);
+    });
+  });
+
+  describe('Claim options', () => {
+    let lead, expectedOptions;
+    beforeEach(() => {
+      lead = {
+        id: 'lead-id-123',
+        trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
+      };
+      expectedOptions = {
+        cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
+        email: undefined,
+        forbidden_text: undefined,
+        scan_delimiter: '|',
+        phone_1: undefined,
+        phone_2: undefined,
+        phone_3: undefined,
+        reference: 'https://app.leadconduit.com/events/lead-id-123',
+        required_text: undefined,
+        vendor: undefined
+      };
+    });
+
+    it('should configure default options', () => {
+      assert.deepEqual(helper.configureClaimOptions(lead, {}), expectedOptions);
+    });
+
+    it('should include lead data', () => {
+      lead.email = 'foo@bar.com';
+      expectedOptions.email = 'foo@bar.com';
+      assert.deepEqual(helper.configureClaimOptions(lead, {}), expectedOptions);
+    });
+
+    it('should use TF vendor when set', () => {
+      expectedOptions.vendor = 'Good Source, LLC';
+      assert.deepEqual(helper.configureClaimOptions(lead, { vendor: 'Good Source, LLC' }, 'Ignore This Source, Inc.'), expectedOptions);
+    });
+
+    it('should use source when vendor not set', () => {
+      expectedOptions.vendor = 'Use This Source, Inc.';
+      assert.deepEqual(helper.configureClaimOptions(lead, {}, 'Use This Source, Inc.'), expectedOptions);
+    });
+
+    it('should use custom reference', () => {
+      assert.equal(helper.configureClaimOptions(lead, { custom_reference: 'abc123' }).reference, 'abc123');
+    });
+
+    it('should use specified delimiter', () => {
+      assert.equal(helper.configureClaimOptions(lead, { scan_delimiter: '==' }).scan_delimiter, '==');
     });
   });
 });
