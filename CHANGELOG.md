@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.18.0] - 2022-03-02
+### Added
+- Added support for `trustedform_ping_url` to the Data Service integration
+
 ## [1.17.2] - 2021-12-21
 ### Added
 - Added support for `scan_delimiter` parameter ([sc-34085](https://app.shortcut.com/active-prospect/story/34085/add-field-mapping-for-scan-delimiter-to-trustedform-integrations))
