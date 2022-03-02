@@ -3,28 +3,42 @@ const integration = require('../lib/data_service');
 const parser = require('leadconduit-integration').test.types.parser(integration.request.variables());
 
 describe('Data Service', () => {
+  beforeEach(() => {
+    process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = '123456';
+  });
+
   describe('Validate', () => {
     it('should pass if token env var set', () => {
-      process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = 'foo';
-      const error = integration.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
-      assert.isUndefined(error);
+      assert.isUndefined(integration.validate(baseVars()));
     });
 
     it('should skip if token env var not set', () => {
       delete process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN;
-      const error = integration.validate({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
-      assert.equal(error, 'Missing TrustedForm Data Service token');
+      assert.equal(integration.validate(baseVars()), 'Missing TrustedForm Data Service token');
+    });
+
+    it('should pass if only a ping url is provided', () => {
+      const vars = baseVars({ lead: { trustedform_ping_url: 'https://ping.trustedform.com/0.8Pt_Mw7fNSSK5tmfgZ-2u31EU3hQxx8l-TnLSr0-udqKYkmLm52xm_rccOA89Y6wWnRYpe02.kcnQzYNX3OeGrEZfXLHdHw.QqWQDJVj5ojF8-R549fUBA' }});
+      delete vars.lead.trustedform_cert_url;
+      assert.isUndefined(integration.validate(vars));
+    });
+
+    it('should skip if neither cert url or ping url is provided', () => {
+      const vars = baseVars();
+      delete vars.lead.trustedform_cert_url;
+      assert.equal(integration.validate(vars), 'A valid cert URL or ping URL is required');
+    });
+
+    it('should skip if the only provided urls are not valid', () => {
+      const vars = baseVars({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/example', trustedform_ping_url: null }});
+      assert.equal(integration.validate(vars), 'A valid cert URL or ping URL is required');
     });
   });
 
   describe('Request', () => {
-    beforeEach(() => {
-      process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = '123456';
-    });
-
     it('should properly format request', () => {
       const expected = {
-        url: 'https://cert.trustedform.com/533c80270218239ec3000012/peek',
+        url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985/peek',
         method: 'POST',
         body: 'scan%5B%5D=some%20disclosure%20text&scan%5B%5D=other%20disclosure%20text&scan_delimiter=%7C&phone_1=5122981234&email=test%40activeprospect.com',
         headers: {
@@ -192,7 +206,7 @@ const baseVars = (custom) => {
     lead: {
       email: 'test@activeprospect.com',
       phone_1: '5122981234',
-      trustedform_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012'
+      trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985'
     },
     trustedform: {
       scan_required_text: [
