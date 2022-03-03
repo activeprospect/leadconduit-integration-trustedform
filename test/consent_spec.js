@@ -47,6 +47,15 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       done();
     });
 
+    it('should fall back to masked if is_masked not present', (done) => {
+      const response = consentResponse();
+      delete response.is_masked;
+      response.masked = true;
+      const parsed = integration.parseResponse(201, response, baseRequest());
+      assert.equal(parsed.is_masked, true);
+      done();
+    });
+
     it('should parse a success response with scans', (done) => {
       const request = baseRequest({ trustedform: { scan_required_text: ['temperance', 'diligence'] } });
       const scans = {
@@ -161,6 +170,24 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       assert.deepEqual(parsed, consentPlusDataExpected());
       done();
     });
+
+    it('should fall back to mobile if is_mobile not present', (done) => {
+      const response = consentPlusDataResponse();
+      delete response.cert.is_mobile;
+      response.cert.mobile = false;
+      const parsed = integration.parseResponse(201, response, baseRequest({ plusData: true }));
+      assert.equal(parsed.is_mobile, false);
+      done();
+    });
+
+    it('should fall back to framed if is_framed not present', (done) => {
+      const response = consentPlusDataResponse();
+      delete response.cert.is_framed;
+      response.cert.framed = true;
+      const parsed = integration.parseResponse(201, response, baseRequest({ plusData: true }));
+      assert.equal(parsed.is_framed, true);
+      done();
+    });
   });
 });
 
@@ -189,7 +216,7 @@ const consentResponse = (override = {}) => {
         '72a34929a612536dde7e56df15ec7278f2ee97ec'
       ]
     },
-    masked: false,
+    is_masked: false,
     masked_cert_url: 'https://cert.trustedform.com/533c80270218239ec3000012',
     outcome: 'success',
     reason: '',
@@ -234,10 +261,10 @@ const consentPlusDataResponse = (override = {}) => {
       event_duration_ms: 20289,
       expires_at: '2021-11-24T17:57:09Z',
       form_input_method: ['typing'],
-      framed: false,
+      is_framed: false,
       ip: '68.203.9.158',
       kpm: 0,
-      mobile: true,
+      is_mobile: true,
       operating_system: {
         full: 'iOS 13.6.1',
         name: 'iOS',

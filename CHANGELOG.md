@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org)
 ### Added
 - Added support for `trustedform_ping_url` to the Data Service integration
 
+## [1.17.3] - 2022-02-11
+### Fixed
+- Fixed to use new boolean field names (`is_masked` vs. `masked`, plus `is_mobile` & `is_framed`; [sc-35791](https://app.shortcut.com/active-prospect/story/35791/update-trustedform-consent-consent-data-expected-boolean-response-properties))
+
 ## [1.17.2] - 2021-12-21
 ### Added
 - Added support for `scan_delimiter` parameter ([sc-34085](https://app.shortcut.com/active-prospect/story/34085/add-field-mapping-for-scan-delimiter-to-trustedform-integrations))
