@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.18.0] - 2022-03-02
+### Added
+- Added support for `trustedform_ping_url` to the Data Service integration
+
 ## [1.17.3] - 2022-02-11
 ### Fixed
 - Fixed to use new boolean field names (`is_masked` vs. `masked`, plus `is_mobile` & `is_framed`; [sc-35791](https://app.shortcut.com/active-prospect/story/35791/update-trustedform-consent-consent-data-expected-boolean-response-properties))
