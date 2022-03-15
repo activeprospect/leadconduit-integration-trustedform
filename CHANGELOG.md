@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.18.1] - 2022-03-12
+### Fixed
+- Changed Data Service integration to allow TF ping URL passed via `trustedform_cert_url` (& removed `trustedform_ping_url`; [sc-37183](sc-37183/allow-a-trustedform-ping-url-to-be-passed)) 
+
 ## [1.18.0] - 2022-03-02
 ### Added
 - Added support for `trustedform_ping_url` to the Data Service integration

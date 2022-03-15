@@ -17,21 +17,21 @@ describe('Data Service', () => {
       assert.equal(integration.validate(baseVars()), 'Missing TrustedForm Data Service token');
     });
 
-    it('should pass if only a ping url is provided', () => {
-      const vars = baseVars({ lead: { trustedform_ping_url: 'https://ping.trustedform.com/0.8Pt_Mw7fNSSK5tmfgZ-2u31EU3hQxx8l-TnLSr0-udqKYkmLm52xm_rccOA89Y6wWnRYpe02.kcnQzYNX3OeGrEZfXLHdHw.QqWQDJVj5ojF8-R549fUBA' }});
-      delete vars.lead.trustedform_cert_url;
-      assert.isUndefined(integration.validate(vars));
-    });
-
-    it('should skip if neither cert url or ping url is provided', () => {
+    it('should skip if cert url is not provided', () => {
       const vars = baseVars();
       delete vars.lead.trustedform_cert_url;
-      assert.equal(integration.validate(vars), 'A valid cert URL or ping URL is required');
+      assert.equal(integration.validate(vars), 'TrustedForm cert URL must not be blank');
     });
 
-    it('should skip if the only provided urls are not valid', () => {
-      const vars = baseVars({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/example', trustedform_ping_url: null }});
-      assert.equal(integration.validate(vars), 'A valid cert URL or ping URL is required');
+    it('should skip if cert url is not valid', () => {
+      const vars = baseVars({ lead: { trustedform_cert_url: 'https://cert.trustedform.com/example' } });
+      assert.equal(integration.validate(vars), 'TrustedForm cert URL must be valid');
+    });
+
+    it('should pass if ping url provided', () => {
+      process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = 'foo';
+      const error = integration.validate({ lead: { trustedform_cert_url: 'https://ping.trustedform.com/0.whatever' } });
+      assert.isUndefined(error);
     });
   });
 
