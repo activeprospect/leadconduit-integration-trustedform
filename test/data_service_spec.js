@@ -33,6 +33,12 @@ describe('Data Service', () => {
       const error = integration.validate({ lead: { trustedform_cert_url: 'https://ping.trustedform.com/0.whatever' } });
       assert.isUndefined(error);
     });
+
+    it('should pass if staging ping url provided', () => {
+      process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = 'foo';
+      const error = integration.validate({ lead: { trustedform_cert_url: 'https://ping.staging.trustedform.com/0.whatever' } });
+      assert.isUndefined(error);
+    });
   });
 
   describe('Request', () => {
