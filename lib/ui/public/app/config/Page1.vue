@@ -6,7 +6,7 @@
     <div v-if="isDataService">
       <section>
         <p>
-          TrustedForm {{ moduleName }} provides lead buyers with optimized lead data that helps them assess the value of a
+          TrustedForm Data Service provides lead buyers with optimized lead data that helps them assess the value of a
           lead. It helps buyers identify the leads that are most likely to convert and effectively manage returns and
           rejections. At the time of purchase, or any time thereafter, the lead buyer can use the LeadConduit platform
           to access lead metadata (not PII) found in the TrustedForm certificates.
@@ -43,8 +43,8 @@ export default {
           return 'Claim';
         case 'leadconduit-trustedform.outbound.consent':
           return 'Consent';
-        case 'leadconduit-trustedform.outbound.consent_plus_insights':
-          return 'Consent + Insights';
+        case 'leadconduit-trustedform.outbound.consent_plus_data':
+          return 'Consent + Data';
         case 'leadconduit-trustedform.outbound.data_service':
           return 'Data Service';
         default:
