@@ -96,7 +96,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
     });
 
     it('should not parse cert data even if present', (done) => {
-      const parsed = integration.parseResponse(201, consentPlusDataResponse({ plusData: true }), baseRequest());
+      const parsed = integration.parseResponse(201, consentPlusDataResponse({ plusInsights: true }), baseRequest());
       assert.deepEqual(parsed, consentExpected());
       done();
     });
@@ -166,7 +166,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
 
   describe('Consent + Data response parsing', () => {
     it('should parse additional `cert` data', (done) => {
-      const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest({ plusData: true }));
+      const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest({ plusInsights: true }));
       assert.deepEqual(parsed, consentPlusDataExpected());
       done();
     });
@@ -175,7 +175,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       const response = consentPlusDataResponse();
       delete response.cert.is_mobile;
       response.cert.mobile = false;
-      const parsed = integration.parseResponse(201, response, baseRequest({ plusData: true }));
+      const parsed = integration.parseResponse(201, response, baseRequest({ plusInsights: true }));
       assert.equal(parsed.is_mobile, false);
       done();
     });
@@ -184,7 +184,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
       const response = consentPlusDataResponse();
       delete response.cert.is_framed;
       response.cert.framed = true;
-      const parsed = integration.parseResponse(201, response, baseRequest({ plusData: true }));
+      const parsed = integration.parseResponse(201, response, baseRequest({ plusInsights: true }));
       assert.equal(parsed.is_framed, true);
       done();
     });
@@ -302,7 +302,7 @@ const consentExpected = (override = {}) => {
 };
 
 const consentPlusDataExpected = () => {
-  const plusData = {
+  const plusInsights = {
     age_in_seconds: 87,
     city: 'Austin',
     country_code: 'US',
@@ -331,5 +331,5 @@ const consentPlusDataExpected = () => {
     parent_page_url: null,
     domain: null
   };
-  return consentExpected(plusData);
+  return consentExpected(plusInsights);
 };
