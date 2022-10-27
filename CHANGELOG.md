@@ -2,13 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.19.0] - 2022-10-25
+### Changed
+- Rename TrustedForm Consent + Data Integration to TrustedForm Consent + Insights ([sc-41611](https://app.shortcut.com/active-prospect/story/41611/rename-trustedform-consent-data-integration-to-trustedform-consent-insights))
+
 ## [1.18.2] - 2022-03-23
 ### Fixed
-- Allow TF staging ping URL in Data Service ([sc-37183](sc-37183/allow-a-trustedform-ping-url-to-be-passed)) 
+- Allow TF staging ping URL in Data Service ([sc-37183](https://app.shortcut.com/active-prospect/story/sc-37183/allow-a-trustedform-ping-url-to-be-passed)) 
 
 ## [1.18.1] - 2022-03-12
 ### Fixed
-- Changed Data Service integration to allow TF ping URL passed via `trustedform_cert_url` (& removed `trustedform_ping_url`; [sc-37183](sc-37183/allow-a-trustedform-ping-url-to-be-passed)) 
+- Changed Data Service integration to allow TF ping URL passed via `trustedform_cert_url` (& removed `trustedform_ping_url`; [sc-37183](https://app.shortcut.com/active-prospect/story/sc-37183/allow-a-trustedform-ping-url-to-be-passed)) 
 
 ## [1.18.0] - 2022-03-02
 ### Added

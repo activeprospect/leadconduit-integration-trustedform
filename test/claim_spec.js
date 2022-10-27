@@ -221,9 +221,13 @@ describe('Claim', () => {
       .reply(404, 'message: "certificate not found"', { 'content-type': 'application/json' });
 
     integration.handle(baseRequest(), (err, event) => {
+      const jsonErrorPreNode19 = 'Unexpected token m in JSON at position 0'
+      const jsonErrorNode19Onward = 'Unexpected token \'m\', "message: ""... is not valid JSON';
+      const jsonErrorRegex = new RegExp(`^(${jsonErrorPreNode19}|${jsonErrorNode19Onward})$`);
+      const isCorrectReason = jsonErrorRegex.test(event.reason)
       assert.isNull(err);
       assert.equal(event.outcome, 'error');
-      assert.equal(event.reason, 'Unexpected token m in JSON at position 0');
+      assert.isTrue(isCorrectReason);
 
       done();
     });
