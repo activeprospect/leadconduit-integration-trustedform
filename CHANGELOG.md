@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [1.20.0] - 2022-10-27
+### Changed
+- Rename TrustedForm Data Service to TrustedForm Insights Integration ([sc-38895](https://app.shortcut.com/active-prospect/story/38895/rename-trustedform-data-service-to-trustedform-insights-integration))
+
 ## [1.19.0] - 2022-10-25
 ### Changed
 - Rename TrustedForm Consent + Data Integration to TrustedForm Consent + Insights ([sc-41611](https://app.shortcut.com/active-prospect/story/41611/rename-trustedform-consent-data-integration-to-trustedform-consent-insights))

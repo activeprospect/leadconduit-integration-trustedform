@@ -1,8 +1,8 @@
 const assert = require('chai').assert;
-const integration = require('../lib/data_service');
+const integration = require('../lib/insights');
 const parser = require('leadconduit-integration').test.types.parser(integration.request.variables());
 
-describe('Data Service', () => {
+describe('Insights', () => {
   beforeEach(() => {
     process.env.TRUSTEDFORM_DATA_SERVICE_TOKEN = '123456';
   });
@@ -111,42 +111,6 @@ describe('Data Service', () => {
       };
 
       expected = {
-        outcome: 'success',
-        age: 44,
-        browser: 'Chrome 84.0.4147',
-        consented_at: '2020-10-19T14:01:43Z',
-        created_at: '2020-10-19T14:01:44Z',
-        device: 'Linux',
-        event_duration: 38,
-        expires_at: '2020-10-22T14:01:44Z',
-        framed: true,
-        form_input_method: [
-          'typing',
-          'autofill',
-          'paste'],
-        has_consented: true,
-        city: 'Boardman',
-        country_code: 'US',
-        lat: 45.8696,
-        lon: -119.688,
-        postal_code: '97818',
-        state: 'OR',
-        time_zone: 'America/Los_Angeles',
-        ip: '52.35.61.232',
-        wpm: 50,
-        kpm: 112,
-        page_url: 'https://activeprospect.com/example',
-        operating_system: 'Linux',
-        parent_page_url: 'https://activeprospect.com',
-        cert_id: '533c80270218239ec3000012',
-        user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
-        fingerprints_matching: ['test@activeprospect.com'],
-        fingerprints_non_matching: ['5122981234'],
-        is_masked: true,
-        scans_found: ['some disclosure text'],
-        scans_not_found: ['other disclosure text'],
-        warnings: ['some warning'],
-        data_service: {
           outcome: 'success',
           billable: 1,
           age: 44,
@@ -183,7 +147,6 @@ describe('Data Service', () => {
           scans_found: ['some disclosure text'],
           scans_not_found: ['other disclosure text'],
           warnings: ['some warning']
-        }
       };
     });
 
@@ -201,8 +164,6 @@ describe('Data Service', () => {
         status: 201,
         body: JSON.stringify(tfResponse)
       };
-      delete expected.data_service.consented_at;
-      expected.data_service.has_consented = false;
       delete expected.consented_at;
       expected.has_consented = false;
       assert.deepEqual(integration.response({}, {}, res), expected);
@@ -218,13 +179,9 @@ describe('Data Service', () => {
         })
       };
       const expected = {
-        outcome: 'failure',
-        reason: 'cert not found',
-        data_service: {
           outcome: 'failure',
           reason: 'cert not found',
           billable: 0
-        }
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
@@ -235,13 +192,9 @@ describe('Data Service', () => {
         body: 'internal server error'
       };
       const expected = {
-        outcome: 'error',
-        reason: 'unable to parse response',
-        data_service: {
           outcome: 'error',
           reason: 'unable to parse response',
           billable: 0
-        }
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
     });

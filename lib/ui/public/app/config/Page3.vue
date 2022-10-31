@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      Set Up TrustedForm Data Service
+      Set Up TrustedForm Insights
     </header>
     <section>
       <p>

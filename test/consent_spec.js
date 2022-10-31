@@ -164,7 +164,7 @@ describe('Consent (incl. common functionality with Consent + Data)', () => {
     });
   });
 
-  describe('Consent + Data response parsing', () => {
+  describe('Consent + Insights response parsing', () => {
     it('should parse additional `cert` data', (done) => {
       const parsed = integration.parseResponse(201, consentPlusDataResponse(), baseRequest({ plusData: true }));
       assert.deepEqual(parsed, consentPlusDataExpected());

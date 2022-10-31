@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      Set Up TrustedForm Data Service
+      Set Up TrustedForm Insights
     </header>
     <section>
       <p>Below is a list of data points included with this enhancement. When configuring your flow, you can choose to accept, reject, or re-route leads based on each of the values returned.</p>
