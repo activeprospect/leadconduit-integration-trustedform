@@ -45,8 +45,6 @@ export default {
           return 'Consent';
         case 'leadconduit-trustedform.outbound.consent_plus_data':
           return 'Consent + Insights';
-        case 'leadconduit-trustedform.outbound.data_service':
-          return 'Data Service';
         case 'leadconduit-trustedform.outbound.insights':
           return 'Insights';
         default:
@@ -61,7 +59,7 @@ export default {
   },
   mounted () {
     const { integration } = this.$store.state.config;
-    if (!integration.includes('data_service') && !integration.includes('insights')) {
+    if (!integration.includes('insights')) {
       this.isDataService = false;
     }
   }

@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.0.0] - 2022-11-09
+### Remove
+- Remove Data Service after migration ([sc-38895](https://app.shortcut.com/active-prospect/story/38895/rename-trustedform-data-service-to-trustedform-insights-integration))
+
 ## [1.20.1] - 2022-11-02
 ### Fixed
 - Name overlap with old Data Service and Insights pre-migration ([sc-38895](https://app.shortcut.com/active-prospect/story/38895/rename-trustedform-data-service-to-trustedform-insights-integration))
