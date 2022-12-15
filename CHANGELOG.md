@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.0.1] - 2022-12-14
+### Fixed
+- Issue with billable being set in insights ([sc-47158](https://app.shortcut.com/active-prospect/story/47158/tf-insights-missing-from-usages-exclusion-list))
+
 ## [2.0.0] - 2022-11-09
 ### Remove
 - Remove Data Service after migration ([sc-38895](https://app.shortcut.com/active-prospect/story/38895/rename-trustedform-data-service-to-trustedform-insights-integration))
