@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.0.2] - 2023-01-05
+### Fixed
+- Revert previous change; make insights set `billable` again ([sc-47859](https://app.shortcut.com/active-prospect/story/47859/include-tf-insights-in-usages-results))
+
 ## [2.0.1] - 2022-12-14
 ### Fixed
 - Issue with billable being set in insights ([sc-47158](https://app.shortcut.com/active-prospect/story/47158/tf-insights-missing-from-usages-exclusion-list))

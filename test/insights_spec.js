@@ -112,6 +112,7 @@ describe('Insights', () => {
 
       expected = {
           outcome: 'success',
+          billable: 1,
           age: 44,
           browser: 'Chrome 84.0.4147',
           consented_at: '2020-10-19T14:01:43Z',
@@ -179,7 +180,8 @@ describe('Insights', () => {
       };
       const expected = {
           outcome: 'failure',
-          reason: 'cert not found'
+          reason: 'cert not found',
+          billable: 0
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
@@ -191,7 +193,8 @@ describe('Insights', () => {
       };
       const expected = {
           outcome: 'error',
-          reason: 'unable to parse response'
+          reason: 'unable to parse response',
+          billable: 0
       };
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
