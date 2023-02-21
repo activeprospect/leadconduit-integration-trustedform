@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.0.3] - 2023-02-21
+### Fixed
+- `domain` data is now appended if returned as part of insights data
+
 ## [2.0.2] - 2023-01-05
 ### Fixed
 - Revert previous change; make insights set `billable` again ([sc-47859](https://app.shortcut.com/active-prospect/story/47859/include-tf-insights-in-usages-results))
