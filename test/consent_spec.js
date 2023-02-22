@@ -258,6 +258,7 @@ const consentPlusDataResponse = (override = {}) => {
       },
       cert_id: '7d7207c4b20f9cb5692f02e91871378bced1061d',
       created_at: '2021-11-18T17:57:09Z',
+      domain: 'activeprospect.github.io',
       event_duration_ms: 20289,
       expires_at: '2021-11-24T17:57:09Z',
       form_input_method: ['typing'],
@@ -329,7 +330,7 @@ const consentPlusDataExpected = () => {
     wpm: 0,
     page_url: 'https://activeprospect.github.io/trustedform_moose.html',
     parent_page_url: null,
-    domain: null
+    domain: 'activeprospect.github.io'
   };
   return consentExpected(plusData);
 };
