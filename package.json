@@ -19,11 +19,14 @@
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
     "@activeprospect/integration-components": "^3.0.0",
+    "axios": "^1.4.0",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "leadconduit-integration": "^0.4.1",
     "leadconduit-integration-ui": "^1.1.4",
     "lodash": "^4.17.20",
     "trustedform-api-client": "^1.0.7",
+    "request": "^2.88.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"
