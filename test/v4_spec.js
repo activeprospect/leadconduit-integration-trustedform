@@ -35,7 +35,7 @@ describe('v4', () => {
   });
 
   describe('request', () => {
-    it('should correctly format request', () => {
+    it('should correctly format a request with both insights and retain queries', () => {
       const expected = {
         method: 'POST',
         url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
@@ -49,7 +49,7 @@ describe('v4', () => {
             vendor: 'Acme, Inc.'
           },
           insights: {
-            properties: ['age', 'domain', 'approx_ip_geo']
+            properties: ['age_seconds', 'approx_ip_geo', 'domain']
           }
         }),
         headers: {
@@ -59,6 +59,234 @@ describe('v4', () => {
         }
       };
       assert.deepEqual(integration.request(baseVars()), expected);
+    });
+    it('should correctly format a retain only request', () => {
+      const expected = JSON.stringify({
+        match_lead: {
+          email: 'test@activeprospect.com',
+          phone: '5122981234'
+        },
+        retain: {
+          reference: '9876',
+          vendor: 'ABC, Inc.'
+        }
+      });
+      const vars = baseVars({
+        trustedform: {
+          insights: 'false',
+          vendor: 'ABC, Inc.',
+          custom_reference: '9876'
+        }
+      });
+      assert.deepEqual(integration.request(vars).body, expected);
+    });
+    it('should correctly format an insights only request', () => {
+      const expected = JSON.stringify({
+        insights: {
+          properties: ['age_seconds', 'approx_ip_geo', 'domain'],
+          scans: {
+            required: 'click here!',
+            forbidden: undefined,
+            delimiter: undefined
+          }
+        }
+      });
+      const vars = baseVars({
+        trustedform: {
+          retain: 'false',
+          page_scan: 'true',
+          scan_required_text: 'click here!'
+        }
+      });
+      assert.deepEqual(integration.request(vars).body, expected);
+    });
+  });
+
+  describe('response', () => {
+    it('should correctly handle a success response', () => {
+      const res = {
+        status: 200,
+        body: JSON.stringify({
+          insights: {
+            properties: {
+              age_seconds: 91430,
+              approx_ip_geo: {
+                city: 'Austin',
+                country_code: 'US',
+                lat: 30.2627,
+                lon: -97.7467,
+                postal_code: '78713',
+                state: 'Texas',
+                time_zone: 'America/Chicago'
+              },
+              browser: {
+                full: 'Firefox 112.0.',
+                name: 'Firefox',
+                version: {
+                  full: '112.0.',
+                  major: '112',
+                  minor: '0',
+                  patch: ""
+                }
+              },
+              created_at: '2023-05-31T20:43:31.387448Z',
+              domain: 'activeprospect.github.io',
+              expires_at: '2023-09-01T20:43:31Z',
+              form_input_kpm: 212.38938053097348,
+              ip: '24.28.104.159',
+              is_framed: false,
+              is_masked: false,
+              num_sensitive_content_elements: 0,
+              num_sensitive_form_elements: 0,
+              os: {
+                full: 'Mac OS X 10.15',
+                is_mobile: false,
+                name: 'Mac OS X',
+                version: {
+                  full: '10.15',
+                  major: '10',
+                  minor: '15',
+                  patch: null
+                }
+              },
+              page_url: 'https://activeprospect.github.io/certificate_staging.html',
+              parent_page_url: null,
+              seconds_on_page: 8374
+            },
+            scans: {
+              forbidden: [],
+              required: [
+                'make a claim on Staging'
+              ],
+              result: {
+                forbidden: {
+                  found: [],
+                  not_found: []
+                },
+                required: {
+                  found: [
+                    'make a claim on Staging'
+                  ],
+                  not_found: []
+                },
+                success: true
+              }
+            }
+          },
+          match_lead: {
+            email: 'superman@activeprospect.com',
+            result: {
+              email_match: true,
+              phone_match: false,
+              success: true
+            }
+          },
+          outcome: 'success',
+          reason: null,
+          retain: {
+            reference: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
+            results: {
+              expires_at: '2023-08-29T20:43:31.387448Z',
+              previously_retained: true
+            },
+            vendor: 'Inbound Verbose'
+          }
+        })
+      };
+      const expected = {
+        age_in_seconds: 91430,
+        browser_full: 'Firefox 112.0.',
+        city: 'Austin',
+        country_code: 'US',
+        created_at: '2023-05-31T20:43:31.387448Z',
+        domain: 'activeprospect.github.io',
+        email_fingerprint_matched: true,
+        expires_at: '2023-08-29T20:43:31.387448Z',
+        forbidden_scans_found: [],
+        forbidden_scans_not_found: [],
+        ip: '24.28.104.159',
+        is_framed: false,
+        is_masked: false,
+        is_mobile: false,
+        kpm: 212.38938053097348,
+        latitude: 30.2627,
+        longitude: -97.7467,
+        matched_email: 'superman@activeprospect.com',
+        os_full: 'Mac OS X 10.15',
+        os_name: 'Mac OS X',
+        outcome: 'success',
+        page_url: 'https://activeprospect.github.io/certificate_staging.html',
+        parent_page_url: null,
+        phone_fingerprint_matched: false,
+        postal_code: '78713',
+        previously_retained: true,
+        reason: null,
+        reference: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
+        required_scans_found: [ 'make a claim on Staging' ],
+        required_scans_not_found: [],
+        scans_result: true,
+        sensitive_hidden_content_elements: 0,
+        sensitive_hidden_form_elements: 0,
+        state: 'Texas',
+        successful_match: true,
+        time_on_page_in_seconds: 8374,
+        time_zone: 'America/Chicago',
+        vendor: 'Inbound Verbose'
+      }
+      assert.deepEqual(integration.response({}, {}, res), expected);
+    });
+
+    it('should correctly handle a failure responses', () => {
+      const res = {
+        status: 200,
+        body: JSON.stringify({
+          insights: {
+            scans: {
+              forbidden: [],
+              required: [
+                'make a claim on Production'
+              ],
+              result: {
+                forbidden: {
+                  found: [],
+                  not_found: []
+                },
+                required: {
+                  found: [],
+                  not_found: [
+                    'make a claim on Production'
+                  ]
+                },
+                success: false
+              }
+            }
+          },
+          outcome: 'failure',
+          reason: 'Insights page scans unsuccessful'
+        })
+      };
+      const expected = {
+        outcome: 'failure',
+        reason: 'Insights page scans unsuccessful',
+        forbidden_scans_found: [],
+        forbidden_scans_not_found: [],
+        required_scans_found: [],
+        required_scans_not_found: [ 'make a claim on Production' ],
+        scans_result: false
+      };
+      assert.deepEqual(integration.response({}, {}, res), expected);
+    });
+
+    it('should correctly handle an error response', () => {
+      const res = {
+        status: 500,
+        body: 'unable to access server'
+      };
+      const expected = {
+        outcome: 'error',
+        reason: 'unable to parse response'
+      };
+      assert.deepEqual(integration.response({}, {}, res), expected);
     });
   });
 });

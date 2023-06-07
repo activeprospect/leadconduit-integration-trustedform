@@ -17,7 +17,6 @@
             <p class="help-text">TrustedForm Insights helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.</p>
           </li>
         </ul>
-        <p v-if="this.$store.getters.getErrors" class="warning">{{this.$store.getters.getErrors}}</p>
       </form>
     </section>
     <Navigation
@@ -34,10 +33,7 @@ import { Navigation } from '@activeprospect/integration-components'
 export default {
   data () {
     return {
-      products: {
-        retain: { enabled: true, selected: false },
-        insights: { enabled: true, selected: false }
-      },
+      products: this.$store.getters.getProducts,
       errors: this.$store.getters.getErrors
     };
   },
