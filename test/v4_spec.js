@@ -20,16 +20,16 @@ describe('v4', () => {
     });
 
     it('should require an email or phone number if retain is selected', () => {
-      let vars = baseVars({trustedform: {insights: false}, lead: {email: null, phone_1: null}});
+      let vars = baseVars({trustedform: {insights: 'false'}, lead: {email: null, phone_1: null}});
       assert.equal(integration.validate(vars), 'an email address or phone number is required to use TrustedForm Retain');
-      vars = baseVars({trustedform: {insights: false}, lead: {phone_1: null}});
+      vars = baseVars({trustedform: {insights: 'false'}, lead: {phone_1: null}});
       assert.isUndefined(integration.validate(vars));
-      vars = baseVars({trustedform: {insights: false}, lead: {email: null}});
+      vars = baseVars({trustedform: {insights: 'false'}, lead: {email: null}});
       assert.isUndefined(integration.validate(vars));
     });
 
     it('should require at least one property selected for insights', () => {
-      let vars = baseVars({trustedform: {retain: false, age: null, domain: null, location: null}});
+      let vars = baseVars({trustedform: {retain: 'false', age: 'false', domain: 'false', location: 'false'}});
       assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
     });
   });
@@ -49,7 +49,26 @@ describe('v4', () => {
             vendor: 'Acme, Inc.'
           },
           insights: {
-            properties: ['age_seconds', 'approx_ip_geo', 'domain']
+            properties: [
+              'age_seconds',
+              'approx_ip_geo',
+              'browser',
+              'created_at',
+              'domain',
+              'expires_at',
+              'form_input_kpm',
+              'form_input_method',
+              'form_input_wpm',
+              'ip',
+              'is_framed',
+              'is_masked',
+              'num_sensitive_content_elements',
+              'num_sensitive_form_elements',
+              'os',
+              'page_url',
+              'parent_page_url',
+              'seconds_on_page'
+            ]
           }
         }),
         headers: {
@@ -58,7 +77,27 @@ describe('v4', () => {
           Authorization: 'Basic WDoxMjM0'
         }
       };
-      assert.deepEqual(integration.request(baseVars()), expected);
+      const vars = baseVars({
+        trustedform: {
+          browser: 'true',
+          created_timestamp: 'true',
+          expiration_timestamp: 'true',
+          framed: 'true',
+          form_input_method: 'true',
+          form_input_kpm: 'true',
+          form_input_wpm: 'true',
+          ip_address: 'true',
+          masked: 'true',
+          sensitive_content: 'true',
+          sensitive_form_fields: 'true',
+          operating_system: 'true',
+          page_url: 'true',
+          parent_page_url: 'true',
+          time_on_page: 'true'
+
+        }
+      });
+      assert.deepEqual(integration.request(vars), expected);
     });
     it('should correctly format a retain only request', () => {
       const expected = JSON.stringify({

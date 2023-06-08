@@ -71,6 +71,10 @@ export default {
       this.$store.state.v4Fields = this.fields;
       this.$store.dispatch('finish');
     }
+  },
+  mounted () {
+    // ensure header is set correctly when returning to this page with some props selected
+    this.updateHeader();
   }
 }
 </script>
