@@ -59,7 +59,7 @@ export default {
   },
   mounted () {
     const { integration } = this.$store.state.config;
-    if (integration.includes('v4')) this.$router.push('/4');
+    if (integration.includes('outbound.trustedform')) this.$router.push('/4');
     if (!integration.includes('insights')) {
       this.isDataService = false;
     }

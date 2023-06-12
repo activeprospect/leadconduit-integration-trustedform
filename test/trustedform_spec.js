@@ -1,5 +1,5 @@
 const assert = require('chai').assert;
-const integration = require('../lib/v4');
+const integration = require('../lib/trustedform');
 const parser = require('leadconduit-integration').test.types.parser(integration.request.variables());
 const {merge} = require('lodash');
 

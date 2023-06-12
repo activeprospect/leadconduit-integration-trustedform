@@ -7,6 +7,6 @@ module.exports = {
     decision_service_ping: require('./lib/insights'),
     decision_service_post: require('./lib/insights'),
     insights: require('./lib/insights'),
-    v4: require('./lib/v4')
+    trustedform: require('./lib/trustedform')
   }
 };
