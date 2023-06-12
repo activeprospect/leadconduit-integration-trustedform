@@ -25,8 +25,8 @@
     "leadconduit-integration": "^0.4.1",
     "leadconduit-integration-ui": "^1.1.4",
     "lodash": "^4.17.20",
-    "trustedform-api-client": "^1.0.7",
     "request": "^2.88.0",
+    "trustedform-api-client": "^1.0.7",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"

@@ -29,7 +29,10 @@ describe('v4', () => {
     });
 
     it('should require at least one property selected for insights', () => {
-      let vars = baseVars({trustedform: {retain: 'false', age: 'false', domain: 'false', location: 'false'}});
+      let vars = baseVars({
+        trustedform: { retain: 'false' },
+        insights: { age: 'false', domain: 'false', location: 'false'}}
+      );
       assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
     });
   });
@@ -78,7 +81,7 @@ describe('v4', () => {
         }
       };
       const vars = baseVars({
-        trustedform: {
+        insights: {
           browser: 'true',
           created_timestamp: 'true',
           expiration_timestamp: 'true',
@@ -94,7 +97,6 @@ describe('v4', () => {
           page_url: 'true',
           parent_page_url: 'true',
           time_on_page: 'true'
-
         }
       });
       assert.deepEqual(integration.request(vars), expected);
@@ -133,8 +135,10 @@ describe('v4', () => {
       const vars = baseVars({
         trustedform: {
           retain: 'false',
-          page_scan: 'true',
           scan_required_text: 'click here!'
+        },
+        insights: {
+          page_scan: 'true'
         }
       });
       assert.deepEqual(integration.request(vars).body, expected);
@@ -237,10 +241,10 @@ describe('v4', () => {
         browser_full: 'Firefox 112.0.',
         city: 'Austin',
         country_code: 'US',
-        created_at: '2023-05-31T20:43:31.387448Z',
+        created_at: '2023-05-31T20:43:31.3874Z',
         domain: 'activeprospect.github.io',
         email_fingerprint_matched: true,
-        expires_at: '2023-08-29T20:43:31.387448Z',
+        expires_at: '2023-08-29T20:43:31.3874Z',
         forbidden_scans_found: [],
         forbidden_scans_not_found: [],
         ip: '24.28.104.159',
@@ -260,7 +264,7 @@ describe('v4', () => {
         postal_code: '78713',
         previously_retained: true,
         reason: null,
-        reference: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
+        reference_code: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
         required_scans_found: [ 'make a claim on Staging' ],
         required_scans_not_found: [],
         scans_result: true,
@@ -340,7 +344,9 @@ const baseVars = (custom) => {
     },
     trustedform: {
       retain: 'true',
-      insights: 'true',
+      insights: 'true'
+    },
+    insights: {
       age: 'true',
       domain: 'true',
       location: 'true'
