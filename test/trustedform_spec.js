@@ -172,7 +172,7 @@ describe('v4', () => {
                   patch: ""
                 }
               },
-              created_at: '2023-05-31T20:43:31.387448Z',
+              created_at: '2023-05-31T20:43:31Z',
               domain: 'activeprospect.github.io',
               expires_at: '2023-09-01T20:43:31Z',
               form_input_kpm: 212.38938053097348,
@@ -229,7 +229,7 @@ describe('v4', () => {
           retain: {
             reference: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
             results: {
-              expires_at: '2023-08-29T20:43:31.387448Z',
+              expires_at: '2023-08-29T20:43:31Z',
               previously_retained: true
             },
             vendor: 'Inbound Verbose'
@@ -241,10 +241,10 @@ describe('v4', () => {
         browser_full: 'Firefox 112.0.',
         city: 'Austin',
         country_code: 'US',
-        created_at: '2023-05-31T20:43:31.3874Z',
+        created_at: '2023-05-31T20:43:31Z',
         domain: 'activeprospect.github.io',
         email_fingerprint_matched: true,
-        expires_at: '2023-08-29T20:43:31.3874Z',
+        expires_at: '2023-08-29T20:43:31Z',
         forbidden_scans_found: [],
         forbidden_scans_not_found: [],
         ip: '24.28.104.159',
