@@ -116,6 +116,21 @@ describe('Helper functions', () => {
       assert.isUndefined(error);
     });
 
+    it('should accept development certs on development', () => {
+      process.env.NODE_ENV = 'development';
+      const error = helper.validate({ lead: { trustedform_cert_url: 'http://cert.trustedform-dev.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
+      assert.isUndefined(error);
+    });
+
+    it('should not accept invalid certs on development', () => {
+      process.env.NODE_ENV = 'development';
+      const error = helper.validate({ lead: { trustedform_cert_url: 'http://someothersite.com' } });
+      assert.equal(error, 'TrustedForm cert URL must be valid');
+
+      const error2 = helper.validate({ lead: { trustedform_cert_url: 'KOWABUNGAhttps://cert.trustedform.com/' } });
+      assert.equal(error2, 'TrustedForm cert URL must be valid');
+    });
+    
     it('should accept staging certs on staging', () => {
       process.env.NODE_ENV = 'staging';
       const error = helper.validate({ lead: { trustedform_cert_url: 'http://cert.staging.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
@@ -133,6 +148,11 @@ describe('Helper functions', () => {
 
     it('should not accept staging certs on production', () => {
       const error = helper.validate({ lead: { trustedform_cert_url: 'http://cert.staging.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
+      assert.equal(error, 'TrustedForm cert URL must be valid');
+    });
+
+    it('should not accept development certs on production', () => {
+      const error = helper.validate({ lead: { trustedform_cert_url: 'http://cert.trustedform-dev.com/2605ec3a321e1b3a41addf0bba1213505ef57985' } });
       assert.equal(error, 'TrustedForm cert URL must be valid');
     });
 
