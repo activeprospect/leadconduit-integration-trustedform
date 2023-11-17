@@ -14,8 +14,7 @@ describe('v4', () => {
       assert.equal(integration.validate(baseVars({
         trustedform: {
           retain: false,
-          insights: false,
-          verify: false
+          insights: false
         }
       })), 'a TrustedForm product must be selected');
     });
@@ -31,7 +30,7 @@ describe('v4', () => {
 
     it('should require at least one property selected for insights', () => {
       let vars = baseVars({
-        trustedform: { retain: 'false', verify: 'false' },
+        trustedform: { retain: 'false' },
         insights: { age: 'false', domain: 'false', location: 'false'}}
       );
       assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
@@ -39,7 +38,7 @@ describe('v4', () => {
   });
 
   describe('request', () => {
-    it('should correctly format a request with all queries (insights, retain and verify)', () => {
+    it('should correctly format a request with both insights and retain queries', () => {
       const expected = {
         method: 'POST',
         url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
@@ -73,8 +72,7 @@ describe('v4', () => {
               'parent_page_url',
               'seconds_on_page'
             ]
-          },
-          verify: {}
+          }
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +115,6 @@ describe('v4', () => {
       const vars = baseVars({
         trustedform: {
           insights: 'false',
-          verify: 'false',
           vendor: 'ABC, Inc.',
           custom_reference: '9876'
         }
@@ -138,23 +135,10 @@ describe('v4', () => {
       const vars = baseVars({
         trustedform: {
           retain: 'false',
-          verify: 'false',
           scan_required_text: 'click here!'
         },
         insights: {
           page_scan: 'true'
-        }
-      });
-      assert.deepEqual(integration.request(vars).body, expected);
-    });
-    it('should correctly format a verify only request', () => {
-      const expected = JSON.stringify({
-        verify: {}
-      });
-      const vars = baseVars({
-        trustedform: {
-          retain: 'false',
-          insights: 'false'
         }
       });
       assert.deepEqual(integration.request(vars).body, expected);
@@ -291,7 +275,7 @@ describe('v4', () => {
         time_on_page_in_seconds: 8374,
         time_zone: 'America/Chicago',
         vendor: 'Inbound Verbose'
-      };
+      }
       assert.deepEqual(integration.response({}, {}, res), expected);
     });
 
@@ -360,8 +344,7 @@ const baseVars = (custom) => {
     },
     trustedform: {
       retain: 'true',
-      insights: 'true',
-      verify: 'true'
+      insights: 'true'
     },
     insights: {
       age: 'true',
