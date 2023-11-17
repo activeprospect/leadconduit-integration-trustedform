@@ -16,10 +16,6 @@
             <input type="checkbox" :disabled="!products.insights.enabled" v-model="products.insights.selected"><span> Insights</span>
             <p class="help-text">TrustedForm Insights helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.</p>
           </li>
-          <li>
-            <input type="checkbox" :disabled="!products.verify.enabled" v-model="products.verify.selected"><span> Verify</span>
-            <p class="help-text">Confirm that your leads were shown consent language that meets your compliance requirements.</p>
-          </li>
         </ul>
       </form>
     </section>
@@ -27,12 +23,12 @@
       :showPrevious="false"
       :onNext="!showFinish ? next : undefined"
       :onFinish="showFinish ? finish : undefined"
-      :disableNext="!products.retain.selected && !products.insights.selected && !products.verify.selected"
+      :disableNext="!products.retain.selected && !products.insights.selected"
     />
   </div>
 </template>
 <script>
-import { Navigation } from '@activeprospect/integration-components';
+import { Navigation } from '@activeprospect/integration-components'
 
 export default {
   data () {
@@ -46,7 +42,7 @@ export default {
   },
   computed: {
     showFinish () {
-      return (this.products.retain.selected ||this.products.verify.selected ) && !this.products.insights.selected;
+      return this.products.retain.selected && !this.products.insights.selected;
     }
   },
   methods: {
@@ -60,7 +56,7 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('getProducts');
+    this.$store.dispatch('getProducts')
   }
 };
 </script>
