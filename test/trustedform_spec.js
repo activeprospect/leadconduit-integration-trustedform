@@ -110,6 +110,70 @@ describe('v4', () => {
       });
       assert.deepEqual(integration.request(vars), expected);
     });
+    it('should correctly format a request with only insights and retain', () => {
+      const expected = {
+        method: 'POST',
+        url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
+        body: JSON.stringify({
+          match_lead: {
+            email: 'test@activeprospect.com',
+            phone: '5122981234'
+          },
+          retain: {
+            reference: 'https://app.leadconduit.com/events/4567',
+            vendor: 'Acme, Inc.'
+          },
+          insights: {
+            properties: [
+              'age_seconds',
+              'approx_ip_geo',
+              'browser',
+              'created_at',
+              'domain',
+              'expires_at',
+              'form_input_kpm',
+              'form_input_method',
+              'form_input_wpm',
+              'ip',
+              'is_framed',
+              'is_masked',
+              'num_sensitive_content_elements',
+              'num_sensitive_form_elements',
+              'os',
+              'page_url',
+              'parent_page_url',
+              'seconds_on_page'
+            ]
+          }
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'api-version': '4.0',
+          Authorization: 'Basic WDoxMjM0'
+        }
+      };
+      const vars = baseVars({
+        insights: {
+          browser: 'true',
+          created_timestamp: 'true',
+          expiration_timestamp: 'true',
+          framed: 'true',
+          form_input_method: 'true',
+          form_input_kpm: 'true',
+          form_input_wpm: 'true',
+          ip_address: 'true',
+          masked: 'true',
+          sensitive_content: 'true',
+          sensitive_form_fields: 'true',
+          operating_system: 'true',
+          page_url: 'true',
+          parent_page_url: 'true',
+          time_on_page: 'true'
+        }
+      });
+      delete vars.trustedform.verify;
+      assert.deepEqual(integration.request(vars), expected);
+    });
     it('should correctly format a retain only request', () => {
       const expected = JSON.stringify({
         match_lead: {
