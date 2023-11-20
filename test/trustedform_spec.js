@@ -10,6 +10,13 @@ describe('v4', () => {
       assert.isUndefined(integration.validate(baseVars()));
     });
 
+    it('should pass when verify product is not present', () => {
+      const vars = baseVars();
+      delete vars.trustedform.verify;
+      assert.isUndefined(integration.validate(vars));
+    });
+
+
     it('should require that a trustedform product is selected', () => {
       assert.equal(integration.validate(baseVars({
         trustedform: {
