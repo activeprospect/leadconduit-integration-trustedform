@@ -2,6 +2,34 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.3.1] - 2024-01-10
+### Fixed
+- v4 `validate` function will properly handle missing `insights` vars ([sc-65226](https://app.shortcut.com/active-prospect/story/65226/trustedform-v4-insights-add-on-with-no-field-mappings-errors-in-validation))
+
+## [2.3.0] - 2023-11-20
+### Fixed
+- Re-add fixed TrustedForm v4 Verify Add-On ([#105](https://github.com/activeprospect/leadconduit-integration-trustedform/pull/105), [sc-63442](https://app.shortcut.com/active-prospect/story/63442/trustedform-v4-add-verify-to-add-on))
+
+## [2.2.2] - 2023-11-17
+### Fixed
+- Revert [#102](https://github.com/activeprospect/leadconduit-integration-trustedform/pull/102)
+
+## [2.2.1] - 2023-11-17
+### Fixed
+- Page scan variables are now typed as arrays ([#103](https://github.com/activeprospect/leadconduit-integration-trustedform/pull/103))
+
+## [2.2.0] - 2023-11-15
+### Added
+- TrustedForm v4 Verify Add-On ([sc-63442](https://app.shortcut.com/active-prospect/story/63442/trustedform-v4-add-verify-to-add-on))
+
+## [2.1.1] - 2023-07-14
+### Fixed
+- Updated "Age" and "Age in Seconds" description for TF Inisights and TF Consent + Insights ([sc-48650](https://app.shortcut.com/active-prospect/story/48650/incorrect-description-for-age-in-the-trustedform-enhancements))
+
+## [2.1.0] - 2023-06-20
+### Added
+- TrustedForm v4 Integration ([sc-50245](https://app.shortcut.com/active-prospect/story/50245/trustedform-v4-new-integration-trustedform))
+
 ## [2.0.3] - 2023-02-21
 ### Fixed
 - `domain` data is now appended if returned as part of insights data
