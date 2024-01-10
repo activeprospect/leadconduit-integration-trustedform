@@ -28,20 +28,76 @@ describe('v4', () => {
     });
 
     it('should require an email or phone number if retain is selected', () => {
-      let vars = baseVars({trustedform: {insights: 'false'}, lead: {email: null, phone_1: null}});
+      let vars = baseVars({lead: {email: null, phone_1: null}});
       assert.equal(integration.validate(vars), 'an email address or phone number is required to use TrustedForm Retain');
-      vars = baseVars({trustedform: {insights: 'false'}, lead: {phone_1: null}});
+      vars = baseVars({lead: {phone_1: null}});
       assert.isUndefined(integration.validate(vars));
-      vars = baseVars({trustedform: {insights: 'false'}, lead: {email: null}});
+      vars = baseVars({lead: {email: null}});
       assert.isUndefined(integration.validate(vars));
     });
 
-    it('should require at least one property selected for insights', () => {
-      let vars = baseVars({
-        trustedform: { retain: 'false', verify: 'false' },
-        insights: { age: 'false', domain: 'false', location: 'false'}}
-      );
-      assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
+    describe('When Insights is enabled', () => {
+      it('should require at least one property selected', () => {
+        let vars = baseVars({
+          trustedform: { retain: 'false', verify: 'false' },
+          insights: { age: 'false', domain: 'false', location: 'false'}}
+        );
+        assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
+      });
+  
+      it('should skip when insights vars are not defined', () => {
+        const vars = baseVars();
+        delete vars.insights;
+        assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
+      });
+  
+      it('should skip when no insights properties are present', () => {
+        const vars = {
+          lead: {
+            trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
+          },
+          trustedform: {
+            insights: 'true',
+          },
+          insights: {}
+        };
+        assert.equal(integration.validate(parser(vars)), 'no properties selected for TrustedForm Insights');
+      });
+  
+      it('should skip if page_scan is false and no other insights properties are present ', () => {
+        const vars = {
+          lead: {
+            trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
+          },
+          trustedform: {
+            insights: 'true',
+          },
+          insights: {
+            page_scan: 'false'
+          }
+        };
+        assert.equal(integration.validate(parser(vars)), 'no properties selected for TrustedForm Insights');
+      });
+  
+      it('should pass when page_scan is true ', () => {
+        const vars = {
+          lead: {
+            trustedform_cert_url: 'https://cert.trustedform.com/2605ec3a321e1b3a41addf0bba1213505ef57985',
+          },
+          trustedform: {
+            insights: 'true',
+          },
+          insights: {
+            page_scan: 'true'
+          }
+        };
+        assert.isUndefined(integration.validate(parser(vars)));
+      });
+      
+      it('should pass when page_scan is false but other insights properties are present ', () => {
+        const vars = baseVars({ insights: { page_scan: 'false' } });
+        assert.isUndefined(integration.validate(vars));
+      });
     });
   });
 
