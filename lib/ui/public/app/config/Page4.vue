@@ -9,16 +9,22 @@
         <p>You may select all products that you would like to add to your flow. Each product will be charged depending on your contract. {{errors}}</p>
         <ul>
           <li>
-            <input type="checkbox" :disabled="!products.retain.enabled" v-model="products.retain.selected"><span> Retain</span>
-            <p class="help-text">Store consent in TrustedForm certificates for legal (TCPA) compliance.</p>
+            <label>
+              <input type="checkbox" :disabled="!products.retain.enabled" v-model="products.retain.selected"><span> Retain</span>
+              <p class="help-text">Store consent in TrustedForm certificates for legal (TCPA) compliance.</p>
+            </label>
           </li>
           <li>
-            <input type="checkbox" :disabled="!products.insights.enabled" v-model="products.insights.selected"><span> Insights</span>
-            <p class="help-text">TrustedForm Insights helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.</p>
+            <label>
+              <input type="checkbox" :disabled="!products.insights.enabled" v-model="products.insights.selected"><span> Insights</span>
+              <p class="help-text">TrustedForm Insights helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.</p>
+            </label>
           </li>
           <li>
-            <input type="checkbox" :disabled="!products.verify.enabled" v-model="products.verify.selected"><span> Verify</span>
-            <p class="help-text">Confirm that your leads were shown consent language that meets your compliance requirements.</p>
+            <label>
+              <input type="checkbox" :disabled="!products.verify.enabled" v-model="products.verify.selected"><span> Verify</span>
+              <p class="help-text">Confirm that your leads were shown consent language that meets your compliance requirements.</p>
+            </label>
           </li>
         </ul>
       </form>
