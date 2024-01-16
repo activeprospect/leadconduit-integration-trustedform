@@ -11,8 +11,8 @@
           <thead>
             <tr>
               <th><input type="checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll"></th>
-              <th>Select All</th>
-              <th></th>
+              <th>Data Point</th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
