@@ -5,7 +5,7 @@
     </header>
     <section>
       <form>
-        <h3>Select Data Points</h3>
+        <h3>Select Insights Data Points</h3>
         <p>TrustedForm Insights provides the following data related to the lead that filled out the form. Each selection of data points will be charged individually.</p>
         <table>
           <thead>
