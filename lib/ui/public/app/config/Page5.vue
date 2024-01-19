@@ -10,15 +10,19 @@
         <table>
           <thead>
             <tr>
-              <th><input type="checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll"></th>
-              <th>Data Point</th>
+              <th>
+                <input id="select-all" type="checkbox" class="fancy-checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll">
+                <label for="select-all">Data Point</label>
+              </th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="field in Object.keys(fields)" :key="fields[field].name">
-              <td><input type="checkbox" v-model="fields[field].selected" @change="updateHeader"></td>
-              <td>{{fields[field].name}}</td>
+              <td style="padding-right: 0; min-width: 200px;">
+                <input :id="field" type="checkbox" class="fancy-checkbox" v-model="fields[field].selected" @change="updateHeader">
+                <label :for="field">{{fields[field].name}}</label>
+              </td>
               <td v-html="fields[field].description"></td>
             </tr>
           </tbody>
