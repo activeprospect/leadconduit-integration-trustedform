@@ -1,7 +1,7 @@
 <template>
   <div>
     <header>
-      TrustedForm Insights Configuration
+      Configure TrustedForm Insights
     </header>
     <section>
       <form>
