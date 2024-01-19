@@ -26,8 +26,8 @@
       </form>
     </section>
     <Navigation
-      :onFinish="finish"
-      :disableFinish="selected === 'none'"
+      :onConfirm="confirm"
+      :disableConfirm="selected === 'none'"
     />
   </div>
 </template>
@@ -67,9 +67,9 @@ export default {
       this.selected = this.amountSelected();
       this.header = this.selected === 'all';
     },
-    finish () {
+    confirm () {
       this.$store.state.v4Fields = this.fields;
-      this.$store.dispatch('finish');
+      this.$store.dispatch('confirm');
     }
   },
   mounted () {

@@ -27,7 +27,7 @@
         </table>
       </div>
     </section>
-    <Navigation :onNext="onNext"/>
+    <Navigation :onConfirm="confirm"/>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
     Navigation
   },
   methods: {
-    onNext () {
+    confirm () {
       this.$router.push('/3');
     }
   }

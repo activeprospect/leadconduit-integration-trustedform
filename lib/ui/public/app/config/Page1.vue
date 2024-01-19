@@ -16,7 +16,7 @@
           their lead forms.
         </p>
       </section>
-      <Navigation :onNext="onNext"/>
+      <Navigation :onConfirm="onConfirm"/>
     </div>
     <div v-else-if="!isDataService">
       <LoadingScreen :module-name="'TrustedForm ' + moduleName"/>
@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    onNext () {
+    onConfirm () {
       this.$router.push('/2');
     }
   },

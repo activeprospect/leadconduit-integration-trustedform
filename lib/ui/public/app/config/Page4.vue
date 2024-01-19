@@ -31,9 +31,8 @@
     </section>
     <Navigation
       :showPrevious="false"
-      :onNext="!showFinish ? next : undefined"
-      :onFinish="showFinish ? finish : undefined"
-      :disableNext="!products.retain.selected && !products.insights.selected && !products.verify.selected"
+      :onConfirm="confirm"
+      :disableConfirm="!products.retain.selected && !products.insights.selected && !products.verify.selected"
     />
   </div>
 </template>
@@ -56,7 +55,7 @@ export default {
     }
   },
   methods: {
-    next () {
+    confirm () {
       this.$store.state.products = this.products;
       this.$router.push('/5');
     },
