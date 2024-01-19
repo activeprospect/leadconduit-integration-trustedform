@@ -10,19 +10,19 @@
         <ul>
           <li>
             <label>
-              <input type="checkbox" :disabled="!products.retain.enabled" v-model="products.retain.selected"><span> Retain</span>
+              <input type="checkbox" class="fancy-checkbox" :disabled="!products.retain.enabled" v-model="products.retain.selected" id="retain"><label for="retain">Retain</label>
               <p class="help-text">Store consent in TrustedForm certificates for legal (TCPA) compliance.</p>
             </label>
           </li>
           <li>
             <label>
-              <input type="checkbox" :disabled="!products.insights.enabled" v-model="products.insights.selected"><span> Insights</span>
+              <input type="checkbox" class="fancy-checkbox" :disabled="!products.insights.enabled" v-model="products.insights.selected" id="insights"><label for="insights">Insights</label>
               <p class="help-text">TrustedForm Insights helps buyers identify the leads that are most likely to convert and effectively manage returns and rejections.</p>
             </label>
           </li>
           <li>
             <label>
-              <input type="checkbox" :disabled="!products.verify.enabled" v-model="products.verify.selected"><span> Verify</span>
+              <input type="checkbox" class="fancy-checkbox" :disabled="!products.verify.enabled" v-model="products.verify.selected" id="verify"><label for="verify">Verify</label>
               <p class="help-text">Confirm that your leads were shown consent language that meets your compliance requirements.</p>
             </label>
           </li>
@@ -49,19 +49,14 @@ export default {
   components: {
     Navigation
   },
-  computed: {
-    showFinish () {
-      return (this.products.retain.selected ||this.products.verify.selected ) && !this.products.insights.selected;
-    }
-  },
   methods: {
     confirm () {
       this.$store.state.products = this.products;
-      this.$router.push('/5');
-    },
-    finish () {
-      this.$store.state.products = this.products;
-      this.$store.dispatch('finish');
+      if (this.products.insights.selected) {
+        this.$router.push('/5');
+      } else {
+        this.$store.dispatch('confirm');
+      }
     }
   },
   created () {
@@ -69,3 +64,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+ul {
+  padding-top: 1em;
+}
+</style>

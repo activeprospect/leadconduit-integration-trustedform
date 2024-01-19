@@ -82,3 +82,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+table {
+  position: relative;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: #f4f6f8;
+  border-bottom: 1px solid #dfe4e8;
+}
+</style>
