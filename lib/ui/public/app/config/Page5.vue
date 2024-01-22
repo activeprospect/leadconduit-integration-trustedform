@@ -12,17 +12,19 @@
             <tr>
               <th>
                 <input id="select-all" type="checkbox" class="fancy-checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll">
-                <label for="select-all">Data Point</label>
+                <label for="select-all" class="checkbox-label"></label>
               </th>
+              <th><label for="select-all" class="text-label">Data Point</label></th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="field in Object.keys(fields)" :key="fields[field].name">
-              <td style="padding-right: 0; min-width: 200px;">
+              <td>
                 <input :id="field" type="checkbox" class="fancy-checkbox" v-model="fields[field].selected" @change="updateHeader">
-                <label :for="field">{{fields[field].name}}</label>
+                <label :for="field" class="checkbox-label"></label>
               </td>
+              <td><label :for="field" class="text-label">{{fields[field].name}}</label></td>
               <td v-html="fields[field].description"></td>
             </tr>
           </tbody>
@@ -93,5 +95,21 @@ th {
   top: 0;
   background-color: #f4f6f8;
   border-bottom: 1px solid #dfe4e8;
+}
+
+/*
+We are using "fancy-checkbox" in an atypical way;
+Typically, the <label> and <input> components are siblings, and there is only 1 label for the checkbox.
+However, since our fancy-checkbox is supposed to be placed in a separate <td> and have additional padding,
+We have to add some additional styling and a second <label> element.
+*/
+.checkbox-label {
+  /* !important is needed because of this style https://github.com/activeprospect/leadconduit-client/blob/618797873a9fc485bf2d51873043700aae9d496e/public/css/core/forms.styl#L495 */
+  padding: 1.2em !important;
+}
+
+.text-label {
+  /* !important is needed because of this style https://github.com/activeprospect/leadconduit-client/blob/618797873a9fc485bf2d51873043700aae9d496e/public/css/core/forms.styl#L429 */
+  margin: 0 !important;
 }
 </style>
