@@ -1,24 +1,30 @@
 <template>
   <div>
     <header>
-      TrustedForm Insights Configuration
+      Configure TrustedForm Insights
     </header>
     <section>
       <form>
-        <h3>Select Data Points</h3>
+        <h3>Select Insights Data Points</h3>
         <p>TrustedForm Insights provides the following data related to the lead that filled out the form. Each selection of data points will be charged individually.</p>
         <table>
           <thead>
             <tr>
-              <th><input type="checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll"></th>
-              <th>Select All</th>
-              <th></th>
+              <th>
+                <input id="select-all" type="checkbox" class="fancy-checkbox" v-model="header" :indeterminate.prop="selected === 'some'" @click="toggleAll">
+                <label for="select-all" class="checkbox-label"></label>
+              </th>
+              <th><label for="select-all" class="text-label">Data Point</label></th>
+              <th>Description</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="field in Object.keys(fields)" :key="fields[field].name">
-              <td><input type="checkbox" v-model="fields[field].selected" @change="updateHeader"></td>
-              <td>{{fields[field].name}}</td>
+              <td>
+                <input :id="field" type="checkbox" class="fancy-checkbox" v-model="fields[field].selected" @change="updateHeader">
+                <label :for="field" class="checkbox-label"></label>
+              </td>
+              <td><label :for="field" class="text-label">{{fields[field].name}}</label></td>
               <td v-html="fields[field].description"></td>
             </tr>
           </tbody>
@@ -26,8 +32,8 @@
       </form>
     </section>
     <Navigation
-      :onFinish="finish"
-      :disableFinish="selected === 'none'"
+      :onConfirm="confirm"
+      :disableConfirm="selected === 'none'"
     />
   </div>
 </template>
@@ -67,9 +73,9 @@ export default {
       this.selected = this.amountSelected();
       this.header = this.selected === 'all';
     },
-    finish () {
+    confirm () {
       this.$store.state.v4Fields = this.fields;
-      this.$store.dispatch('finish');
+      this.$store.dispatch('confirm');
     }
   },
   mounted () {
@@ -78,3 +84,32 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+table {
+  position: relative;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: #f4f6f8;
+  border-bottom: 1px solid #dfe4e8;
+}
+
+/*
+We are using "fancy-checkbox" in an atypical way;
+Typically, the <label> and <input> components are siblings, and there is only 1 label for the checkbox.
+However, since our fancy-checkbox is supposed to be placed in a separate <td> and have additional padding,
+We have to add some additional styling and a second <label> element.
+*/
+.checkbox-label {
+  /* !important is needed because of this style https://github.com/activeprospect/leadconduit-client/blob/618797873a9fc485bf2d51873043700aae9d496e/public/css/core/forms.styl#L495 */
+  padding: 1.2em !important;
+}
+
+.text-label {
+  /* !important is needed because of this style https://github.com/activeprospect/leadconduit-client/blob/618797873a9fc485bf2d51873043700aae9d496e/public/css/core/forms.styl#L429 */
+  margin: 0 !important;
+}
+</style>
