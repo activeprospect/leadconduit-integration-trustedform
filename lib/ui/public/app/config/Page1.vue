@@ -19,7 +19,7 @@
       <Navigation :onConfirm="onConfirm"/>
     </div>
     <div v-else-if="!isDataService">
-      <LoadingScreen :module-name="'TrustedForm ' + moduleName"/>
+      <LoadingScreen :onFinish="() => {/* NOOP */}" :module-name="'TrustedForm ' + moduleName"/>
     </div>
   </div>
 </template>
