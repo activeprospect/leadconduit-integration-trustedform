@@ -32,6 +32,6 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@activeprospect/integration-dev-dependencies": "^1.1.0"
+    "@activeprospect/integration-dev-dependencies": "^2.0.0"
   }
 }
