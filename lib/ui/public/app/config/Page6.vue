@@ -6,10 +6,10 @@
     <section>
       <h3>Page Scan Forbidden/Required Text</h3>
       <p>Please set your required and/or forbidden text for the TrustedForm set in LeadConduit; the step will fail if the required term is missing and if the forbidden term is present in the page.</p>
-      <Form v-model="values.value" @submit="handleSubmit" legend="Select Field">
+      <Form v-model="values" @submit="handleSubmit" legend="Select Field">
         <SelectField
           name="pagescan"
-          :options="taggable.value"
+          :options="taggable"
           taggable
           multiple
           @tag="handleTag"
