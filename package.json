@@ -18,7 +18,8 @@
   },
   "license": "CC-BY-NC-ND-4.0",
   "dependencies": {
-    "@activeprospect/integration-components": "^4.0.2",
+    "@activeprospect/integration-components": "^5.0.0",
+    "@activeprospect/ui-components": "^1.3.3",
     "axios": "^1.4.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
@@ -27,11 +28,11 @@
     "lodash": "^4.17.20",
     "request": "^2.88.0",
     "trustedform-api-client": "^1.0.7",
-    "vue": "^2.6.11",
-    "vue-router": "^3.1.6",
-    "vuex": "^3.1.3"
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@activeprospect/integration-dev-dependencies": "^1.1.0"
+    "@activeprospect/integration-dev-dependencies": "^2.0.0"
   }
 }
