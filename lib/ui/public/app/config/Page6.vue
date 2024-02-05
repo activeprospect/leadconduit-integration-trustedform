@@ -6,41 +6,73 @@
     <section>
       <h3>Page Scan Forbidden/Required Text</h3>
       <p>Please set your required and/or forbidden text for the TrustedForm set in LeadConduit; the step will fail if the required term is missing and if the forbidden term is present in the page.</p>
-      <Form v-model="values" @submit="handleSubmit" legend="Select Field">
+      <Form :actions="false">
         <SelectField
-          name="pagescan"
-          :options="taggable"
+          name="PageScan Required"
+          v-model="requiredTags"
+          :options="requiredOptions"
           taggable
           multiple
-          @tag="handleTag"
+          @tag="handleRequiredTag"
+          openDirection="bottom"
+        ></SelectField>
+
+        <SelectField
+          name="PageScan Forbidden"
+          v-model="forbiddenTags"
+          :options="forbiddenOptions"
+          taggable
+          multiple
+          @tag="handleForbiddenTag"
+          openDirection="bottom"
         ></SelectField>
       </Form>
     </section>
     <Navigation
       :onConfirm="confirm"
-      :disableConfirm="taggable.length === 0"
+      :disableConfirm="false"
     />
   </div>
 </template>
+
 <script setup>
 import { Navigation } from '@activeprospect/integration-components';
 import { SelectField, Form } from '@activeprospect/ui-components';
-import { toRaw, ref } from 'vue';
+import { ref } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
-const values = ref({});
-const taggable = ref([]);
+const requiredTags = ref([]);
+const requiredOptions = ref([]);
+const forbiddenTags = ref([]);
+const forbiddenOptions = ref([]);
 
-function handleTag(tag) {
-  console.log({tag, taggable: toRaw(taggable)})
+function handleRequiredTag(tag) {
+  requiredTags.value.push(tag);
+  requiredOptions.value.push(tag);
 }
 
-function handleSubmit() {
-  console.log('submit', toRaw(values), toRaw(taggable))
+function handleForbiddenTag(tag) {
+  forbiddenTags.value.push(tag);
+  forbiddenOptions.value.push(tag);
 }
 
 function confirm() {
+  store.commit('setPageScan', {
+    required: requiredTags.value,
+    forbidden: forbiddenTags.value
+  });
   store.dispatch('confirm'); 
 }
 </script>
+
+<style scoped>
+/** override this style https://github.com/activeprospect/leadconduit-client/blob/a005d3ac5627aa39d12c64756561ef400b512bf3/public/css/core/forms.styl#L252-L254 */
+:deep(input[type="text"]) {
+  min-width: 0 !important;
+}
+
+:deep(.formkit-outer) {
+  width: 100%;
+}
+</style>
