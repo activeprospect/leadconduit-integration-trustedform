@@ -44,13 +44,13 @@ describe('v4', () => {
         );
         assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
       });
-  
+
       it('should skip when insights vars are not defined', () => {
         const vars = baseVars();
         delete vars.insights;
         assert.equal(integration.validate(vars), 'no properties selected for TrustedForm Insights');
       });
-  
+
       it('should skip when no insights properties are present', () => {
         const vars = {
           lead: {
@@ -63,7 +63,7 @@ describe('v4', () => {
         };
         assert.equal(integration.validate(parser(vars)), 'no properties selected for TrustedForm Insights');
       });
-  
+
       it('should skip if page_scan is false and no other insights properties are present ', () => {
         const vars = {
           lead: {
@@ -78,7 +78,7 @@ describe('v4', () => {
         };
         assert.equal(integration.validate(parser(vars)), 'no properties selected for TrustedForm Insights');
       });
-  
+
       it('should pass when page_scan is true ', () => {
         const vars = {
           lead: {
@@ -93,7 +93,7 @@ describe('v4', () => {
         };
         assert.isUndefined(integration.validate(parser(vars)));
       });
-      
+
       it('should pass when page_scan is false but other insights properties are present ', () => {
         const vars = baseVars({ insights: { page_scan: 'false' } });
         assert.isUndefined(integration.validate(vars));
@@ -381,6 +381,7 @@ describe('v4', () => {
       };
       const expected = {
         age_in_seconds: 91430,
+        amount_required_matched: 'all',
         browser_full: 'Firefox 112.0.',
         city: 'Austin',
         country_code: 'US',
@@ -454,6 +455,7 @@ describe('v4', () => {
       const expected = {
         outcome: 'failure',
         reason: 'Insights page scans unsuccessful',
+        amount_required_matched: 'none',
         forbidden_scans_found: [],
         forbidden_scans_not_found: [],
         required_scans_found: [],
