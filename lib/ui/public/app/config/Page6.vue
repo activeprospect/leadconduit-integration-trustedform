@@ -5,7 +5,11 @@
     </header>
     <section>
       <h3>Page Scan Forbidden/Required Text</h3>
-      <p>Please set your required and/or forbidden text for the TrustedForm set in LeadConduit; the step will fail if the required term is missing and if the forbidden term is present in the page.</p>
+      <p>
+        Please set your required and/or forbidden text for the TrustedForm set in LeadConduit;
+        the step will fail if the required term is missing and if the forbidden term is present in the page.
+        <a href="https://community.activeprospect.com/posts/4078890">Learn More</a>
+      </p>
       <Form :actions="false">
         <SelectField
           name="PageScan Required"
@@ -67,6 +71,8 @@ function confirm() {
 </script>
 
 <style scoped>
+/* All the selectors here use `:deep()` because otherwise the styles can't be scoped, since the classes are added by a library. */
+
 /** override this style https://github.com/activeprospect/leadconduit-client/blob/a005d3ac5627aa39d12c64756561ef400b512bf3/public/css/core/forms.styl#L252-L254 */
 :deep(input[type="text"]) {
   min-width: 0 !important;
