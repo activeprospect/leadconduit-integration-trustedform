@@ -3,7 +3,17 @@
     <header>
       Add TrustedForm Add-On
     </header>
-    <section>
+    <section v-if="loading">
+      <span class="loading"></span> Loading products...
+    </section>
+    <section v-else-if="!productsAvailable">
+      <p>
+        Your account does not have access to TrustedForm. Please contact
+        <a href="mailto:support@activeprospect.com">support@activeprospect.com</a>
+        if this is in error or if you would like to add TrustedForm to your account.
+      </p>
+    </section>
+    <section v-else>
       <form>
         <h3>Select the TrustedForm products to add to your flow.</h3>
         <p>You may select all products that you would like to add to your flow. Each product will be charged depending on your contract. {{errors}}</p>
@@ -42,12 +52,18 @@ import { Navigation } from '@activeprospect/integration-components';
 export default {
   data () {
     return {
+      loading: true,
       products: this.$store.getters.getProducts,
       errors: this.$store.getters.getErrors
     };
   },
   components: {
     Navigation
+  },
+  computed: {
+    productsAvailable() {
+      return this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
+    }
   },
   methods: {
     confirm () {
@@ -59,8 +75,9 @@ export default {
       }
     }
   },
-  created () {
-    this.$store.dispatch('getProducts');
+  async created () {
+    await this.$store.dispatch('getProducts');
+    this.loading = false;
   }
 };
 </script>
