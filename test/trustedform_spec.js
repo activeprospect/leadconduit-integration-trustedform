@@ -420,7 +420,7 @@ describe('v4', () => {
         time_zone: 'America/Chicago',
         vendor: 'Inbound Verbose'
       };
-      assert.deepEqual(integration.response({}, {}, res), expected);
+      assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
     });
 
     it('should correctly handle a failure responses', () => {
@@ -462,7 +462,7 @@ describe('v4', () => {
         required_scans_not_found: [ 'make a claim on Production' ],
         scans_result: false
       };
-      assert.deepEqual(integration.response({}, {}, res), expected);
+      assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
     });
 
     it('should correctly handle an error response', () => {
