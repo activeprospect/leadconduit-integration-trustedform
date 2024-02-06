@@ -39,34 +39,45 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { Navigation } from '@activeprospect/integration-components';
 import { SelectField, Form } from '@activeprospect/ui-components';
-import { ref } from 'vue';
-import { useStore } from 'vuex';
 
-const store = useStore();
-const requiredTags = ref([]);
-const requiredOptions = ref([]);
-const forbiddenTags = ref([]);
-const forbiddenOptions = ref([]);
-
-function handleRequiredTag(tag) {
-  requiredTags.value.push(tag);
-  requiredOptions.value.push(tag);
-}
-
-function handleForbiddenTag(tag) {
-  forbiddenTags.value.push(tag);
-  forbiddenOptions.value.push(tag);
-}
-
-function confirm() {
-  store.commit('setPageScan', {
-    required: requiredTags.value,
-    forbidden: forbiddenTags.value
-  });
-  store.dispatch('confirm'); 
+export default {
+  components: {
+    Navigation,
+    SelectField,
+    Form
+  },
+  data() {
+    return {
+      /** @type {string[]} */
+      requiredTags: [],
+      /** @type {string[]} */
+      requiredOptions: [],
+      /** @type {string[]} */
+      forbiddenTags: [],
+      /** @type {string[]} */
+      forbiddenOptions: [],
+    }
+  },
+  methods: {
+    handleRequiredTag(tag) {
+      this.requiredTags.push(tag);
+      this.requiredOptions.push(tag);
+    },
+    handleForbiddenTag(tag) {
+      this.forbiddenTags.push(tag);
+      this.forbiddenOptions.push(tag);
+    },
+    confirm() {
+      this.$store.commit('setPageScan', {
+        required: this.requiredTags,
+        forbidden: this.forbiddenTags
+      });
+      this.$store.dispatch('confirm'); 
+    },
+  }
 }
 </script>
 
