@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.3.3] - 2024-02-05
+### Added
+- added `amount_required_matched` field to v4 integration for requests with required scans ([sc-65371](https://app.shortcut.com/active-prospect/story/65371/trustedform-v4-page-scan-rule-improvements))
+
+## [2.3.2] - 2024-01-19
+### Fixed
+- improvements to v4 UI styling ([sc-59650](https://app.shortcut.com/active-prospect/story/59650/trustedform-v4-improve-rich-ui-styling))
+
 ## [2.3.1] - 2024-01-10
 ### Fixed
 - v4 `validate` function will properly handle missing `insights` vars ([sc-65226](https://app.shortcut.com/active-prospect/story/65226/trustedform-v4-insights-add-on-with-no-field-mappings-errors-in-validation))
