@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](http://semver.org)
 ## [2.3.3] - 2024-02-05
 ### Added
 - added `amount_required_matched` field to v4 integration for requests with required scans ([sc-65371](https://app.shortcut.com/active-prospect/story/65371/trustedform-v4-page-scan-rule-improvements))
+- PageScan required/forbidden text configuration screen. ([sc-65261](https://app.shortcut.com/active-prospect/story/65261/trustedform-v4-insights-add-on-ui-should-prompt-for-required-and-forbidden-scan-text))
+- Add notice when account has no TF products available ([sc-67604](https://app.shortcut.com/active-prospect/story/67604/trustedform-v4-fix-add-on-ui-to-handle-no-products))
 
 ## [2.3.2] - 2024-01-19
 ### Fixed

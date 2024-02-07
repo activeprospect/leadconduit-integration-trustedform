@@ -75,6 +75,10 @@ export default {
     },
     confirm () {
       this.$store.state.v4Fields = this.fields;
+      if (this.fields.page_scan?.selected) {
+        this.$router.push('/6')
+        return
+      }
       this.$store.dispatch('confirm');
     }
   },
