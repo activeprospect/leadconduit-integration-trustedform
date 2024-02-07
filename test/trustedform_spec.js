@@ -381,6 +381,7 @@ describe('v4', () => {
       };
       const expected = {
         age_in_seconds: 91430,
+        amount_forbidden_matched: 'none',
         amount_required_matched: 'all',
         browser_full: 'Firefox 112.0.',
         city: 'Austin',
@@ -456,6 +457,7 @@ describe('v4', () => {
         outcome: 'failure',
         reason: 'Insights page scans unsuccessful',
         amount_required_matched: 'none',
+        amount_forbidden_matched: 'none',
         forbidden_scans_found: [],
         forbidden_scans_not_found: [],
         required_scans_found: [],
