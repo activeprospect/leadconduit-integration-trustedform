@@ -9,7 +9,7 @@
     <section v-else-if="!productsAvailable">
       <p>
         Your account does not have access to TrustedForm. Please contact
-        <a href="mailto:support@activeprospect.com">support@activeprospect.com</a>
+        <a href="mailto:support@activeprospect.com" target="_blank">support@activeprospect.com</a>
         if this is in error or if you would like to add TrustedForm to your account.
       </p>
     </section>
