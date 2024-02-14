@@ -8,7 +8,7 @@
       <p>
         Please set your required and/or forbidden text for the TrustedForm set in LeadConduit;
         the step will fail if the required term is missing and if the forbidden term is present in the page.
-        <a href="https://community.activeprospect.com/posts/4078890">Learn More</a>
+        <a href="https://community.activeprospect.com/posts/4078890" target="_blank">Learn More</a>
       </p>
       <Form :actions="false">
         <SelectField
