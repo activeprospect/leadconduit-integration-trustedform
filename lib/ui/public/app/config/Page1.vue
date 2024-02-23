@@ -19,7 +19,7 @@
       <Navigation :onConfirm="onConfirm"/>
     </div>
     <div v-else-if="!isDataService">
-      <LoadingScreen :onFinish="() => {/* NOOP */}" :module-name="'TrustedForm ' + moduleName"/>
+      <LoadingScreen :onFinish="finish" :module-name="'TrustedForm ' + moduleName"/>
     </div>
   </div>
 </template>
@@ -55,12 +55,15 @@ export default {
   methods: {
     onConfirm () {
       this.$router.push('/2');
+    },
+    finish () {
+      this.$store.dispatch('confirm');
     }
   },
   mounted () {
     const { integration } = this.$store.state.config;
     if (integration.includes('outbound.trustedform')) this.$router.push('/4');
-    if (!integration.includes('insights')) {
+    else if (!integration.includes('insights')) {
       this.isDataService = false;
     }
   }

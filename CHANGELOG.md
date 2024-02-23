@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.3.5] - 2024-02-22
+### Fixed
+- fixed the loading screen an issue causing perpetual loading screens for old TF integrations ([sc-68876](https://app.shortcut.com/active-prospect/story/68876/leadconduit-trustedform-consent-integration-ui-issue))
+
+## [2.3.4] - 2024-02-13
+### Fixed
+- fixed broken links in the RUI
+
 ## [2.3.3] - 2024-02-05
 ### Added
 - added `amount_required_matched` field to v4 integration for requests with required scans ([sc-65371](https://app.shortcut.com/active-prospect/story/65371/trustedform-v4-page-scan-rule-improvements))
