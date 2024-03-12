@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.3.6] - 2024-03-12
+### Fixed
+- v4 integration now appends `masked_cert_url` when present
+
 ## [2.3.5] - 2024-02-22
 ### Fixed
 - fixed the loading screen an issue causing perpetual loading screens for old TF integrations ([sc-68876](https://app.shortcut.com/active-prospect/story/68876/leadconduit-trustedform-consent-integration-ui-issue))

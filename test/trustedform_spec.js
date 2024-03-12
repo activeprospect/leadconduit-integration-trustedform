@@ -373,7 +373,8 @@ describe('v4', () => {
             reference: 'https://app.leadconduit-development.com/events/647916a0d2c7c9de31fffd13',
             results: {
               expires_at: '2023-08-29T20:43:31Z',
-              previously_retained: true
+              previously_retained: true,
+              masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda'
             },
             vendor: 'Inbound Verbose'
           }
@@ -399,6 +400,7 @@ describe('v4', () => {
         kpm: 212.38938053097348,
         latitude: 30.2627,
         longitude: -97.7467,
+        masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda',
         matched_email: 'superman@activeprospect.com',
         os_full: 'Mac OS X 10.15',
         os_name: 'Mac OS X',
