@@ -288,6 +288,16 @@ describe('v4', () => {
     });
   });
 
+  it('should use a custom api key when present', () => {
+    const expected = `Basic ${Buffer.from('X:abcd').toString('base64')}`;
+    const vars = baseVars({
+      trustedform: {
+        api_key: 'abcd'
+      }
+    });
+    assert.equal(integration.request(vars).headers.Authorization, expected);
+  });
+
   describe('response', () => {
     it('should correctly handle a success response', () => {
       const res = {

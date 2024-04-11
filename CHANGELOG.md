@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.4.0] - 2024-04-10
+### Added
+- v4 integration now supports optional api key mapping
+
 ## [2.3.6] - 2024-03-12
 ### Fixed
 - v4 integration now appends `masked_cert_url` when present
