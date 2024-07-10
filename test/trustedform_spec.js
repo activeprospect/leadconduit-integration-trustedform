@@ -387,6 +387,17 @@ describe('v4', () => {
               masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda'
             },
             vendor: 'Inbound Verbose'
+          },
+          verify: {
+              languages: [
+              {
+                text: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'
+              }
+            ],
+            result: {
+              language_approved: true,
+              success: true
+            }
           }
         })
       };
@@ -431,7 +442,10 @@ describe('v4', () => {
         successful_match: true,
         time_on_page_in_seconds: 8374,
         time_zone: 'America/Chicago',
-        vendor: 'Inbound Verbose'
+        vendor: 'Inbound Verbose',
+        languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
+        language_approved: true,
+        success: true
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
     });
@@ -477,6 +491,35 @@ describe('v4', () => {
         scans_result: false
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
+    });
+
+    it('should correctly handle a Verify Consent language failure responses', () => {
+      const res = {
+        status: 200,
+        body: JSON.stringify({
+          'verify': {
+            'languages': [
+            {
+            'text': 'By clicking on the "Get Rates" button below, I consent to be contacted'
+            }
+            ],
+            'result': {
+            'language_approved': false,
+            'success': false
+            }
+          },
+          outcome: 'failure',
+          reason: 'Consent language not detected in the certificate.'
+        })
+      };
+      const expected = {
+        languages: ['By clicking on the "Get Rates" button below, I consent to be contacted'],
+        language_approved: false, 
+        success: false, 
+        outcome: 'failure',
+        reason: 'Consent language not detected in the certificate.',
+      };
+      assert.deepEqual(integration.response({}, {}, res), expected);
     });
 
     it('should correctly handle an error response', () => {
