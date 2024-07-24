@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org)
 
 ## [2.4.0] - 2024-04-10
 ### Added
+- updated v4 integration response to append language approved and ensure it is a boolean value
+
+## [2.4.0] - 2024-04-10
+### Added
 - v4 integration now supports optional api key mapping
 
 ## [2.3.6] - 2024-03-12
