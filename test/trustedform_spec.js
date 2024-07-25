@@ -498,11 +498,7 @@ describe('v4', () => {
         status: 200,
         body: JSON.stringify({
           'verify': {
-            'languages': [
-            {
-            'text': 'By clicking on the "Get Rates" button below, I consent to be contacted'
-            }
-            ],
+            'languages': [{'text': 'By clicking on the "Get Rates" button below, I consent to be contacted'}],
             'result': {
             'language_approved': false,
             'success': false
