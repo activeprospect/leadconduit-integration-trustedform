@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [2.4.2] - 2024-07-25
+## [2.4.1] - 2024-07-25
 ### Added
 - updated v4 integration response to append language approved and ensure it is a boolean value.
 
