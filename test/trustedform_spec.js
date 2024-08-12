@@ -37,10 +37,10 @@ describe('v4', () => {
     });
 
     describe('request', () => {
-      it.only('should default the scan delimiter to "|" if not provided', () => {
+      it('should default the scan delimiter to "|" if not provided', () => {
         const expected = JSON.stringify({
           insights: {
-            properties: ['page_scan'],
+            properties: ['age_seconds','approx_ip_geo','domain'],
             scans: {
               required: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.',
               forbidden: undefined,
@@ -284,7 +284,7 @@ describe('v4', () => {
           scans: {
             required: 'click here!',
             forbidden: undefined,
-            delimiter: undefined
+            delimiter: '|'
           }
         }
       });
