@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.4.2] - 2024-08-12
+### Added
+- added "|" to be the default scan delimeter for TF version 4
+
 ## [2.4.0] - 2024-04-10
 ### Added
 - v4 integration now supports optional api key mapping

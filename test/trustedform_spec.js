@@ -36,6 +36,32 @@ describe('v4', () => {
       assert.isUndefined(integration.validate(vars));
     });
 
+    describe('request', () => {
+      it.only('should default the scan delimiter to "|" if not provided', () => {
+        const expected = JSON.stringify({
+          insights: {
+            properties: ['page_scan'],
+            scans: {
+              required: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.',
+              forbidden: undefined,
+              delimiter: '|'
+            }
+          }
+        });
+        const vars = baseVars({
+          trustedform: {
+            retain: 'false',
+            verify: 'false',
+            scan_required_text: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'
+          },
+          insights: {
+            page_scan: 'true'
+          }
+        });
+        assert.deepEqual(integration.request(vars).body, expected);
+      });
+    });
+
     describe('When Insights is enabled', () => {
       it('should require at least one property selected', () => {
         let vars = baseVars({
