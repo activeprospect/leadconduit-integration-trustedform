@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [2.4.2] - 2024-08-12
+## [2.4.1] - 2024-08-12
 ### Added
 - added "|" to be the default scan delimiter for TF version 4
 
