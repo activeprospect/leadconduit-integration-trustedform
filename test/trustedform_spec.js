@@ -166,6 +166,53 @@ describe('v4', () => {
       });
       assert.deepEqual(integration.request(vars), expected);
     });
+    it('should default the scan delimiter to "|" if not provided', () => {
+      const expected = JSON.stringify({
+        insights: {
+          properties: ['age_seconds','approx_ip_geo','domain'],
+          scans: {
+            required: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.',
+            forbidden: undefined,
+            delimiter: '|'
+          }
+        }
+      });
+      const vars = baseVars({
+        trustedform: {
+          retain: 'false',
+          verify: 'false',
+          scan_required_text: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'
+        },
+        insights: {
+          page_scan: 'true'
+        }
+      });
+      assert.deepEqual(integration.request(vars).body, expected);
+    });
+    it('should use specifed delimiter if mapped', () => {
+      const expected = JSON.stringify({
+        insights: {
+          properties: ['age_seconds','approx_ip_geo','domain'],
+          scans: {
+            required: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.',
+            forbidden: undefined,
+            delimiter: '/'
+          }
+        }
+      });
+      const vars = baseVars({
+        trustedform: {
+          retain: 'false',
+          verify: 'false',
+          scan_required_text: 'I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.',
+          scan_delimiter: '/'
+        },
+        insights: {
+          page_scan: 'true'
+        }
+      });
+      assert.deepEqual(integration.request(vars).body, expected);
+    });
     it('should correctly format a request with only insights and retain', () => {
       const expected = {
         method: 'POST',
@@ -258,7 +305,7 @@ describe('v4', () => {
           scans: {
             required: 'click here!',
             forbidden: undefined,
-            delimiter: undefined
+            delimiter: '|'
           }
         }
       });
