@@ -490,9 +490,11 @@ describe('v4', () => {
         time_on_page_in_seconds: 8374,
         time_zone: 'America/Chicago',
         vendor: 'Inbound Verbose',
-        languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
-        language_approved: true,
-        success: true
+        verify: {
+          languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
+          language_approved: true,
+          success: true
+        }
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
     });
@@ -556,9 +558,11 @@ describe('v4', () => {
         })
       };
       const expected = {
-        languages: ['By clicking on the "Get Rates" button below, I consent to be contacted'],
-        language_approved: false, 
-        success: false, 
+        verify: {
+          languages: ['By clicking on the "Get Rates" button below, I consent to be contacted'],
+          language_approved: false, 
+          success: false
+        }, 
         outcome: 'failure',
         reason: 'Consent language not detected in the certificate.',
       };
