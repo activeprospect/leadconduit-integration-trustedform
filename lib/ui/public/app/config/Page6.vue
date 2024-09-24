@@ -59,7 +59,7 @@ export default {
       forbiddenTags: [],
       /** @type {string[]} */
       forbiddenOptions: [],
-    }
+    };
   },
   methods: {
     handleRequiredTag(tag) {
@@ -75,10 +75,16 @@ export default {
         required: this.requiredTags,
         forbidden: this.forbiddenTags
       });
-      this.$store.dispatch('confirm'); 
+
+      const shouldConfigVerify = this.$store.dispatch('getShouldConfigVerify');
+      if (shouldConfigVerify) {
+        this.$router.push('/7');
+      } else {
+        this.$store.dispatch('confirm'); 
+      }
     },
   }
-}
+};
 </script>
 
 <style scoped>

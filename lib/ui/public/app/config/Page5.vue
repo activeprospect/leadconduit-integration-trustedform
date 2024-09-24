@@ -74,10 +74,14 @@ export default {
       this.header = this.selected === 'all';
     },
     confirm () {
+      const shouldConfigVerify = this.$store.dispatch('getShouldConfigVerify');
       this.$store.state.v4Fields = this.fields;
       if (this.fields.page_scan?.selected) {
-        this.$router.push('/6')
-        return
+        this.$router.push('/6');
+        return;
+      } else if (shouldConfigVerify) {
+        this.$router.push('/7');
+        return;
       }
       this.$store.dispatch('confirm');
     }

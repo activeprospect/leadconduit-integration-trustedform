@@ -62,19 +62,23 @@ export default {
   },
   computed: {
     productsAvailable() {
-      return this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
+      return true // this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
     }
   },
   methods: {
     confirm () {
       this.$store.state.products = this.products;
-      if (this.products.insights.selected || this.products.verify.selected) {
-        this.products.insights.selected && this.$router.push('/5');
-        this.products.verify.selected && this.$router.push('/6');
+      if (this.products.insights.selected && this.products.verify.selected) {
+        this.$router.push('/5'); 
+        this.$store.dispatch('setShouldConfigVerify', true);
+      } else if (this.products.insights.selected) {
+        this.$router.push('/5');
+      } else if (this.products.verify.selected) {
+        this.$router.push('/7');
       } else {
         this.$store.dispatch('confirm');
       }
-    }
+}
   },
   async created () {
     await this.$store.dispatch('getProducts');
