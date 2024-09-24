@@ -68,8 +68,9 @@ export default {
   methods: {
     confirm () {
       this.$store.state.products = this.products;
-      if (this.products.insights.selected) {
-        this.$router.push('/5');
+      if (this.products.insights.selected || this.products.verify.selected) {
+        this.products.insights.selected && this.$router.push('/5');
+        this.products.verify.selected && this.$router.push('/6');
       } else {
         this.$store.dispatch('confirm');
       }
