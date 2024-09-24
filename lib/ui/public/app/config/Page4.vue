@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     productsAvailable() {
-      return true // this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
+      return this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
     }
   },
   methods: {
