@@ -9,14 +9,17 @@
           were given consent in a one to one manner.
         </p>
         <Form :actions="false">
-          <TextField
+          <input
             v-model="advertiserName"
-          ></TextField>
+            type="text"
+            placeholder="(optional) keep empty if you don't need to check one-to-one consent"
+          ></input>
         </Form>
       </section>
       <Navigation
         :onConfirm="confirm"
         :disableConfirm="false"
+        :navHistory="navHistory"
       />
     </div>
   </template>
@@ -35,6 +38,8 @@
       return {
         /** @type {string} */
         advertiserName: "",
+        /** @type {string[]} */
+        navHistory: this.$store.getters.getNavHistory
       };
     },
     methods: {
@@ -53,10 +58,8 @@
 
 /** override this style https://github.com/activeprospect/leadconduit-client/blob/a005d3ac5627aa39d12c64756561ef400b512bf3/public/css/core/forms.styl#L252-L254 */
 
-:deep(.formkit-inner) {
-  width: 100%;
-  display: block;
-  padding: 0;
+input {
+  width: 65%;
 }
 
 </style>

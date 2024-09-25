@@ -34,6 +34,7 @@
     <Navigation
       :onConfirm="confirm"
       :disableConfirm="selected === 'none'"
+      :navHistory="navHistory"
     />
   </div>
 </template>
@@ -46,7 +47,8 @@ export default {
     return {
       fields: this.$store.state.v4Fields,
       header: false,
-      selected: 'none'
+      selected: 'none',
+      navHistory: this.$store.getters.getNavHistory
     };
   },
   components: {
@@ -74,6 +76,7 @@ export default {
       this.header = this.selected === 'all';
     },
     confirm () {
+      this.$store.commit('setNavHistory', '/5');
       const shouldConfigVerify = this.$store.getters.getShouldConfigVerify;
       this.$store.state.v4Fields = this.fields;
       if (this.fields.page_scan?.selected) {

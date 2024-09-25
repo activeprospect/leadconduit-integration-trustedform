@@ -43,6 +43,7 @@
       :showPrevious="false"
       :onConfirm="confirm"
       :disableConfirm="!products.retain.selected && !products.insights.selected && !products.verify.selected"
+      :navHistory="navHistory"
     />
   </div>
 </template>
@@ -54,7 +55,8 @@ export default {
     return {
       loading: true,
       products: this.$store.getters.getProducts,
-      errors: this.$store.getters.getErrors
+      errors: this.$store.getters.getErrors,
+      navHistory: this.$store.getters.getNavHistory
     };
   },
   components: {
@@ -62,16 +64,19 @@ export default {
   },
   computed: {
     productsAvailable() {
-      return this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
+      return true // LAKI this.products.retain.enabled || this.products.insights.enabled || this.products.verify.enabled;
     }
   },
   methods: {
     confirm () {
+      this.$store.commit('resetNavHistory');
+      this.$store.commit('setNavHistory', '/4');
       this.$store.state.products = this.products;
       if (this.products.insights.selected && this.products.verify.selected) {
         this.$router.push('/5'); 
         this.$store.commit('setShouldConfigVerify', true);
       } else if (this.products.insights.selected) {
+        this.$store.commit('setShouldConfigVerify', false);
         this.$router.push('/5');
       } else if (this.products.verify.selected) {
         this.$router.push('/7');
