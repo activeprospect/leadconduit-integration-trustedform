@@ -78,7 +78,7 @@ export default {
       } else {
         this.$store.dispatch('confirm');
       }
-}
+    }
   },
   async created () {
     await this.$store.dispatch('getProducts');
