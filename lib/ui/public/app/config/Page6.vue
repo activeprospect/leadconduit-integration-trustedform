@@ -76,7 +76,7 @@ export default {
         forbidden: this.forbiddenTags
       });
 
-      const shouldConfigVerify = this.$store.dispatch('getShouldConfigVerify');
+      const shouldConfigVerify = this.$store.getters.getShouldConfigVerify;
       if (shouldConfigVerify) {
         this.$router.push('/7');
       } else {

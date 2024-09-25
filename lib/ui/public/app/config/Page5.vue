@@ -74,7 +74,7 @@ export default {
       this.header = this.selected === 'all';
     },
     confirm () {
-      const shouldConfigVerify = this.$store.dispatch('getShouldConfigVerify');
+      const shouldConfigVerify = this.$store.getters.getShouldConfigVerify;
       this.$store.state.v4Fields = this.fields;
       if (this.fields.page_scan?.selected) {
         this.$router.push('/6');

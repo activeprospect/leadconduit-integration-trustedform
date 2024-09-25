@@ -70,7 +70,7 @@ export default {
       this.$store.state.products = this.products;
       if (this.products.insights.selected && this.products.verify.selected) {
         this.$router.push('/5'); 
-        this.$store.dispatch('setShouldConfigVerify', true);
+        this.$store.commit('setShouldConfigVerify', true);
       } else if (this.products.insights.selected) {
         this.$router.push('/5');
       } else if (this.products.verify.selected) {

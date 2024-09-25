@@ -137,7 +137,9 @@ describe('v4', () => {
               'seconds_on_page'
             ]
           },
-          verify: {}
+          verify: {
+            advertiser_name: 'test'
+          }
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +164,8 @@ describe('v4', () => {
           page_url: 'true',
           parent_page_url: 'true',
           time_on_page: 'true'
-        }
+        },
+        trustedform: { advertiser_name: 'test' }
       });
       assert.deepEqual(integration.request(vars), expected);
     });
@@ -333,6 +336,22 @@ describe('v4', () => {
       });
       assert.deepEqual(integration.request(vars).body, expected);
     });
+    it('should correctly format a verify only request with 1:1 consent check', () => {
+      const expected = JSON.stringify({
+        verify: {
+          advertiser_name: 'test'
+        }
+      });
+      const vars = baseVars({
+        trustedform: {
+          retain: 'false',
+          insights: 'false',
+          advertiser_name: 'test'
+        },
+        verify: {}
+      });
+      assert.deepEqual(integration.request(vars).body, expected);
+    });
   });
 
   it('should use a custom api key when present', () => {
@@ -491,11 +510,11 @@ describe('v4', () => {
         time_on_page_in_seconds: 8374,
         time_zone: 'America/Chicago',
         vendor: 'Inbound Verbose',
+        one_to_one: true,
         verify: {
           languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
           language_approved: true,
-          success: true,
-          one_to_one: true
+          success: true
         }
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
