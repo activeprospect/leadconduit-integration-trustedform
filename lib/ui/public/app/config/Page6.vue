@@ -35,6 +35,7 @@
     <Navigation
       :onConfirm="confirm"
       :disableConfirm="false"
+      :navHistory="navHistory"
     />
   </div>
 </template>
@@ -59,7 +60,9 @@ export default {
       forbiddenTags: [],
       /** @type {string[]} */
       forbiddenOptions: [],
-    }
+      /** @type {string[]} */
+      navHistory: this.$store.getters.getNavHistory
+    };
   },
   methods: {
     handleRequiredTag(tag) {
@@ -71,14 +74,19 @@ export default {
       this.forbiddenOptions.push(tag);
     },
     confirm() {
+      this.$store.commit('setNavHistory', '/6')
       this.$store.commit('setPageScan', {
         required: this.requiredTags,
         forbidden: this.forbiddenTags
       });
-      this.$store.dispatch('confirm'); 
+      if (this.$store.getters.getShouldConfigVerify) {
+        this.$router.push('/7');
+      } else {
+        this.$store.dispatch('confirm'); 
+      }
     },
   }
-}
+};
 </script>
 
 <style scoped>
