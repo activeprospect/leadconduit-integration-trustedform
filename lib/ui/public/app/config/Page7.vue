@@ -54,9 +54,6 @@
   </script>
 
 <style scoped>
-/* All the selectors here use `:deep()` because otherwise the styles can't be scoped, since the classes are added by a library. */
-
-/** override this style https://github.com/activeprospect/leadconduit-client/blob/a005d3ac5627aa39d12c64756561ef400b512bf3/public/css/core/forms.styl#L252-L254 */
 
 input {
   width: 65%;
