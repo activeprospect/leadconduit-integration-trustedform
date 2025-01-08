@@ -464,6 +464,7 @@ describe('v4', () => {
             result: {
               language_approved: true,
               success: true,
+              form_submitted: true,
               one_to_one: true
             }
           }
@@ -516,6 +517,7 @@ describe('v4', () => {
         verify: {
           languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
           language_approved: true,
+          form_submitted: true,
           success: true
         }
       };

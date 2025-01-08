@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org)
 ## [2.4.3] - 2025-01-08
 ### Fixed
 - v4 now appends `share_url` ([sc-84484](https://app.shortcut.com/active-prospect/story/84484/trustedform-v4-retain-include-trustedform-share-url-as-an-appended-field))
+  and `verify.form_submitted` ([sc-84576](https://app.shortcut.com/active-prospect/story/84576/trustedform-v4-verify-include-form-submitted-as-an-appended-field))
 
 ## [2.4.1] - 2024-08-12
 ### Added
