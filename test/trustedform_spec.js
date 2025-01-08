@@ -450,7 +450,8 @@ describe('v4', () => {
             results: {
               expires_at: '2023-08-29T20:43:31Z',
               previously_retained: true,
-              masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda'
+              masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda',
+              share_url: 'https://cert.trustedform-dev.com/1eb8608bdf5b3bc42bb1e33cb0ed57a4bab643ef?shared_token=k6Kw261Tc-55fSPY2_xwPAkSm5r6V2w5h5CggqL2A_f-cph2gXWOonRmV-7aCe8ktjV2acrGQMujmZYPWHgBDd4AEAIeiMeEeqv-Rk8.ISm5ttdJP0FP5wGWyo6O7A.mc_8jwgGZpVBCRsDm0hHgg'
             },
             vendor: 'Inbound Verbose'
           },
@@ -489,6 +490,7 @@ describe('v4', () => {
         latitude: 30.2627,
         longitude: -97.7467,
         masked_cert_url: 'https://cert.trustedform-dev.com/f1fd052c43f08078a37d840b243daa69a35e8eda',
+        share_url: 'https://cert.trustedform-dev.com/1eb8608bdf5b3bc42bb1e33cb0ed57a4bab643ef?shared_token=k6Kw261Tc-55fSPY2_xwPAkSm5r6V2w5h5CggqL2A_f-cph2gXWOonRmV-7aCe8ktjV2acrGQMujmZYPWHgBDd4AEAIeiMeEeqv-Rk8.ISm5ttdJP0FP5wGWyo6O7A.mc_8jwgGZpVBCRsDm0hHgg',
         matched_email: 'superman@activeprospect.com',
         os_full: 'Mac OS X 10.15',
         os_name: 'Mac OS X',
@@ -581,9 +583,9 @@ describe('v4', () => {
       const expected = {
         verify: {
           languages: ['By clicking on the "Get Rates" button below, I consent to be contacted'],
-          language_approved: false, 
+          language_approved: false,
           success: false
-        }, 
+        },
         outcome: 'failure',
         reason: 'Consent language not detected in the certificate.',
       };

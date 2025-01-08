@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.4.3] - 2025-01-08
+### Fixed
+- v4 now appends `share_url` ([sc-84484](https://app.shortcut.com/active-prospect/story/84484/trustedform-v4-retain-include-trustedform-share-url-as-an-appended-field))
+
 ## [2.4.1] - 2024-08-12
 ### Added
 - added "|" to be the default scan delimiter for TF version 4
