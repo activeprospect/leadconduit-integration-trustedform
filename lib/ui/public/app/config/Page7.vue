@@ -37,7 +37,7 @@
     data() {
       return {
         /** @type {string} */
-        advertiserName: "",
+        advertiserName: this.$store.state.advertiserName || "",
         /** @type {string[]} */
         navHistory: this.$store.getters.getNavHistory
       };
