@@ -53,13 +53,13 @@ export default {
   data() {
     return {
       /** @type {string[]} */
-      requiredTags: [],
+      requiredTags: this.$store.state.requiredTags || [],
       /** @type {string[]} */
-      requiredOptions: [],
+      requiredOptions: this.$store.state.requiredTags || [],
       /** @type {string[]} */
-      forbiddenTags: [],
+      forbiddenTags: this.$store.state.forbiddenTags || [],
       /** @type {string[]} */
-      forbiddenOptions: [],
+      forbiddenOptions: this.$store.state.forbiddenTags || [],
       /** @type {string[]} */
       navHistory: this.$store.getters.getNavHistory
     };
