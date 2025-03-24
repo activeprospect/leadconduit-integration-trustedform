@@ -527,8 +527,8 @@ describe('v4', () => {
           language_approved: true,
           form_submitted: true,
           success: true,
-          min_font_size_px_satisfied: true,
-          min_contrast_ratio_satisfied: true
+          font_size: true,
+          contrast_ratio: true
         }
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
