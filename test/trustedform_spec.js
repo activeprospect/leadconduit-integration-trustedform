@@ -134,7 +134,8 @@ describe('v4', () => {
               'os',
               'page_url',
               'parent_page_url',
-              'seconds_on_page'
+              'seconds_on_page',
+              'bot_detected'
             ]
           },
           verify: {
@@ -163,7 +164,8 @@ describe('v4', () => {
           operating_system: 'true',
           page_url: 'true',
           parent_page_url: 'true',
-          time_on_page: 'true'
+          time_on_page: 'true',
+          bot_detected: 'true'
         },
         trustedform: { advertiser_name: 'test' }
       });
@@ -248,7 +250,8 @@ describe('v4', () => {
               'os',
               'page_url',
               'parent_page_url',
-              'seconds_on_page'
+              'seconds_on_page',
+              'bot_detected'
             ]
           }
         }),
@@ -274,7 +277,8 @@ describe('v4', () => {
           operating_system: 'true',
           page_url: 'true',
           parent_page_url: 'true',
-          time_on_page: 'true'
+          time_on_page: 'true',
+          bot_detected: 'true'
         }
       });
       delete vars.trustedform.verify;
@@ -413,7 +417,8 @@ describe('v4', () => {
               },
               page_url: 'https://activeprospect.github.io/certificate_staging.html',
               parent_page_url: null,
-              seconds_on_page: 8374
+              seconds_on_page: 8374,
+              bot_detected: false
             },
             scans: {
               forbidden: [],
@@ -465,7 +470,9 @@ describe('v4', () => {
               language_approved: true,
               success: true,
               form_submitted: true,
-              one_to_one: true
+              one_to_one: true,
+              min_font_size_px_satisfied: true,
+              min_contrast_ratio_satisfied: true
             }
           }
         })
@@ -513,12 +520,15 @@ describe('v4', () => {
         time_on_page_in_seconds: 8374,
         time_zone: 'America/Chicago',
         vendor: 'Inbound Verbose',
+        bot_detected: false,
         one_to_one: true,
         verify: {
           languages: ['I understand that the TrustedForm certificate is sent to the email address I provided above and I will receive product updates as they are released.'],
           language_approved: true,
           form_submitted: true,
-          success: true
+          success: true,
+          font_size: true,
+          contrast_ratio: true
         }
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
