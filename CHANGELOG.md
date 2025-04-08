@@ -2,10 +2,31 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
-## [2.4.3] - 2025-01-08
+## [2.5.0] - 2025-04-08
+### Added
+- v4 now includes CPL token when present ([sc-87918](https://app.shortcut.com/active-prospect/story/87918/send-cpl-data-to-trustedform))
+
+## [2.4.8] - 2025-03-25
+### Added
+- v4 Insights now supports `bot_detected` field
+- v4 Verify now appends `min_font_size_px_satisfied` and `min_contrast_ratio_satisfied`
+
+## [2.4.7] - 2025-03-06
+### Added
+- RUI now supports being re-opened
+
+## [2.4.4] - 2025-01-08
 ### Fixed
 - v4 now appends `share_url` ([sc-84484](https://app.shortcut.com/active-prospect/story/84484/trustedform-v4-retain-include-trustedform-share-url-as-an-appended-field))
   and `verify.form_submitted` ([sc-84576](https://app.shortcut.com/active-prospect/story/84576/trustedform-v4-verify-include-form-submitted-as-an-appended-field))
+
+## [2.4.3] - 2024-09-26
+### Added
+- v4 now supports Advertiser Name mapping and appends `one_to_one`
+
+## [2.4.2] - 2024-09-17
+### Fixed
+- fixed an issue with appended Verify fields
 
 ## [2.4.1] - 2024-08-12
 ### Added

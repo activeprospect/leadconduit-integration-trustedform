@@ -368,6 +368,12 @@ describe('v4', () => {
     assert.equal(integration.request(vars).headers.Authorization, expected);
   });
 
+  it('should send CPL token when present', () => {
+    process.env.TRUSTEDFORM_CPL_TOKEN = 'test';
+    assert.equal(integration.request(baseVars()).headers['CPL-Token'], 'test');
+    delete process.env.TRUSTEDFORM_CPL_TOKEN;
+  });
+
   describe('response', () => {
     it('should correctly handle a success response', () => {
       const res = {
