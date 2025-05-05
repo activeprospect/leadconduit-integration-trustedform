@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org)
 
+## [2.6.0] - 2025-05-05
+### Added
+- v4 Verify now appends `opt_in_type`, based on `opt_in_types_satisfied` ([sc-90678](https://app.shortcut.com/active-prospect/story/90678/trustedform-v4-verify-include-opt-in-types-satisfied-as-an-appended-field))
+
 ## [2.5.0] - 2025-04-08
 ### Added
 - v4 now includes CPL token when present ([sc-87918](https://app.shortcut.com/active-prospect/story/87918/send-cpl-data-to-trustedform))
