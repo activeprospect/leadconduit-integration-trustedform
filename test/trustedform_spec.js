@@ -486,7 +486,8 @@ describe('v4', () => {
               form_submitted: true,
               one_to_one: true,
               min_font_size_px_satisfied: true,
-              min_contrast_ratio_satisfied: true
+              min_contrast_ratio_satisfied: true,
+              opt_in_types_satisfied: true
             }
           }
         })
@@ -542,7 +543,8 @@ describe('v4', () => {
           form_submitted: true,
           success: true,
           font_size: true,
-          contrast_ratio: true
+          contrast_ratio: true,
+          opt_in_type: true
         }
       };
       assert.deepEqual(integration.response({ insights: { page_scan: true }}, {}, res), expected);
